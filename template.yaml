@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  astrace-natal-chart-gen
+
+  Sample SAM Template for astrace-natal-chart-gen
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 29
+    Layers:
+      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p39-boto3:10
+      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p39-pillow:1
+      - arn:aws:lambda:us-east-1:190891843015:layer:kerykeion:5
+      - arn:aws:lambda:us-east-1:190891843015:layer:lambda_multiprocessing:1
+
+Resources:
+  NatalChartGenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: natal_chart_gen/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Role: arn:aws:iam::190891843015:policy/SAM-natal-chart-gen
+      Architectures:
+        - x86_64
+      Events:
+        NatalChartGen:
+          Type: Api
+          Properties:
+            Path: /generateChart
+            Method: post
+
+Outputs:
+  NatalChartGenApi:
+    Description: "API Gateway endpoint URL for Prod stage for Generate Chart function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/generateChart/"
+  NatalChartGenFunction:
+    Description: "Generate Chart Lambda Function ARN"
+    Value: !GetAtt NatalChartGenFunction.Arn
+  NatalChartGenFunctionIamRole:
+    Description: "Implicit IAM Role created for Generate Chart function"
+    Value: !GetAtt NatalChartGenFunctionRole.Arn

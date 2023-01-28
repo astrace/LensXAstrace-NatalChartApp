@@ -1,0 +1,5 @@
+PIL
+boto3
+kerykeion
+lambda_multiprocessing
+requests
