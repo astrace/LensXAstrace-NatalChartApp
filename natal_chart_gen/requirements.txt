@@ -1,4 +1,4 @@
-PIL
+PIL==9.4.0
 boto3
 kerykeion
 lambda_multiprocessing
