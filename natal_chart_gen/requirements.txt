@@ -1,5 +1,5 @@
 Pillow
 boto3
-kerykeion
+git+https://github.com/astrace/kerykeion.git@master # kerykeion fork
 lambda_multiprocessing
 requests
