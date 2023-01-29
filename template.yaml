@@ -8,12 +8,12 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 29
+    Timeout: 240
     Layers:
-      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p39-boto3:10
-      - arn:aws:lambda:us-east-1:770693421928:layer:Klayers-p39-pillow:1
-      - arn:aws:lambda:us-east-1:190891843015:layer:kerykeion:5
-      - arn:aws:lambda:us-east-1:190891843015:layer:lambda_multiprocessing:1
+      - arn:aws:lambda:us-east-1:190891843015:layer:chart_generation_dependencies:3
+    Environment:
+      Variables:
+        BUCKET_NAME: astrace-natal-chart-gen-prototype
 
 Resources:
   NatalChartGenFunction:
@@ -22,7 +22,28 @@ Resources:
       CodeUri: natal_chart_gen/
       Handler: app.lambda_handler
       Runtime: python3.9
-      Role: arn:aws:iam::190891843015:policy/SAM-natal-chart-gen
+      Policies:
+        # give access to necessary logs
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "logs:CreateLogGroup"
+            Resource: 'arn:aws:logs:us-east-1:190891843015:*'
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "logs:CreateLogStream"
+              - "logs:PutLogEvents"
+            Resource: "arn:aws:logs:us-east-1:190891843015:log-group:/aws/lambda/generateChart:*"
+        # give access to S3 bucket for reading planet image files
+        - Version: "2012-10-17"
+          Statement: 
+          - Effect: "Allow"
+            Action: 
+              - "s3:Get*"
+            Resource: "arn:aws:s3:::astrace-natal-chart-gen-prototype/images/*"
       Architectures:
         - x86_64
       Events:

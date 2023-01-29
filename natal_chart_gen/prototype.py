@@ -10,9 +10,6 @@ from kerykeion import KrInstance
 import constants
 from utils import read_image_from_s3
 
-import time
-
-# TODO: make environment var or smth
 BUCKET_NAME = os.environ['BUCKET_NAME']
 
 SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
@@ -33,9 +30,11 @@ def generate(location_string, dt):
     
     print('CPU count', multiprocessing.cpu_count())
     
+    print('Loading image layers...')
     with Pool(5) as p:
         planet_ims = p.map(load_planet_image, constants.PLANET_FILES)
-    
+    print('Done.')
+
     planet_objs = [
         chart.sun,
         chart.mercury,
