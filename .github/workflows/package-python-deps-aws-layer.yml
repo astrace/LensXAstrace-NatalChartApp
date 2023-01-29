@@ -5,11 +5,13 @@ on:
   pull_request:
     branches: main
     paths:
-      '**/natal_chart_gen/requirements.txt'
+      - '.github/workflows/package-python-deps-aws-layer.yml'
+        - '**/natal_chart_gen/requirements.txt'
   push:
     branches: main
     paths:
-      '**/natal_chart_gen/requirements.txt'
+      - '.github/workflows/package-python-deps-aws-layer.yml'
+      - '**/natal_chart_gen/requirements.txt'
 
 jobs:
   
@@ -37,8 +39,8 @@ jobs:
         env:
           release_bucket: python-dependencies-as-lambda-layers
           release_bucket_uri: s3://python-dependencies-as-lambda-layers
-          release_id: ${{ format('{0}-{1}.zip', github.repository, github.head_ref )}}
-          release_layer: ${{ format('{0}-{1}', github.repository, github.head_ref )}}
+          release_id: ${{ format('{0}.zip', github.sha )}}
+          release_layer: ${{ format('{0}', github.sha )}}
         run: |
           mkdir python
           # see: https://aws.amazon.com/premiumsupport/knowledge-center/lambda-python-package-compatible/
