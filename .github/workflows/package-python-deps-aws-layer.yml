@@ -5,11 +5,11 @@ on:
   pull_request:
     branches: main
     paths:
-      './natal_chart_gen/requirements.txt'
+      '**/natal_chart_gen/requirements.txt'
   push:
     branches: main
     paths:
-      './natal_chart_gen/requirements.txt'
+      '**/natal_chart_gen/requirements.txt'
 
 jobs:
   
