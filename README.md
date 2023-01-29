@@ -4,6 +4,8 @@ TODO: High-level description
 
 ## Prerequisites
 
+### AWS IAM
+
 Make sure that `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in GitHub Actions Secrets maps to an AWS IAM User that has *at least* the permissions/policies defined in `template.yaml` and `.github/workflows/package-python-deps-aws-layer.yml`. That is, we need permissions to:
 - deploy/update a Lambda layer
 - deploy a Lambda function with the following permissions:
