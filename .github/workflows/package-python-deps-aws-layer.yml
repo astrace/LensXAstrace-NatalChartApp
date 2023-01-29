@@ -6,7 +6,7 @@ on:
     branches: main
     paths:
       - '.github/workflows/package-python-deps-aws-layer.yml'
-        - '**/natal_chart_gen/requirements.txt'
+      - '**/natal_chart_gen/requirements.txt'
   push:
     branches: main
     paths:
