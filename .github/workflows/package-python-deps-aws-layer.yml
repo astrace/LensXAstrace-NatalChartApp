@@ -37,8 +37,8 @@ jobs:
         env:
           release_bucket: python-dependencies-as-lambda-layers
           release_bucket_uri: s3://python-dependencies-as-lambda-layers
-          release_id: ${{ format('$GITHUB_REPOSITORY-{0}-dev.zip', github.head_ref )}}
-          release_layer: ${{ format('$GITHUB_REPOSITORY-{0}-dev', github.head_ref )}}
+          release_id: ${{ format('${GITHUB_REPOSITORY}-{0}-dev.zip', github.head_ref )}}
+          release_layer: ${{ format('${GITHUB_REPOSITORY}-{0}-dev', github.head_ref )}}
         run: |
           mkdir python
           # see: https://aws.amazon.com/premiumsupport/knowledge-center/lambda-python-package-compatible/
