@@ -1,4 +1,4 @@
-Pillow
+Pillow 
 boto3
 kerykeion
 lambda_multiprocessing
