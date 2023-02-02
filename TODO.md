@@ -17,6 +17,7 @@ An algorithm for generating a natal chart (exactly like the one above) given bir
     * See: `natal_chart_gen/prototype.py`
 2. [Est. 1-2 days] Adjustments to make generated image look like design spec
     * E.g. Sizing of assets, house numbers, degree text
+3. [Optional] Randomize background so images are more unique.
 
 ### 2. Setup server & API
 
