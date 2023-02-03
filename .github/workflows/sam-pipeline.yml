@@ -31,7 +31,8 @@ jobs:
           ./.github/workflows/test-lambda.sh
 
       - name: SAM Build
-      - run: sam build --use-container
+      - run: |
+          sam build --use-container
 
       - name: SAM Deploy
         env:
