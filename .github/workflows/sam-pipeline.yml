@@ -35,8 +35,6 @@ jobs:
           sam build --use-container
 
       - name: SAM Deploy
-        env:
-          aasdasd
         run: |
           sam deploy --template-file template.yml \
             --stack-name natal-chart-generation \
