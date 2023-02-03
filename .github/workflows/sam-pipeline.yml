@@ -29,3 +29,16 @@ jobs:
         run: |
           chmod +x ./.github/workflows/test-lambda.sh
           ./.github/workflows/test-lambda.sh
+
+      - name: SAM Build
+      - run: sam build --use-container
+
+      - name: SAM Deploy
+        env:
+          aasdasd
+        run: |
+          sam deploy --template-file template.yml \
+            --stack-name natal-chart-generation \
+            --s3-bucket build-package-deployment-lambda-natal-chart-gen
+            --region us-east-1
+
