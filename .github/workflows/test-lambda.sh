@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ../..
+#cd ../..
 sam local start-lambda &
   aws lambda invoke \
     --function-name "NatalChartGenFunction" \
