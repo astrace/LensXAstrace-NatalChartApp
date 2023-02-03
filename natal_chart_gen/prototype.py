@@ -8,18 +8,14 @@ from lambda_multiprocessing import Pool
 from kerykeion import KrInstance
 
 import constants
-from utils import read_image_from_s3
-
-BUCKET_NAME = os.environ['BUCKET_NAME']
+import utils
 
 SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
 
 def generate(location_string, dt):
     # TODO: elaborate on format of input 
 
-    image_dir = "images"
-    key = image_dir + '/background.png'
-    bg_im = read_image_from_s3(os.environ['BUCKET_NAME'], key)
+    bg_im = utils.load_image(constants.BACKGROUND_FILE)
 
     chart = KrInstance("", dt.year, dt.month, dt.day, dt.hour, dt.minute, location_string)
 
@@ -27,13 +23,8 @@ def generate(location_string, dt):
 
     # rotate background
     bg_im = rotate_background_based_on_ascendant(bg_im, asc)
-    
-    print('CPU count', multiprocessing.cpu_count())
-    
-    print('Loading image layers...')
-    with Pool(5) as p:
-        planet_ims = p.map(load_planet_image, constants.PLANET_FILES)
-    print('Done.')
+
+    planet_ims = load_planet_images(constants.PLANET_FILES)
 
     planet_objs = [
         chart.sun,
@@ -52,9 +43,13 @@ def generate(location_string, dt):
 
     return bg_im
     
-def load_planet_image(fname):
-    key = constants.IMAGE_DIR + '/' + fname
-    return read_image_from_s3(os.environ['BUCKET_NAME'], key)
+def load_planet_images(fnames):
+    result = []
+    for fname in fnames:
+        print("Loading {} ...".format(fname))
+        im = utils.load_image(fname)
+        result.append(im)
+    return result
 
 def rotate_background_based_on_ascendant(bg_im, asc):
     return bg_im.rotate(-30 * SIGNS.index(asc), fillcolor='black')

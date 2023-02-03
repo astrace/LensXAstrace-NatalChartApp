@@ -1,4 +1,4 @@
-IMAGE_DIR = 'images'
+IMAGES_URL = 'https://d1tswrzvc9aaiy.cloudfront.net/images/'
 
 BACKGROUND_FILE = "background.png"
 

@@ -1,10 +1,17 @@
+import requests
 from io import BytesIO
 
 import boto3
 from PIL import Image
 
-from multiprocessing import Process, Pipe
-from multiprocessing.connection import wait
+import constants
+
+def load_image(filename):
+    url = constants.IMAGES_URL + filename
+    print("Loading {} ...".format(url))
+    resp = requests.get(url)
+    im = Image.open(BytesIO(resp.content))
+    return im
 
 def read_image_from_s3(bucket, key, region_name='us-east-1'):
     """Load image file from s3.
