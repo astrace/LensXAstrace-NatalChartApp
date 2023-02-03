@@ -27,12 +27,5 @@ jobs:
 
       - name: Test Lambda function
         run: |
-          sam local start-lambda &
-          aws lambda invoke \
-            --function-name "NatalChartGenFunction" \
-            --payload '{"queryStringParameters":{"datetime_string":"04/01/91 17:55:00","location_string":"zenica"}}' \
-            out.txt \
-            --endpoint-url "http://127.0.0.1:3001" \
-            --no-verify-ssl \
-            --cli-binary-format raw-in-base64-out
-          cat out.txt
+          chmod +x test-lambda.sh
+          ./test-lambda.sh
