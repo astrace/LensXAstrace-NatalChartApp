@@ -26,7 +26,7 @@ That is, the API takes a POST request containing birth information and returns a
 
 1. [✓] Setup S3 services and pipeline for deployment.
     * See: workflows in `.github/workflows`
-2. [Est. 1/2 day] Speed up image generation. Use AWS CloudFront.
+2. [✓] [Est. 1/2 day] Speed up image generation. Use AWS CloudFront.
 
 ### 3. Minting contract
 
