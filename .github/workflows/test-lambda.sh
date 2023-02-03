@@ -10,3 +10,4 @@ sam local start-lambda &
     --cli-binary-format raw-in-base64-out
 OUTPUT=$(jq '.body' out.json | jq -r | jq '.preSignedUrl')
 [[ "$OUTPUT" =~ ^\"https.*\"$ ]] && exit 0 || exit 1
+rm -f out.json

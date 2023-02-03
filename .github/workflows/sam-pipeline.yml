@@ -27,5 +27,5 @@ jobs:
 
       - name: Test Lambda function
         run: |
-          chmod +x test-lambda.sh
-          ./test-lambda.sh
+          chmod +x ./.github/workflows/test-lambda.sh
+          ./.github/workflows/test-lambda.sh
