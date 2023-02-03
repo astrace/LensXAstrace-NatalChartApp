@@ -5,9 +5,10 @@ sam local start-lambda &
     --function-name "NatalChartGenFunction" \
     --payload '{"queryStringParameters":{"datetime_string":"04/01/91 17:55:00","location_string":"zenica"}}' \
     out.json \
-    --endpoint-url "http://127.0.0.1:3001" \
+    --endpoint-url "http://app:8080" \
     --no-verify-ssl \
     --cli-binary-format raw-in-base64-out
 OUTPUT=$(jq '.body' out.json | jq -r | jq '.preSignedUrl')
 [[ "$OUTPUT" =~ ^\"https.*\"$ ]] && exit 0 || exit 1
 rm -f out.json
+cd -
