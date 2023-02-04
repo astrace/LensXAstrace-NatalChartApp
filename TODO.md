@@ -28,6 +28,8 @@ That is, the API takes a POST request containing birth information and returns a
     * See: workflows in `.github/workflows`
 2. [✓] [Est. 1/2 day] Speed up image generation. Use AWS CloudFront.
 
+** Consider changing to: https://docs.aws.amazon.com/cdk/v2/guide/home.html **
+
 ### 3. Minting contract
 
 1.  [Est. 2-3 days] Look at [ProfileNFT](https://docs.lens.xyz/docs/profile) specs on LENS Protocol and write NFT minting contract. 
