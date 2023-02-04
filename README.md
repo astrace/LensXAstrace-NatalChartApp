@@ -17,6 +17,8 @@ The exact Amazon Resources are defined in the respective files.
   
 TODO: Define the exact Amazon Resource Names in some top-level environment file.
 
+TODO: Make sure following best practices: https://jayendrapatil.com/aws-iam-best-practices/
+
 ## Local Testing of Generation Algorithm
 
 TODO
