@@ -14,26 +14,15 @@ import utils
 
 SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
 
-# TODO: Move to seperate file
-
-######################
-## image parameters ##
-######################
-
-# NOTE: Make as many of these a function of background image height
-
-# distance from center as % of background image
-PLANET_RADIUS = 0.25
-# planet size as % of background image
-PLANET_SIZE = 0.05
-
 class Planet:
-    def __init__(self, name, abs_pos):
+    def __init__(self, name, position, abs_pos):
         self.name = name
-        self.image_fname = '{}.png'.format(name)
+        self.image_fname = '{}/{}.png'.format(image_dir, name)
+        self.position = position
         self.abs_pos = abs_pos
         self.display_pos = abs_pos # subject to change
     def __str__(self):
+        # for debugging
         return "{}; abs_pos: {:.2f}".format(self.name, self.abs_pos)
 
 def generate(location_string, dt, local=False):
@@ -41,6 +30,7 @@ def generate(location_string, dt, local=False):
     # TODO: if `local`, load local images (for testing purposes)
 
     if local:
+        # for local generation/testing
         load_image = lambda filename: Image.open("images/" + filename)
     else:
         load_image = utils.load_image
