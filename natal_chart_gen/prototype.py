@@ -16,7 +16,7 @@ import utils
 class Planet:
     def __init__(self, name, position, abs_pos):
         self.name = name
-        self.image_fname = '{}/{}.png'.format("images", name)
+        self.image_fname = '{}/{}.png'.format("assets/images", name)
         self.position = position
         self.abs_pos = abs_pos
         self.display_pos = abs_pos # subject to change
@@ -29,7 +29,7 @@ def generate(location_string, dt, local=False):
 
     if local:
         # for local generation/testing
-        load_image = lambda filename: Image.open("images/" + filename)
+        load_image = lambda filename: Image.open("assets/images/" + filename)
     else:
         load_image = utils.load_image
 
@@ -132,7 +132,7 @@ def add_planet(im, bg_im, position, display_pos, asc):
     
     # add text
     draw = ImageDraw.Draw(bg_im)
-    font = ImageFont.truetype("Inter-Medium.ttf", 34)
+    font = ImageFont.truetype("assets/Inter-Medium.ttf", 34)
     draw.text((x,y), "{:.0f}".format(position), font=font)
 
     return bg_im
