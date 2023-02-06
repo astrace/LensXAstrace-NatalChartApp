@@ -1,7 +1,6 @@
 import datetime
 import math
 import multiprocessing
-import numpy as np
 import os
 from io import BytesIO
 
@@ -50,8 +49,8 @@ def generate(location_string, dt, local=False):
   
     # TODO: come up with more principled way to do this (i.e. not just running it twice)
     # NOTE: `spread_planets` might change the `display_pos` attribute
-    spread_planets(planets)
-    spread_planets(planets)
+    utils.spread_planets(planets)
+    utils.spread_planets(planets)
     
     for p in planets:
         im = Image.open(p.image_fname)#.convert('RGBa')
@@ -131,84 +130,18 @@ def add_planet(im, bg_im, position, display_pos, asc):
     bg_im.paste(im, (x,y), im)
     
     # add text
+    # TODO: put in seperate function
+    # add text
+    r = image_params.PLANET_RADIUS * bg_im.size[1] * 0.87
+    (a, b) = get_center(bg_im.size, (20, 20)) # TODO: FIX LAST PARAM; MAKE EXACT !!!
+    (x, y) = get_coordinates(asc, a, b, r, display_pos)
+    x = round(x)
+    y = round(y)
     draw = ImageDraw.Draw(bg_im)
-    font = ImageFont.truetype("assets/Inter-Medium.ttf", 34)
-    draw.text((x,y), "{:.0f}".format(position), font=font)
+    font = ImageFont.truetype("assets/Inter-Medium.ttf", 22)
+    draw.text((x,y), "{}°".format(math.floor(position)), font=font)
 
     return bg_im
-
-def find_clumps(planets, theta):
-    # TODO: explain what `theta` is
-    # returns list of lists
-    # - sort planets according to location on perimeter
-    planets.sort(key=lambda p: p.abs_pos)
-    # find "clumps"
-    clumps = []
-    curr_clump = []
-    
-    def _clump_check(p_1, p_n, n):
-        return abs(p_n - p_1) < theta * (n - 1)
-    
-    i = 0
-    while i < len(planets):
-        p = planets[i]
-        
-        # if it's the first planet, add it to current (empty) clump
-        # ow (or) check if the current planet belongs to the current clump
-        if i == 0 or _clump_check(curr_clump[0].abs_pos, p.abs_pos, 1 + len(curr_clump)):
-            curr_clump.append(p)
-            
-        else:
-            clumps.append(curr_clump)
-            curr_clump = [p]
-        
-        i += 1
-        
-    clumps.append(curr_clump)
-    
-    # final check to see if there's a clump near 0 / 360
-    first_planet_pos = clumps[0][0].abs_pos
-    last_planet_pos = clumps[-1][-1].abs_pos
-    n = len(clumps[0]) + len(clumps[-1])
-    if _clump_check(first_planet_pos, last_planet_pos, n):
-        # merge
-        # TODO: Test this !!!
-        clumps[0] = clumps[-1] + clumps[0]
-        clumps = clumps[:-1]
-        
-    return clumps
-
-def spread_planets(planets, min_dist=0):
-    # `min_dist` is degrees apart that planets should be displayed
-    # in addition to width apart
-    # reason: stelliums etc.
-    # note: planet objects are changed within this function
-    # TODO: consider way to doing this without side effects
-    
-    # first: find a clump
-    # "clump" definition: x planets in a sector not having a total acceptable min width
-    
-    # convert planet size to approximate degrees it takes up
-    # treats planet width as chord length & planet radius as radius; solve for angle
-    theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
-    
-    clumps = find_clumps(planets, theta)
-    
-    for clump in clumps:
-        n = len(clump)
-        if n == 1:
-            continue
-        # spread across min distance
-        min_distance = len(clump) * theta
-        center_point = (clump[0].abs_pos + clump[-1].abs_pos) / 2
-        new_positions = np.arange(
-            center_point - (n / 2) * theta,
-            center_point + (n / 2) * theta,
-            theta
-        )
-        # set display positions
-        for (p, pos) in zip(clump, new_positions):
-            p.display_pos = pos
 
 
 if __name__ == "__main__":

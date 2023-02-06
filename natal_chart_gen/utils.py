@@ -1,3 +1,5 @@
+import math
+import numpy as np
 import requests
 from io import BytesIO
 
@@ -5,6 +7,7 @@ import boto3
 from PIL import Image
 
 import constants
+import image_params
 
 def load_image(filename):
     url = constants.IMAGES_URL + filename
@@ -110,7 +113,7 @@ def spread_planets(planets, min_dist=0):
     
     # convert planet size to approximate degrees it takes up
     # treats planet width as chord length & planet radius as radius; solve for angle
-    theta = math.degrees(2 * math.asin(0.5 * (PLANET_SIZE / 2) / PLANET_RADIUS)) 
+    theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
     
     clumps = find_clumps(planets, theta)
     
@@ -118,7 +121,6 @@ def spread_planets(planets, min_dist=0):
         n = len(clump)
         if n == 1:
             continue
-        print("CLUMP:", [(p.name, p.display_pos) for p in clump])
         # spread across min distance
         min_distance = len(clump) * theta
         center_point = (clump[0].display_pos + clump[-1].display_pos) / 2
@@ -129,6 +131,5 @@ def spread_planets(planets, min_dist=0):
         )
         # set display positions
         for (p, pos) in zip(clump, new_positions):
-            print(p.name, p.abs_pos, pos)
             p.display_pos = pos
     
