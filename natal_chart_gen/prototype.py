@@ -1,5 +1,7 @@
+import datetime
 import math
 import multiprocessing
+import numpy as np
 import os
 from io import BytesIO
 
@@ -28,7 +30,7 @@ PLANET_SIZE = 0.05
 class Planet:
     def __init__(self, name, abs_pos):
         self.name = name
-        self.image_fname = '{}/{}.png'.format(image_dir, name)
+        self.image_fname = '{}.png'.format(name)
         self.abs_pos = abs_pos
         self.display_pos = abs_pos # subject to change
     def __str__(self):
@@ -38,7 +40,12 @@ def generate(location_string, dt, local=False):
     # TODO: elaborate on format of input
     # TODO: if `local`, load local images (for testing purposes)
 
-    bg_im = utils.load_image(constants.BACKGROUND_FILE)
+    if local:
+        load_image = lambda filename: Image.open("images/" + filename)
+    else:
+        load_image = utils.load_image
+
+    bg_im = load_image(constants.BACKGROUND_FILE)
 
     chart = KrInstance("", dt.year, dt.month, dt.day, dt.hour, dt.minute, location_string)
 
@@ -58,11 +65,11 @@ def generate(location_string, dt, local=False):
     spread_planets(planets)
         
     for p in planets:
-        im = utils.load_image(p.image_fname)
+        im = load_image(p.image_fname)
         add_planet(im, bg_im, p.display_pos, asc)
 
     return bg_im
-    
+
 def rotate_background_based_on_ascendant(bg_im, asc):
     return bg_im.rotate(-30 * SIGNS.index(asc), fillcolor='black')
     
@@ -178,7 +185,6 @@ def spread_planets(planets, min_dist=0):
         n = len(clump)
         if n == 1:
             continue
-        print("CLUMP:", [(p.name, p.abs_pos) for p in clump])
         # spread across min distance
         min_distance = len(clump) * theta
         center_point = (clump[0].abs_pos + clump[-1].abs_pos) / 2
@@ -189,6 +195,10 @@ def spread_planets(planets, min_dist=0):
         )
         # set display positions
         for (p, pos) in zip(clump, new_positions):
-            print(p.name, p.abs_pos, pos)
             p.display_pos = pos
 
+
+if __name__ == "__main__":
+    dt = datetime.datetime(1991, 4, 1)
+    im = generate("zenica", dt, local=True)
+    im.show()
