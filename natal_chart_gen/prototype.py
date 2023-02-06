@@ -5,19 +5,18 @@ import numpy as np
 import os
 from io import BytesIO
 
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 from lambda_multiprocessing import Pool
 from kerykeion import KrInstance
 
 import constants
+import image_params
 import utils
-
-SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
 
 class Planet:
     def __init__(self, name, position, abs_pos):
         self.name = name
-        self.image_fname = '{}/{}.png'.format(image_dir, name)
+        self.image_fname = '{}/{}.png'.format("images", name)
         self.position = position
         self.abs_pos = abs_pos
         self.display_pos = abs_pos # subject to change
@@ -27,7 +26,6 @@ class Planet:
 
 def generate(location_string, dt, local=False):
     # TODO: elaborate on format of input
-    # TODO: if `local`, load local images (for testing purposes)
 
     if local:
         # for local generation/testing
@@ -35,34 +33,55 @@ def generate(location_string, dt, local=False):
     else:
         load_image = utils.load_image
 
-    bg_im = load_image(constants.BACKGROUND_FILE)
-
     chart = KrInstance("", dt.year, dt.month, dt.day, dt.hour, dt.minute, location_string)
-
+    # NOTE: ascendant is very important for orienting entire chart
     asc = chart.first_house["sign"]
-
-    # rotate background
-    bg_im = rotate_background_based_on_ascendant(bg_im, asc)
+   
+    # set background image
+    bg_im = set_background(asc, load_image)
 
     # create planet object/layer list
     planets = []
     for name in constants.PLANET_NAMES:
+        pos = chart.__dict__[name.lower()].position
         abs_pos = chart.__dict__[name.lower()].abs_pos
-        p = Planet(name, abs_pos)
+        p = Planet(name, pos, abs_pos)
         planets.append(p)
-   
-    # might reset `display_pos` attribute in Planet objects
+  
+    # TODO: come up with more principled way to do this (i.e. not just running it twice)
+    # NOTE: `spread_planets` might change the `display_pos` attribute
     spread_planets(planets)
-        
+    spread_planets(planets)
+    
     for p in planets:
-        im = load_image(p.image_fname)
-        add_planet(im, bg_im, p.display_pos, asc)
+        im = Image.open(p.image_fname)#.convert('RGBa')
+        add_planet(im, bg_im, p.position, p.display_pos, asc)
 
     return bg_im
 
-def rotate_background_based_on_ascendant(bg_im, asc):
-    return bg_im.rotate(-30 * SIGNS.index(asc), fillcolor='black')
-    
+def set_background(asc, load_image_fn=utils.load_image):
+    # TODO: Parameterize filenames and put in `constants.py`
+    bg_color = load_image_fn('background_color.png')
+    bg_signs = load_image_fn('signs.png')
+    bg_houses = load_image_fn('house_numbers.png')
+    logo = load_image_fn('astrace_logo.png')
+
+    # rotate zodiac wheel so ascendant is in the first house
+    bg_signs = bg_signs.rotate(-30 * constants.SIGNS.index(asc))
+    # combine background color with zodiac wheel
+    bg_im = Image.alpha_composite(bg_color, bg_signs)
+    # remove alpha channel (makes pasting layers simpler)
+    bg_im = bg_im.convert("RGB")
+    # paste house numbers
+    bg_houses = resize_image(bg_houses, bg_im.size, image_params.HOUSE_NUMBER_RADIUS)
+    (a, b) = get_center(bg_im.size, bg_houses.size)
+    bg_im.paste(bg_houses, (a,b), bg_houses)
+    # paste logo
+    logo = resize_image(logo, bg_im.size, image_params.LOGO_RADIUS)
+    (a, b) = get_center(bg_im.size, logo.size)
+    bg_im.paste(logo, (a,b), logo)
+    return bg_im
+
 def get_center(bg_size, fg_size):
     # TODO: description; needed in order to center image
     bg_w, bg_h = bg_size
@@ -80,7 +99,7 @@ def resize_image(im, bg_size, p):
 
 def get_coordinates(asc, a, b, r, theta):
     # get (x,y) location of 0 degree Aries
-    deg = -90 - SIGNS.index(asc) * 30
+    deg = -90 - constants.SIGNS.index(asc) * 30
     x = a + r * math.sin(math.radians(deg))
     y = b + r * math.cos(math.radians(deg))
     # then rotate
@@ -97,21 +116,25 @@ def rotate(a, b, s, t, deg):
     v = b - (s - a) * sin_theta + (t - b) * cos_theta
     return (u, v)
     
-def add_planet(im, bg_im, abs_pos, asc):
-    # create copy of background
-    #bg_im = bg_im.copy()
+def add_planet(im, bg_im, position, display_pos, asc):
     # resize planet image
-    im = resize_image(im, bg_im.size, PLANET_SIZE)
+    im = resize_image(im, bg_im.size, image_params.PLANET_SIZE)
     # get center of circle
     # distance from center as % of background image
-    r = PLANET_RADIUS * bg_im.size[1]
+    r = image_params.PLANET_RADIUS * bg_im.size[1]
     # TODO: change name to "get center"?
     (a, b) = get_center(bg_im.size, im.size)
     b += 5 # TODO: formalize vertical offset so 0 is exactly on horizontal
-    (x, y) = get_coordinates(asc, a, b, r, abs_pos)
+    (x, y) = get_coordinates(asc, a, b, r, display_pos)
     x = round(x)
     y = round(y)
     bg_im.paste(im, (x,y), im)
+    
+    # add text
+    draw = ImageDraw.Draw(bg_im)
+    font = ImageFont.truetype("Inter-Medium.ttf", 34)
+    draw.text((x,y), "{:.0f}".format(position), font=font)
+
     return bg_im
 
 def find_clumps(planets, theta):
@@ -167,7 +190,7 @@ def spread_planets(planets, min_dist=0):
     
     # convert planet size to approximate degrees it takes up
     # treats planet width as chord length & planet radius as radius; solve for angle
-    theta = math.degrees(2 * math.asin(0.5 * (PLANET_SIZE / 2) / PLANET_RADIUS)) 
+    theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
     
     clumps = find_clumps(planets, theta)
     
