@@ -2,5 +2,6 @@ Pillow
 boto3
 git+https://github.com/astrace/kerykeion.git@master # kerykeion fork
 lambda_multiprocessing
+numpy
 requests
 urllib3
