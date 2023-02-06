@@ -10,7 +10,7 @@ Globals:
   Function:
     Timeout: 240
     Layers:
-      - arn:aws:lambda:us-east-1:190891843015:layer:chart_generation_dependencies:3
+      - arn:aws:lambda:us-east-1:190891843015:layer:chart_generation_dependencies:6
     Environment:
       Variables:
         BUCKET_NAME: astrace-natal-chart-gen-prototype

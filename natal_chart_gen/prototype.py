@@ -12,8 +12,31 @@ import utils
 
 SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
 
-def generate(location_string, dt):
-    # TODO: elaborate on format of input 
+# TODO: Move to seperate file
+
+######################
+## image parameters ##
+######################
+
+# NOTE: Make as many of these a function of background image height
+
+# distance from center as % of background image
+PLANET_RADIUS = 0.25
+# planet size as % of background image
+PLANET_SIZE = 0.05
+
+class Planet:
+    def __init__(self, name, abs_pos):
+        self.name = name
+        self.image_fname = '{}/{}.png'.format(image_dir, name)
+        self.abs_pos = abs_pos
+        self.display_pos = abs_pos # subject to change
+    def __str__(self):
+        return "{}; abs_pos: {:.2f}".format(self.name, self.abs_pos)
+
+def generate(location_string, dt, local=False):
+    # TODO: elaborate on format of input
+    # TODO: if `local`, load local images (for testing purposes)
 
     bg_im = utils.load_image(constants.BACKGROUND_FILE)
 
@@ -24,33 +47,22 @@ def generate(location_string, dt):
     # rotate background
     bg_im = rotate_background_based_on_ascendant(bg_im, asc)
 
-    planet_ims = load_planet_images(constants.PLANET_FILES)
-
-    planet_objs = [
-        chart.sun,
-        chart.mercury,
-        chart.venus,
-        chart.mars,
-        chart.jupiter,
-        chart.saturn,
-        chart.uranus,
-        chart.neptune,
-        chart.pluto
-    ]
-
-    for (abs_pos, im) in zip([o['abs_pos'] for o in planet_objs], planet_ims):
-        add_planet(im, bg_im, abs_pos, asc)
+    # create planet object/layer list
+    planets = []
+    for name in constants.PLANET_NAMES:
+        abs_pos = chart.__dict__[name.lower()].abs_pos
+        p = Planet(name, abs_pos)
+        planets.append(p)
+   
+    # might reset `display_pos` attribute in Planet objects
+    spread_planets(planets)
+        
+    for p in planets:
+        im = utils.load_image(p.image_fname)
+        add_planet(im, bg_im, p.display_pos, asc)
 
     return bg_im
     
-def load_planet_images(fnames):
-    result = []
-    for fname in fnames:
-        print("Loading {} ...".format(fname))
-        im = utils.load_image(fname)
-        result.append(im)
-    return result
-
 def rotate_background_based_on_ascendant(bg_im, asc):
     return bg_im.rotate(-30 * SIGNS.index(asc), fillcolor='black')
     
@@ -89,11 +101,14 @@ def rotate(a, b, s, t, deg):
     return (u, v)
     
 def add_planet(im, bg_im, abs_pos, asc):
+    # create copy of background
+    #bg_im = bg_im.copy()
     # resize planet image
-    im = resize_image(im, bg_im.size, 0.1)
+    im = resize_image(im, bg_im.size, PLANET_SIZE)
     # get center of circle
     # distance from center as % of background image
-    r = 0.25 * bg_im.size[1]
+    r = PLANET_RADIUS * bg_im.size[1]
+    # TODO: change name to "get center"?
     (a, b) = get_center(bg_im.size, im.size)
     b += 5 # TODO: formalize vertical offset so 0 is exactly on horizontal
     (x, y) = get_coordinates(asc, a, b, r, abs_pos)
@@ -101,4 +116,79 @@ def add_planet(im, bg_im, abs_pos, asc):
     y = round(y)
     bg_im.paste(im, (x,y), im)
     return bg_im
+
+def find_clumps(planets, theta):
+    # TODO: explain what `theta` is
+    # returns list of lists
+    # - sort planets according to location on perimeter
+    planets.sort(key=lambda p: p.abs_pos)
+    # find "clumps"
+    clumps = []
+    curr_clump = []
+    
+    def _clump_check(p_1, p_n, n):
+        return abs(p_n - p_1) < theta * (n - 1)
+    
+    i = 0
+    while i < len(planets):
+        p = planets[i]
+        
+        # if it's the first planet, add it to current (empty) clump
+        # ow (or) check if the current planet belongs to the current clump
+        if i == 0 or _clump_check(curr_clump[0].abs_pos, p.abs_pos, 1 + len(curr_clump)):
+            curr_clump.append(p)
+            
+        else:
+            clumps.append(curr_clump)
+            curr_clump = [p]
+        
+        i += 1
+        
+    clumps.append(curr_clump)
+    
+    # final check to see if there's a clump near 0 / 360
+    first_planet_pos = clumps[0][0].abs_pos
+    last_planet_pos = clumps[-1][-1].abs_pos
+    n = len(clumps[0]) + len(clumps[-1])
+    if _clump_check(first_planet_pos, last_planet_pos, n):
+        # merge
+        # TODO: Test this !!!
+        clumps[0] = clumps[-1] + clumps[0]
+        clumps = clumps[:-1]
+        
+    return clumps
+
+def spread_planets(planets, min_dist=0):
+    # `min_dist` is degrees apart that planets should be displayed
+    # in addition to width apart
+    # reason: stelliums etc.
+    # note: planet objects are changed within this function
+    # TODO: consider way to doing this without side effects
+    
+    # first: find a clump
+    # "clump" definition: x planets in a sector not having a total acceptable min width
+    
+    # convert planet size to approximate degrees it takes up
+    # treats planet width as chord length & planet radius as radius; solve for angle
+    theta = math.degrees(2 * math.asin(0.5 * (PLANET_SIZE / 2) / PLANET_RADIUS)) 
+    
+    clumps = find_clumps(planets, theta)
+    
+    for clump in clumps:
+        n = len(clump)
+        if n == 1:
+            continue
+        print("CLUMP:", [(p.name, p.abs_pos) for p in clump])
+        # spread across min distance
+        min_distance = len(clump) * theta
+        center_point = (clump[0].abs_pos + clump[-1].abs_pos) / 2
+        new_positions = np.arange(
+            center_point - (n / 2) * theta,
+            center_point + (n / 2) * theta,
+            theta
+        )
+        # set display positions
+        for (p, pos) in zip(clump, new_positions):
+            print(p.name, p.abs_pos, pos)
+            p.display_pos = pos
 
