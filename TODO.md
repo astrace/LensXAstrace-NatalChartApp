@@ -15,10 +15,11 @@ An algorithm for generating a natal chart (exactly like the one above) given bir
 
 1. [✓] Convert birth information to correct chart orientation & planet placement
     * See: `natal_chart_gen/prototype.py`
-2. [Est. 1-2 days] Adjustments to make generated image look like design spec
+2. [Est. 1-3 days] Adjustments to make generated image look like design spec
     * [✓] sizing of assets
     * [✓] house numbers
     * [✓] degree text
+    * [✓] algorithm for detecting stelliums and spreading out planets when rendering
     * [ ] MAKE SURE PLANETS ARE FULLY DISPLAYED IN HOUSE
 3. [Optional] Randomize background so images are more unique.
 
