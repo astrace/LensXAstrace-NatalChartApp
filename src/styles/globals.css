@@ -1,5 +1,27 @@
-body {
-  /* reset */
+*{
   margin: 0;
   padding: 0;
+}
+
+main {
+  left: 84;
+}
+
+footer {
+    position: absolute;
+    width: 100vw;
+    margin-left: 84px;
+    bottom: 0;
+    height: 42px;
+    padding-bottom: 24px;
+    color: #fff;
+}
+
+footer p {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  color: white;
+  opacity: 0.6;
 }

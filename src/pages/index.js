@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import Header from '../components/Header.js'
+import Footer from '../components/Footer.js'
 import styles from '@/styles/Home.module.css'
 
 //const inter = Inter({ subsets: ['latin'] })
@@ -14,24 +15,17 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-      {/*
+      <div className={styles.bgWrap}>
         <Image
-          className={styles.backgroundImage}
           src="/background-image.png"
-          layout='fill'
-          objectPosition='center'
+          layout="fill"
+          objectFit="cover"
+          quality={100}
         />
-        */}
-        <div className={styles.bgWrap}>
-          <Image
-            src="/background-image.png"
-            layout="fill"
-            objectFit="cover"
-            quality={100}
-          />
-        </div>
-        <Header />
+      </div>
+      <Header />
+      <main className={styles.main}>
+        <Footer />
       </main>
     </>
   )
