@@ -1,3 +1,47 @@
-.backgroundImage {
-  z-index: 0
+.main {
+  /* reset just in case */
+  margin: 0px;
+  padding: 0px;
 }
+
+.bgWrap {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.header {
+  position: fixed;
+  width: 100vw;
+  height: 70px;
+  margin: 0px;
+  padding: 0px;
+  backdrop-filter: blur(2em);
+  /* Note: backdrop-filter has minimal browser support */
+}
+
+.header-logo {
+  position: absolute;
+  margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 180px;
+  height: 30px;
+}
+
+@media only screen and (max-width: 428px) {
+  .header {
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .header {
+    height: 70px;
+  }
+}
+

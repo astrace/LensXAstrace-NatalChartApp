@@ -14,14 +14,24 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className={styles.main}>
+      {/*
         <Image
           className={styles.backgroundImage}
           src="/background-image.png"
           layout='fill'
-          objectFit='cover'
           objectPosition='center'
         />
+        */}
+        <div className={styles.bgWrap}>
+          <Image
+            src="/background-image.png"
+            layout="fill"
+            objectFit="cover"
+            quality={100}
+          />
+        </div>
+        <Header />
       </main>
     </>
   )

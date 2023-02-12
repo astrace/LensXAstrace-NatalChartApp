@@ -1,1 +1,5 @@
-background-image: url('/background-image.png');
+body {
+  /* reset */
+  margin: 0;
+  padding: 0;
+}
