@@ -4,8 +4,6 @@ import Header from '../components/Header.js'
 import Footer from '../components/Footer.js'
 import styles from '@/styles/Home.module.css'
 
-//const inter = Inter({ subsets: ['latin'] })
-
 export default function Home() {
   return (
     <>
@@ -25,7 +23,16 @@ export default function Home() {
       </div>
       <Header />
       <main className={styles.main}>
-        <Footer />
+        <div className={styles["main-text"]}>
+          <h1>Launch your Lens astrological profile</h1>
+          <p>
+            Connect your wallet that holds the Lens profile to mint your 
+            Soulbound natal chart NFT and retrieve your astro profile.
+          </p>
+        </div>
+        <div className={styles.footer}>
+          <Footer/>
+        </div>
       </main>
     </>
   )

@@ -1,8 +1,32 @@
 .main {
   /* reset just in case */
-  margin: 0px;
+  margin-left: 0px;
   padding: 0px;
 }
+
+@media screen and (max-width: 599px) {
+} 
+
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+  .main {
+    width: 600px;
+    margin: 0px 34px 0px 34px;
+  }
+} 
+
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .main {
+    width: 1024px;
+    margin: 0px 84px 0px 84px;
+  }
+} 
+
+@media screen and (min-width: 1440px) and (max-width: 1999px) {
+  .main {
+    width: 1440px;
+    margin: 0px 84px 0px 84px;
+  }
+} 
 
 .bgWrap {
   position: fixed;
@@ -34,14 +58,95 @@
   height: 30px;
 }
 
-@media only screen and (max-width: 428px) {
-  .header {
+.main-text {
+  position: absolute;
+  float: left;
+  width: 1272px;
+  height: 374px;
+  /*left: calc(50% - 1272px/2);*/
+  top: calc(50% - 374px/2);
+}
+
+.main-text h1 {
+  width: 480px;
+  height: 130px;
+  font-family: 'Magnat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 65px;
+  color: white;
+}
+
+.main-text p {
+  width: 480px;
+  height: 130px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-size: 18px;
+  line-height: 39px;
+  color: white;
+}
+
+@media screen and (max-width: 599px) {
+  .main {
+    width: 428px;
+    margin: 0px 20px 0px 20px;
+  }
+  .main-text h1 {
+    font-size: 38px;
+    line-height: 44px;
+  }
+  .main-text p {
+    width: 388px;
+    height: 117px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 39px;
+  }
+} 
+
+@media screen and (min-width: 600px) and (max-width: 1999px) {
+  .main-text h1 {
+    font-size: 56px;
+    line-height: 65px;
+  }
+} 
+
+@media screen and (min-width: 2000px) {
+  .main-text h1 {
+    font-size: 78px;
+    line-height: 90px;
+  }
+} 
+
+.footer footer {
+    position: absolute;
+    width: 100vw;
+    /*margin-left: 84px;*/
+    bottom: 0;
+    height: 42px;
+    padding-bottom: 24px;
+}
+
+@media (max-width: 599px) {
+  .footer footer {
+    margin-left: 0px;
+    margin-bottom: 0px;
+    padding-bottom: 20px;
+    text-align: center;
   }
 }
 
-@media only screen and (max-width: 600px) {
-  .header {
-    height: 70px;
-  }
+.footer footer p {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  color: white;
+  opacity: 0.6;
 }
 

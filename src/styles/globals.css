@@ -3,25 +3,23 @@
   padding: 0;
 }
 
-main {
-  left: 84;
-}
-
-footer {
-    position: absolute;
-    width: 100vw;
-    margin-left: 84px;
-    bottom: 0;
-    height: 42px;
-    padding-bottom: 24px;
-    color: #fff;
-}
-
-footer p {
+@font-face {
+  font-family: "Magnat";
+  src: url('../fonts/Magnat-TextRegular.ttf');
+  font-weight: normal;
   font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 18px;
-  color: white;
-  opacity: 0.6;
 }
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Light.ttf');
+  font-weight: 300;
+  font-style: normal;
+}
+
+/*
+h1 {
+  font-family: "Magnat";
+}
+*/
+

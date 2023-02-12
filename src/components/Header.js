@@ -9,12 +9,12 @@ const Header = () => {
 
   // see: https://blog.sethcorker.com/question/how-to-solve-referenceerror-next-js-window-is-not-defined/
   useEffect(() => {
-    setIsMobile(window.innerWidth <= 428 ? true : false);
+    setIsMobile(window.innerWidth <= 599 ? true : false);
   }, []);
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 428 ? true : false);
+      setIsMobile(window.innerWidth <= 599 ? true : false);
     };
     window.addEventListener('resize', handleResize);
 
