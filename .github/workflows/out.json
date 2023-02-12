@@ -1,1 +1,0 @@
-{"statusCode": 200, "headers": {"Contect-Type": "application/json"}, "body": "{\"preSignedUrl\": \"https://astrace-natal-chart-gen-prototype.s3.amazonaws.com/gen-images/1991-04-01-f56e5475?AWSAccessKeyId=AKIASY4QKLXDXU3JGZMU&Signature=XWnXy5pcSIXMY2d7Rt9Hu25fL5E%3D&Expires=1675540632\"}"}
