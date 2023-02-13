@@ -30,9 +30,8 @@
 
 .bgWrap {
   position: fixed;
-  height: 100%;
-  width: 100%;
-  padding: 0px;
+  height: 100vh;
+  width: 100vw;
   overflow: hidden;
   z-index: -1;
 }
@@ -62,14 +61,12 @@
   position: absolute;
   float: left;
   width: 1272px;
-  height: 374px;
   /*left: calc(50% - 1272px/2);*/
   top: calc(50% - 374px/2);
 }
 
 .main-text h1 {
   width: 480px;
-  height: 130px;
   font-family: 'Magnat';
   font-style: normal;
   font-weight: 600;
@@ -80,7 +77,6 @@
 
 .main-text p {
   width: 480px;
-  height: 130px;
   font-family: 'Inter';
   font-style: normal;
   font-size: 18px;
@@ -93,13 +89,16 @@
     width: 428px;
     margin: 0px 20px 0px 20px;
   }
+  .main-text {
+    position: absolute;
+    bottom: 108px;
+  }
   .main-text h1 {
     font-size: 38px;
     line-height: 44px;
   }
   .main-text p {
     width: 388px;
-    height: 117px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;

@@ -3,6 +3,11 @@
   padding: 0;
 }
 
+a {
+  all: unset;
+  text-decoration: none; /* no underline */
+}
+
 @font-face {
   font-family: "Magnat";
   src: url('../fonts/Magnat-TextRegular.ttf');
@@ -14,12 +19,13 @@
   font-family: "Inter";
   src: url('../fonts/Inter/static/Inter-Light.ttf');
   font-weight: 300;
-  font-style: normal;
+  font-style: light;
 }
 
-/*
-h1 {
-  font-family: "Magnat";
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Regular.ttf');
+  font-weight: 400;
+  font-style: regular;
 }
-*/
 

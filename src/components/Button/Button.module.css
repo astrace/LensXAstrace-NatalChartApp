@@ -1,0 +1,56 @@
+.button {
+  box-sizing: border-box;
+
+  display: flex;
+flex-direction: row;
+justify-content: center;
+align-items: center;
+padding: 13px 24px;
+gap: 10px;
+
+  position: relative;
+  width: 150px;
+  height: 48px;
+  border-radius: 12px;
+  background:
+    radial-gradient(
+      91.54% 254.17% at 43.01% -135.42%,
+      rgba(255, 103, 121, 0.75) 0%,
+      rgba(255, 75, 97, 0.18) 66.67%,
+      rgba(255, 62, 85, 0) 100%
+    ),
+    linear-gradient(
+      120.51deg,
+      rgba(255, 0, 29, 0.14) -33.04%,
+      rgba(252, 0, 27, 0.08) 11.99%,
+      rgba(246, 0, 28, 0.65) 59.37%,
+      rgba(237, 0, 27, 0.21) 127.07%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(4, 1, 22, 0.55) 0%,
+      rgba(4, 1, 22, 0) 75%
+    );
+    border-color: rgba(255, 0, 29, 0.14);
+    background-blend-mode: lighten, hard-light, normal;
+}
+
+.button div {
+  width: 200px;
+  height: 19px;
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 19px;
+
+  color: white;
+  text-shadow: 0px 0px 8px #FF000F;
+
+  /* Inside auto layout */
+
+flex: none;
+order: 0;
+flex-grow: 0;
+}
