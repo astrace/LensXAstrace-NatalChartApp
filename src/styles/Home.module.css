@@ -121,31 +121,3 @@
   }
 } 
 
-.footer footer {
-    position: absolute;
-    width: 100vw;
-    /*margin-left: 84px;*/
-    bottom: 0;
-    height: 42px;
-    padding-bottom: 24px;
-}
-
-@media (max-width: 599px) {
-  .footer footer {
-    margin-left: 0px;
-    margin-bottom: 0px;
-    padding-bottom: 20px;
-    text-align: center;
-  }
-}
-
-.footer footer p {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 18px;
-  color: white;
-  opacity: 0.6;
-}
-
