@@ -2,16 +2,17 @@
   box-sizing: border-box;
 
   display: flex;
-flex-direction: row;
-justify-content: center;
-align-items: center;
-padding: 13px 24px;
-gap: 10px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 13px 24px;
+  gap: 10px;
 
   position: relative;
   width: 150px;
   height: 48px;
   border-radius: 12px;
+  
   background:
     radial-gradient(
       91.54% 254.17% at 43.01% -135.42%,
@@ -31,8 +32,21 @@ gap: 10px;
       rgba(4, 1, 22, 0.55) 0%,
       rgba(4, 1, 22, 0) 75%
     );
-    border-color: rgba(255, 0, 29, 0.14);
-    background-blend-mode: lighten, hard-light, normal;
+  background-blend-mode: lighten, hard-light, normal;
+  mix-blend-mode: normal;
+  box-shadow: 0px 6px 15px rgba(255, 0, 15, 0.26);
+  backdrop-filter: blur(35px);
+
+  border: 1px solid;
+  border-image-source:
+    linear-gradient(
+      155.31deg,
+      rgba(255, 255, 255, 0.5) 12.33%,
+      rgba(255, 255, 255, 0) 34.31%,
+      rgba(255, 255, 255, 0) 52.66%,
+      rgba(255, 255, 255, 0.54) 74.67%
+    );
+  border-radius: 12px;
 }
 
 .button div {
@@ -49,8 +63,66 @@ gap: 10px;
   text-shadow: 0px 0px 8px #FF000F;
 
   /* Inside auto layout */
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
 
-flex: none;
-order: 0;
-flex-grow: 0;
+.button:hover {
+  background: unset;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(4, 1, 22, 0.55) 0%,
+      rgba(4, 1, 22, 0) 75%
+    ),
+    linear-gradient(
+      121.24deg,
+      rgba(255, 0, 29, 0.76) -16.7%,
+      rgba(252, 0, 29, 0.19) 10.44%,
+      rgba(251, 0, 28, 0.07) 29.96%,
+      rgba(246, 0, 28, 0.28) 57.94%,
+      rgba(241, 0, 27, 0.19) 93.38%,
+      rgba(240, 0, 27, 0.13) 102.43%,
+      rgba(237, 0, 27, 0.13) 128.07%
+    ),
+    radial-gradient(
+      146.92% 16.67% at 112.31% -9.38%,
+      rgba(255, 103, 121, 0.5) 0%,
+      rgba(255, 75, 97, 0.12) 66.67%,
+      rgba(255, 62, 85, 0) 100%
+    ),
+    radial-gradient(
+      57.12% 175.77% at 50.05% 3.55%,
+      rgba(255, 103, 121, 0.5) 0%,
+      rgba(255, 62, 85, 0) 100%
+    ),
+    radial-gradient(
+      91.54% 254.17% at 43.01% -135.42%,
+      rgba(255, 103, 121, 0.5) 0%,
+      rgba(255, 75, 97, 0.12) 66.67%,
+      rgba(255, 62, 85, 0) 100%
+    ),
+    radial-gradient(
+      39.68% 97.03% at 100.16% 62.2%,
+      rgba(255, 103, 121, 0.21) 0%,
+      rgba(255, 75, 97, 0.0504) 66.67%,
+      rgba(255, 62, 85, 0) 100%
+    ),
+    linear-gradient(
+      155.31deg,
+      rgba(255, 255, 255, 0.5) 12.33%,
+      rgba(255, 255, 255, 0) 34.31%,
+      rgba(255, 255, 255, 0) 52.66%,
+      rgba(255, 255, 255, 0.54) 74.67%
+    );
+  background-blend-mode: hard-light, lighten, lighten, overlay, hard-light, overlay;
+  mix-blend-mode: normal;
+  box-shadow: 0px 0px 37px rgba(253, 0, 46, 0.6), 0px 6px 15px rgba(255, 0, 15, 0.26);
+
+  border: 1px solid;
+
+border-image-source: linear-gradient(155.31deg, rgba(255, 255, 255, 0.5) 12.33%, rgba(255, 255, 255, 0) 34.31%, rgba(255, 255, 255, 0) 52.66%, rgba(255, 255, 255, 0.54) 74.67%);
+
+
 }
