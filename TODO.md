@@ -2,4 +2,4 @@
 
 - modal transition
 - button gradient
-- screen width/margins for 1440px+
+- ~~screen width/margins for 1440px+~~
