@@ -1,8 +1,8 @@
 import React from 'react';
 import styles from './Button.module.css'
 
-export default function Button() {
+export default function Button(props) {
   return (
-    <button className={styles.button}><div>Connect Wallet</div></button>
+    <button onClick={props.onClick} className={styles.button}><div>Connect Wallet</div></button>
   )
 }

@@ -10,8 +10,8 @@ a {
 
 @font-face {
   font-family: "Magnat";
-  src: url('../fonts/Magnat-TextRegular.ttf');
-  font-weight: normal;
+  src: url('../fonts/Magnat/Magnat-HeadSemiBold.ttf');
+  font-weight: 600;
   font-style: normal;
 }
 

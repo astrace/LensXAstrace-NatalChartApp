@@ -1,12 +1,15 @@
+import { useState } from "react";
 import Head from 'next/head'
 import Image from 'next/image'
 import Header from '../components/Header/Header.js'
 import Button from '../components/Button/Button.js'
+import Modal from '../components/Modal/Modal.js'
 import Footer from '../components/Footer/Footer.js'
 import styles from '@/styles/Home.module.css'
 import background from '../../public/background-image.png'
 
 export default function Home() {
+  const [showModal, setShowModal] = useState(false);
   return (
     <>
       <Head>
@@ -36,7 +39,8 @@ export default function Home() {
             Connect your wallet that holds the Lens profile to mint your 
             Soulbound natal chart NFT and retrieve your astro profile.
           </p>
-          <Button />
+          <Button onClick={() => setShowModal(true) }/>
+          <Modal title="My Modal" onClose={() => setShowModal(false)} show={showModal}/>
           <p style={{paddingTop: 18}}>
             Don’t have a Lens profile?
             &nbsp;
