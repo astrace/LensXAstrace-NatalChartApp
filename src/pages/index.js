@@ -1,12 +1,15 @@
 import { useState } from "react";
-import Head from 'next/head'
-import Image from 'next/image'
-import Header from '../components/Header/Header.js'
-import Button from '../components/Button/Button.js'
-import Modal from '../components/Modal/Modal.js'
-import Footer from '../components/Footer/Footer.js'
-import styles from '@/styles/Home.module.css'
-import background from '../../public/background-image.png'
+import Head from 'next/head';
+import Image from 'next/image';
+import Header from '../components/Header/Header.js';
+import Button from '../components/Button/Button.js';
+import Modal from '../components/Modal/Modal.js';
+import Footer from '../components/Footer/Footer.js';
+import styles from '@/styles/Home.module.css';
+// logos
+import background from '../../public/background-image.png';
+import ethereum_icon from '../icons/ethereum.svg';
+import wallet_connect_icon from '../icons/wallet_connect.svg';
 
 export default function Home() {
   const [showModal, setShowModal] = useState(false);
@@ -40,7 +43,15 @@ export default function Home() {
             Soulbound natal chart NFT and retrieve your astro profile.
           </p>
           <Button text="Connect Wallet" onClick={() => setShowModal(true) }/>
-          <Modal title="Connect Wallet" buttons={<Button text="Browser Wallet" icon="../icons/ethereum.svg"/>} onClose={() => setShowModal(false)} show={showModal}/>
+          <Modal
+            title="Connect Wallet"
+            buttons={[
+              <Button text="Browser Wallet" src={ethereum_icon} />,
+              <Button text="WalletConnect" src={wallet_connect_icon} />
+            ]}
+            onClose={() => setShowModal(false)}
+            show={showModal}
+          />
           <p style={{paddingTop: 18}}>
             Don’t have a Lens profile?
             &nbsp;

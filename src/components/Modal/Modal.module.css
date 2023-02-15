@@ -13,7 +13,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25px;
+  gap: 10px;
   width: 455px;
   left: calc(50vw - 455px/2);
   top: calc(50% - 365px/2 + 0.5px);
@@ -50,10 +50,15 @@
   flex-direction: column;
   align-items: center;
   padding: 0px;
-  gap: 35px;
-
+  gap: 15px;
   width: 350px;
+  margin-left: 50px;
+  margin-right: 50px;
   margin-bottom: 92px;
+}
+
+.modal-body button {
+  width: 100%;
 }
 
 .modal-title {
@@ -64,6 +69,7 @@
   line-height: 31px;
   text-align: center;
   color: #FFFFFF;
+  margin-bottom: 20px;
 }
 
 

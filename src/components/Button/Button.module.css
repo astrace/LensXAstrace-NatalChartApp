@@ -1,6 +1,8 @@
 .button {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 5px;
   padding: 14.5px 24px;
 
   background:
@@ -22,27 +24,27 @@
       rgba(4, 1, 22, 0.55) 0%,
       rgba(4, 1, 22, 0) 75%
     );
-  background-blend-mode: lighten, hard-light, normal;
-  mix-blend-mode: normal;
-  box-shadow: 0px 6px 15px rgba(255, 0, 15, 0.26);
-  backdrop-filter: blur(35px);
+    background-blend-mode: lighten, hard-light, normal;
+    mix-blend-mode: normal;
+    box-shadow: 0px 6px 15px rgba(255, 0, 15, 0.26);
+    backdrop-filter: blur(35px);
 
-  border: 2px solid #f32051;
-  border-radius: 12px;
-  border-image-source:
-    linear-gradient(
-      155.31deg,
-      rgba(255, 255, 255, 0.5) 12.33%,
-      rgba(255, 255, 255, 0) 34.31%,
-      rgba(255, 255, 255, 0) 52.66%,
-      rgba(255, 255, 255, 0.54) 74.67%
-    );
+    border: 2px solid #f32051;
+    border-radius: 12px;
+    border-image-source:
+      linear-gradient(
+        155.31deg,
+        rgba(255, 255, 255, 0.5) 12.33%,
+        rgba(255, 255, 255, 0) 34.31%,
+        rgba(255, 255, 255, 0) 52.66%,
+        rgba(255, 255, 255, 0.54) 74.67%
+      );
 }
 
-.button div {
+.text {
   font-family: 'Inter';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 16px;
   line-height: 19px;
 
@@ -59,7 +61,7 @@
 
   box-shadow: 0px 0px 37px rgba(253, 0, 46, 0.6), 0px 6px 15px rgba(255, 0, 15, 0.26);
 
-  border: 1px solid;
+  border: 2px solid #f32051;
 
 border-image-source: linear-gradient(155.31deg, rgba(255, 255, 255, 0.5) 12.33%, rgba(255, 255, 255, 0) 34.31%, rgba(255, 255, 255, 0) 52.66%, rgba(255, 255, 255, 0.54) 74.67%);
 
