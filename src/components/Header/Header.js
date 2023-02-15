@@ -4,6 +4,10 @@ import Button from '../Button/Button.js';
 import styles from './Header.module.css'
 import {useWindowWidth} from '@react-hook/window-size'
 
+function shortenAddr(addr) {
+  return addr.slice(0,6) + "…" + addr.slice(38,42);
+}
+
 const Header = (props) => {
   /* We use a different logo in the header when viewport is small */
   const [isMobile, setIsMobile] = useState(false);
@@ -44,7 +48,7 @@ const Header = (props) => {
           />
         )}
       </div>
-      {props.walletAddress != null && <div><Button text={props.walletAddress}/></div>}
+      {props.walletAddress != null && <div><Button text={shortenAddr(props.walletAddress)}/></div>}
     </header>
   )
 }
