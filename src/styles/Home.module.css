@@ -24,7 +24,8 @@
 @media screen and (min-width: 1440px) and (max-width: 1999px) {
   .main {
     width: 1440px;
-    margin: 0px 84px 0px 84px;
+    margin-left: calc(0.5 * (84px + 100vw - 1440px));
+    /*margin: 0px 84px 0px 84px;*/
   }
 } 
 

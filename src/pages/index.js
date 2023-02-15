@@ -39,8 +39,8 @@ export default function Home() {
             Connect your wallet that holds the Lens profile to mint your 
             Soulbound natal chart NFT and retrieve your astro profile.
           </p>
-          <Button onClick={() => setShowModal(true) }/>
-          <Modal title="My Modal" onClose={() => setShowModal(false)} show={showModal}/>
+          <Button text="Connect Wallet" onClick={() => setShowModal(true) }/>
+          <Modal title="Connect Wallet" buttons={<Button text="Browser Wallet" icon="../icons/ethereum.svg"/>} onClose={() => setShowModal(false)} show={showModal}/>
           <p style={{paddingTop: 18}}>
             Don’t have a Lens profile?
             &nbsp;

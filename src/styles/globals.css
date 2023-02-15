@@ -1,4 +1,5 @@
 *{
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
@@ -6,6 +7,11 @@
 a {
   all: unset;
   text-decoration: none; /* no underline */
+}
+
+button {
+  all: unset;
+  cursor: pointer;
 }
 
 @font-face {
@@ -26,6 +32,13 @@ a {
   font-family: "Inter";
   src: url('../fonts/Inter/static/Inter-Regular.ttf');
   font-weight: 400;
+  font-style: regular;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Bold.ttf');
+  font-weight: 700;
   font-style: regular;
 }
 
