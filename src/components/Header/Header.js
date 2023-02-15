@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image';
+import Button from '../Button/Button.js';
 import styles from './Header.module.css'
 import {useWindowWidth} from '@react-hook/window-size'
 
-const Header = () => {
+const Header = (props) => {
   /* We use a different logo in the header when viewport is small */
   const [isMobile, setIsMobile] = useState(false);
 
@@ -40,6 +41,7 @@ const Header = () => {
           />
         )}
       </div>
+      {props.walletAddress != null && <div><Button text={props.walletAddress}/></div>}
     </header>
   )
 }
