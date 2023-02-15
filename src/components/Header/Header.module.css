@@ -1,7 +1,7 @@
 .header {
   position: fixed;
   display: flex;
-  justify-content: space-between;
+  /* see conditional in-line styling for 'justify-content' */
   align-items: center;
   width: inherit;
   height: 70px;

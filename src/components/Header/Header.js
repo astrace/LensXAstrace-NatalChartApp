@@ -24,8 +24,11 @@ const Header = (props) => {
     };
   }, []);
 
+  // some header styling is conditional on whether address is displayed or not
+  var conditional_styling = { "justify-content": (props.walletAddress != null)? "space-between" : "center" };
+
   return (
-    <header className={styles.header}>
+    <header className={styles.header} style={conditional_styling}>
       <div className={styles["header-logo"]}>
         {isMobile? (
           <Image
