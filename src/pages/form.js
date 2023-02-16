@@ -7,12 +7,13 @@ import Header from '../components/Header/Header.js';
 import Button from '../components/Button/Button.js';
 import Modal from '../components/Modal/Modal.js';
 import Footer from '../components/Footer/Footer.js';
-import styles from '@/styles/Home.module.css';
+import styles from '@/styles/Form.module.css';
 // logos
 import background from '../../public/background-image.png';
 import ethereum_icon from '../icons/ethereum.svg';
 import wallet_connect_icon from '../icons/wallet_connect.svg';
 
+// wrapper function to allow for using router
 function FormWithRouter(props) {
   const router = useRouter()
   return <Form {...props} router={router} />
@@ -31,6 +32,7 @@ class Form extends React.Component {
   };
 
   componentDidMount() {
+    localStorage.setItem("name", JSON.stringify(name));
     this.connectWalletHandler();
   }
 
@@ -111,9 +113,22 @@ class Form extends React.Component {
       </div>
       <main className={styles.main}>
         <Header walletAddress={this.state.defaultAccount} />
-        <div className={styles["main-text"]}>
+        <div className={styles.container}>
+          <div className={styles.backButton}>← Go Back</div>
+          <h1>Launch your Lens astrological profile </h1>
+          <form>
+            <div className={styles.inputContainer}>
+              <input type="text" id="birthplace" name="birthplace" placeholder="Place of birth"/>
+            </div>
+            <div className={styles.inputContainer}>
+              <input type="text" id="date" name="date" placeholder="MM / DD / YY"/>
+            </div>
+            <div className={styles.inputContainer}>
+              <input type="text" id="time" name="time" placeholder="HH : MM"/>
+            </div>
+          </form>
         </div>
-          <Footer/>
+        <Footer/>
       </main>
     </>
   )};
