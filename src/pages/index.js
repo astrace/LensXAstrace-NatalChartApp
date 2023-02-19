@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-//import {ethers} from 'ethers';
-import { InjectedConnector } from '@web3-react/injected-connector';
-import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
+import { InjectedConnector } from '@web3-react/injected-connector';
+import { switch2Polygon} from '../utils/networkConnect.js';
 import Head from 'next/head';
 import Image from 'next/image';
 import Header from '../components/Header/Header.js';
@@ -14,6 +13,8 @@ import styles from '@/styles/Home.module.css';
 import background from '../../public/background-image.png';
 import ethereum_icon from '../icons/ethereum.svg';
 import wallet_connect_icon from '../icons/wallet_connect.svg';
+
+const POLYGON_CHAIN_ID = 137;
 
 export default function Index(props) {
   const [showModal, setShowModal] = useState(false);
@@ -43,6 +44,7 @@ export default function Index(props) {
     }
   }
 
+  // detect connection on refresh
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
       if (localStorage?.getItem('isBrowserWalletConnected') === 'true') {
@@ -54,13 +56,7 @@ export default function Index(props) {
       }
     }
     connectWalletOnPageLoad()
-    console.log("HERE222");
-    console.log(window.ethereum.networkVersion);
   }, [])
-
-  function isConnectedPolygon () {
-
-  }
 
   return (
     <>
@@ -101,8 +97,11 @@ export default function Index(props) {
             onClose={() => setShowModal(false) }
             show={showModal}
           />
-          {(active && window.ethereum.networkVersion == 137) && <Button text="Continue" />}
-          {(active && window.ethereum.networkVersion != 137) && <Button text="Switch Network" />}
+          {(active && window.ethereum.networkVersion == POLYGON_CHAIN_ID) && <Button text="Continue" />}
+          {
+            (active && window.ethereum.networkVersion != POLYGON_CHAIN_ID)
+            && <Button onClick={() => switch2Polygon(library)} text="Switch Network" />
+          }
           <p style={{paddingTop: 18}}>
             Don’t have a Lens profile?
             &nbsp;
