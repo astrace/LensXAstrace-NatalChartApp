@@ -1,5 +1,6 @@
-import React, { useState, Component } from "react";
+import React, { useState, useEffect } from "react";
 //import {ethers} from 'ethers';
+import { InjectedConnector } from '@web3-react/injected-connector';
 import { useRouter } from 'next/router';
 import { useWeb3React } from '@web3-react/core';
 import Head from 'next/head';
@@ -14,79 +15,54 @@ import background from '../../public/background-image.png';
 import ethereum_icon from '../icons/ethereum.svg';
 import wallet_connect_icon from '../icons/wallet_connect.svg';
 
-// see: https://stackoverflow.com/questions/57027469/how-to-use-userouter-from-next-js-in-a-class-component
-function HomeWithRouter(props) {
-  const router = useRouter()
-  return <Home {...props} router={router} />
-}
+export default function Index(props) {
+  const [showModal, setShowModal] = useState(false);
 
-class Home extends React.Component {
+  const { active, account, library, connector, activate, deactivate } = useWeb3React();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      router: props.router,
-      showModal: false,
-      defaultAccount: null,
-      userBalance: null,
-    };
-  };
+  const injected = new InjectedConnector({
+    supportedChainIds: [1, 3, 4, 5, 42, 137],
+  })
 
-	connectWalletHandler = () => {
-		if (window.ethereum && window.ethereum.isMetaMask) {
-			console.log('MetaMask Here!');
-
-			window.ethereum.request({ method: 'eth_requestAccounts'})
-			.then(result => {
-				this.accountChangedHandler(result[0]);
-				this.getAccountBalance(result[0]);
-        this.state.router.push({
-          pathname: '/form',
-          query: {account: result[0]}  
-        }, '/form');
-			})
-			.catch(error => {
-			  console.log("ERROR MSG");
-			  console.log(error.message);
-			});
-      //window.location.href = "/form";
-		} else {
-			console.log('Need to install MetaMask');
-		}
-	}
-
-  // update account, will cause component re-render
-	accountChangedHandler = (newAccount) => {
-	  this.setState({defaultAccount: newAccount});
-		this.getAccountBalance(newAccount.toString());
-	}
-
-	getAccountBalance = (account) => {
-		window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
-		.then(balance => {
-		  console.log(balance);
-	    this.setState({userBalance: balance});
-		})
-		.catch(error => {
-		  console.log("ERRROR");
-		  console.log(error.message);
-		});
-	};
-
-	chainChangedHandler = () => {
-		// reload the page to avoid any errors with chain change mid use of application
-		window.location.reload();
-	};
-
-
-  componentDidMount() {
-	  // listen for account changes
-	  window.ethereum.on('accountsChanged', this.accountChangedHandler);
-	  window.ethereum.on('chainChanged', this.chainChangedHandler);
+  async function connectBrowserWallet() {
+    try {
+      await activate(injected);
+      localStorage.setItem('isBrowserWalletConnected', true);
+      setShowModal(false);
+    } catch (ex) {
+      console.log(ex);
+    }
   }
 
+  async function disconnect() {
+    try {
+      deactivate()
+      localStorage.setItem('isBrowserWalletConnected', false)
+    } catch (ex) {
+      console.log(ex)
+    }
+  }
 
-  render() { return (
+  useEffect(() => {
+    const connectWalletOnPageLoad = async () => {
+      if (localStorage?.getItem('isBrowserWalletConnected') === 'true') {
+        try {
+          await activate(injected)
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+    }
+    connectWalletOnPageLoad()
+    console.log("HERE222");
+    console.log(window.ethereum.networkVersion);
+  }, [])
+
+  function isConnectedPolygon () {
+
+  }
+
+  return (
     <>
       <Head>
         <title>Launch LENS astrological profile</title>
@@ -115,26 +91,31 @@ class Home extends React.Component {
             Connect your wallet that holds the Lens profile to mint your 
             Soulbound natal chart NFT and retrieve your astro profile.
           </p>
-          <Button text="Connect Wallet" onClick={() => this.setState({ showModal: true }) }/>
+          {!active && <Button text="Connect Wallet" onClick={() => setShowModal(true)}/>}
           <Modal
             title="Connect Wallet"
             buttons={[
-              <Button onClick={this.connectWalletHandler} text="Browser Wallet" src={ethereum_icon}  />,
+              <Button onClick={connectBrowserWallet} text="Browser Wallet" src={ethereum_icon}  />,
               <Button text="WalletConnect" src={wallet_connect_icon} />
             ]}
-            onClose={() => this.setState({ showModal: false }) }
-            show={this.state.showModal}
+            onClose={() => setShowModal(false) }
+            show={showModal}
           />
+          {(active && window.ethereum.networkVersion == 137) && <Button text="Continue" />}
+          {(active && window.ethereum.networkVersion != 137) && <Button text="Switch Network" />}
           <p style={{paddingTop: 18}}>
             Don’t have a Lens profile?
             &nbsp;
             <a href="https://www.lens.xyz/" style={{color: 'red', fontWeight: 400}}>See how to get it.</a>
           </p>
+          <div style={{color: "white"}}>
+            <span>Active: {active.toString()}</span>
+            <span>Account: {account}</span>
+            <span>Active: {active}</span>
+          </div>
         </div>
           <Footer/>
       </main>
     </>
-  )};
-}
-
-export default HomeWithRouter;
+  )
+};
