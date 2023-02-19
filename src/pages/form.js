@@ -1,10 +1,11 @@
 import React, { useState, useEffect, Component } from "react";
 import { useRouter } from 'next/router';
-import {ethers} from 'ethers'
+import { useWeb3React } from '@web3-react/core';
+import { InjectedConnector } from "@web3-react/injected-connector";
+//import {ethers} from 'ethers'
 import Head from 'next/head';
 import Image from 'next/image';
 import Header from '../components/Header/Header.js';
-import Button from '../components/Button/Button.js';
 import Modal from '../components/Modal/Modal.js';
 import Footer from '../components/Footer/Footer.js';
 import styles from '@/styles/Form.module.css';
@@ -13,84 +14,23 @@ import background from '../../public/background-image.png';
 import ethereum_icon from '../icons/ethereum.svg';
 import wallet_connect_icon from '../icons/wallet_connect.svg';
 
-// wrapper function to allow for using router
-function FormWithRouter(props) {
-  const router = useRouter()
-  return <Form {...props} router={router} />
-}
+export default function Form() {
 
-class Form extends React.Component {
+  const { 
+    activate,
+    deactivate,
+    active,
+    chainId,
+    account
+  } = useWeb3React();
+  
+  //const [isConnected, setIsConnected] = useState(0);
 
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-      showModal: false,
-      defaultAccount: props.router.query["account"],
-      userBalance: null,
-    }
-  };
+  const Injected = new InjectedConnector({
+   supportedChainIds: [1, 3, 4, 5, 42]
+  });
 
-  componentDidMount() {
-    localStorage.setItem("name", JSON.stringify(name));
-    this.connectWalletHandler();
-  }
-
-  componentDidUpdate() {
-    this.connectWalletHandler();
-  }
-
-	connectWalletHandler = () => {
-		if (window.ethereum && window.ethereum.isMetaMask) {
-			console.log('MetaMask Here!');
-
-			window.ethereum.request({ method: 'eth_requestAccounts'})
-			.then(result => {
-				this.accountChangedHandler(result[0]);
-				this.getAccountBalance(result[0]);
-			})
-			.catch(error => {
-			  console.log("ERROR MSG");
-			  console.log(error.message);
-			});
-      window.location.href = "/form";
-		} else {
-			console.log('Need to install MetaMask');
-		}
-	}
-
-  // update account, will cause component re-render
-	accountChangedHandler = (newAccount) => {
-	  this.setState({defaultAccount: newAccount});
-		this.getAccountBalance(newAccount.toString());
-	}
-
-	getAccountBalance = (account) => {
-		window.ethereum.request({method: 'eth_getBalance', params: [account, 'latest']})
-		.then(balance => {
-		  console.log(balance);
-	    this.setState({userBalance: balance});
-		})
-		.catch(error => {
-		  console.log("ERRROR");
-		  console.log(error.message);
-		});
-	};
-
-	chainChangedHandler = () => {
-		// reload the page to avoid any errors with chain change mid use of application
-		window.location.reload();
-	};
-
-
-  componentDidMount() {
-	  // listen for account changes
-	  window.ethereum.on('accountsChanged', this.accountChangedHandler);
-	  window.ethereum.on('chainChanged', this.chainChangedHandler);
-  }
-
-
-  render() { return (
+  return (
     <>
       <Head>
         <title>Launch LENS astrological profile</title>
@@ -112,7 +52,7 @@ class Form extends React.Component {
         />
       </div>
       <main className={styles.main}>
-        <Header walletAddress={this.state.defaultAccount} />
+        <Header showWallet={true} />
         <div className={styles.container}>
           <div className={styles.backButton}>← Go Back</div>
           <h1>Launch your Lens astrological profile </h1>
@@ -127,10 +67,11 @@ class Form extends React.Component {
               <input type="text" id="time" name="time" placeholder="HH : MM"/>
             </div>
           </form>
+          <div>Connection Status: {active}</div>
+    <div>Account: {account}</div>
+    <div>Network ID: {chainId}</div>
         </div>
         <Footer/>
       </main>
     </>
-  )};
-}
-export default FormWithRouter;
+)};

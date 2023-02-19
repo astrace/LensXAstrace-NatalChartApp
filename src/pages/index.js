@@ -1,10 +1,11 @@
 import React, { useState, Component } from "react";
-import {ethers} from 'ethers';
+//import {ethers} from 'ethers';
 import { useRouter } from 'next/router';
+import { useWeb3React } from '@web3-react/core';
 import Head from 'next/head';
 import Image from 'next/image';
 import Header from '../components/Header/Header.js';
-import Button from '../components/Button/Button.js';
+import Button from '../components/Buttons/Button.js';
 import Modal from '../components/Modal/Modal.js';
 import Footer from '../components/Footer/Footer.js';
 import styles from '@/styles/Home.module.css';
@@ -107,7 +108,7 @@ class Home extends React.Component {
         />
       </div>
       <main className={styles.main}>
-        <Header />
+        <Header showWallet={false} />
         <div className={styles["main-text"]}>
           <h1>Launch your Lens astrological profile</h1>
           <p style={{paddingBottom: 10}}>
