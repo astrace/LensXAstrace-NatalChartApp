@@ -1,3 +1,6 @@
+**NOTE**: Below is default README for Next.js app. TODO: Update with repo-specific info.
+---
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
