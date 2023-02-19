@@ -9,7 +9,7 @@ import Home from '../components/Home/Home.js';
 import Button from '../components/Buttons/Button.js';
 import Modal from '../components/Modal/Modal.js';
 import Footer from '../components/Footer/Footer.js';
-import styles from '@/styles/Home.module.css';
+import styles from '@/styles/Index.module.css';
 // logos
 import ethereum_icon from '../icons/ethereum.svg';
 import wallet_connect_icon from '../icons/wallet_connect.svg';
@@ -18,7 +18,6 @@ const POLYGON_CHAIN_ID = 137;
 
 export default function Index(props) {
   const [showModal, setShowModal] = useState(false);
-  
   // TODO: change to enum
   const [whichPage, setWhichPage] = useState("home");
 
@@ -31,11 +30,11 @@ export default function Index(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Background />
-      <main className={styles.main}>
+      <div className={styles.main}>
         <Header showWallet={false} />
         {whichPage == "home" && <Home />}
         <Footer/>
-      </main>
+      </div>
     </>
   )
 };

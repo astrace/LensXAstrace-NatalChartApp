@@ -1,48 +1,8 @@
-.main {
-  /* reset just in case */
-  margin-left: 0px;
-  padding: 0px;
-}
-
-@media screen and (max-width: 599px) {
-} 
-
-@media screen and (min-width: 600px) and (max-width: 1023px) {
-  .main {
-    width: 600px;
-    margin: 0px 34px 0px 34px;
-  }
-} 
-
-@media screen and (min-width: 1024px) and (max-width: 1439px) {
-  .main {
-    width: 1024px;
-    margin: 0px 84px 0px 84px;
-  }
-} 
-
-@media screen and (min-width: 1440px) and (max-width: 1999px) {
-  .main {
-    width: 1440px;
-    margin-left: calc(0.5 * (84px + 100vw - 1440px));
-    /*margin: 0px 84px 0px 84px;*/
-  }
-} 
-
-.bgWrap {
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
-  overflow: hidden;
-  z-index: -1;
-}
-
 .main-text {
   position: absolute;
   float: left;
-  width: 1272px;
-  /*left: calc(50% - 1272px/2);*/
-  top: calc(50% - 374px/2);
+  width: 480px;
+  top: 325px;
 }
 
 .main-text h1 {
@@ -65,10 +25,6 @@
 }
 
 @media screen and (max-width: 599px) {
-  .main {
-    width: 428px;
-    margin: 0px 20px 0px 20px;
-  }
   .main-text {
     position: absolute;
     bottom: 108px;
@@ -87,7 +43,27 @@
   }
 } 
 
-@media screen and (min-width: 600px) and (max-width: 1999px) {
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+  .main-text {
+    top: 288px;
+  }
+  .main-text h1 {
+    font-size: 56px;
+    line-height: 65px;
+  }
+} 
+
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .main-text {
+    top: 217px;
+  }
+  .main-text h1 {
+    font-size: 56px;
+    line-height: 65px;
+  }
+} 
+
+@media screen and (min-width: 1440px) and (max-width: 1999px) {
   .main-text h1 {
     font-size: 56px;
     line-height: 65px;
@@ -95,6 +71,9 @@
 } 
 
 @media screen and (min-width: 2000px) {
+  .main-text {
+    width: 667px;
+  }
   .main-text h1 {
     font-size: 78px;
     line-height: 90px;

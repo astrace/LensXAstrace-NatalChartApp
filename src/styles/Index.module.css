@@ -1,0 +1,42 @@
+.main {
+  /* reset just in case */
+  padding: 0px;
+  /* background-color: rgba(255, 0, 0, 0.2); */ /* debugging */
+  height: 100vh;
+}
+
+@media screen and (max-width: 599px) {
+  .main {
+    width: 428px;
+    margin-left: calc(50% - 428px/2);
+  }
+} 
+
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+  .main {
+    width: 600px;
+    margin-left: calc(50% - 600px/2);
+  }
+} 
+
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .main {
+    width: 1024px;
+    margin-left: calc(50% - 1024px/2);
+  }
+} 
+
+@media screen and (min-width: 1440px) and (max-width: 1999px) {
+  .main {
+    width: 1440px;
+    margin-left: calc(50% - 1440px/2);
+  }
+} 
+
+@media screen and (min-width: 2000px) {
+  .main {
+    width: 2000px;
+    margin-left: calc(50% - 2000px/2);
+  }
+} 
+
