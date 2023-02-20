@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { switch2Polygon} from '../utils/networkConnect.js';
@@ -20,7 +20,11 @@ import wallet_connect_icon from '../icons/wallet_connect.svg';
 export default function Index(props) {
   const [showModal, setShowModal] = useState(false);
   // TODO: change to enum
-  const [whichPage, setWhichPage] = useState("home");
+  const [page, setPage] = useState("home");
+
+  const wrapperSetPage = useCallback(page => {
+    setPage(page);
+  }, [setPage]);
 
   return (
     <>
@@ -32,9 +36,9 @@ export default function Index(props) {
       </Head>
       <Background />
       <div className={styles.main}>
-        <Header showWallet={false} whichPage={"home"}/>
-        {whichPage == "home" && <Home />}
-        {whichPage == "form" && <Form />}
+        <Header showWallet={false} page={"home"}/>
+        {page == "home" && <Home changePage={wrapperSetPage} />}
+        {page == "form" && <Form changePage={wrapperSetPage} />}
         <Footer/>
       </div>
     </>

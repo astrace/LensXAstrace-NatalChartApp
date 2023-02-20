@@ -11,7 +11,7 @@ import wallet_connect_icon from '../../icons/wallet_connect.svg';
 
 const POLYGON_CHAIN_ID = 137;
 
-export default function Home() {
+export default function Home(props) {
   const [showModal, setShowModal] = useState(false);
   const { activate, deactivate, active, account, library } = useWeb3React();
   
@@ -24,6 +24,7 @@ export default function Home() {
       await activate(injected);
       localStorage.setItem('isBrowserWalletConnected', true);
       setShowModal(false);
+      props.changePage("form");
     } catch (ex) {
       console.log(ex);
     }
@@ -40,7 +41,6 @@ export default function Home() {
       }
     }
     connectWalletOnPageLoad()
-    console.log("HERE222");
     console.log(window.ethereum.networkVersion);
   }, [])
 
@@ -61,7 +61,10 @@ export default function Home() {
         onClose={() => setShowModal(false) }
         show={showModal}
       />
-      {(active && window.ethereum.networkVersion == POLYGON_CHAIN_ID) && <Button text="Continue" />}
+      {
+        (active && window.ethereum.networkVersion == POLYGON_CHAIN_ID)
+        && <Button onClick={() => props.changePage("form")} text="Continue" />
+      }
       {
         (active && window.ethereum.networkVersion != POLYGON_CHAIN_ID)
         && <Button onClick={() => switch2Polygon(library)} text="Switch Network" />
