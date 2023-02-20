@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { switch2Polygon} from '../../utils/networkConnect.js';
@@ -28,6 +28,21 @@ export default function Home() {
       console.log(ex);
     }
   }
+
+  useEffect(() => {
+    const connectWalletOnPageLoad = async () => {
+      if (localStorage?.getItem('isBrowserWalletConnected') === 'true') {
+        try {
+          await activate(injected)
+        } catch (ex) {
+          console.log(ex)
+        }
+      }
+    }
+    connectWalletOnPageLoad()
+    console.log("HERE222");
+    console.log(window.ethereum.networkVersion);
+  }, [])
 
   return (
     <div className={styles["main-text"]}>

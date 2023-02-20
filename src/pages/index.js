@@ -14,7 +14,7 @@ import styles from '@/styles/Index.module.css';
 import ethereum_icon from '../icons/ethereum.svg';
 import wallet_connect_icon from '../icons/wallet_connect.svg';
 
-const POLYGON_CHAIN_ID = 137;
+
 
 export default function Index(props) {
   const [showModal, setShowModal] = useState(false);
@@ -31,8 +31,9 @@ export default function Index(props) {
       </Head>
       <Background />
       <div className={styles.main}>
-        <Header showWallet={false} />
+        <Header showWallet={false} whichPage={"home"}/>
         {whichPage == "home" && <Home />}
+        {whichPage == "form" && <Form />}
         <Footer/>
       </div>
     </>
