@@ -63,7 +63,23 @@
 }
 
 .container form input {
-  all: unset;
+  background: none;
+  border: none;
+
+  width: 480px; /* TODO: find a better way to do this: make width of containing element */
+  height: 48px;
+  
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+
+  color-scheme: dark;
+}
+
+.container form input:focus {
+  outline: none !important;
 }
 
 .backButton {

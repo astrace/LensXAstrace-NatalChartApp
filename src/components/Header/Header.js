@@ -36,13 +36,13 @@ export default function Header(props) {
   // logic is a bit complicated; see `wallet connection flowchart.pdf` in repo
   var button = null;
   if (active) {
-    console.log("here111");
     if (window.ethereum.networkVersion != POLYGON_CHAIN_ID) {
       button = <Button text={shortenAddr(account)} />;
     } else if (props.whichPage == "form") {
       button = <Button text="Switch Network" />;
     }
   }
+
   
   // some header styling is conditional on whether address is displayed or not
   //var conditional_styling = { "justify-content": (props.button != null)? "space-between" : "center" };

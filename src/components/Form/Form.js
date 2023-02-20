@@ -20,10 +20,10 @@ export default function Form(props) {
           <input type="text" id="birthplace" name="birthplace" placeholder="Place of birth"/>
         </div>
         <div className={styles.inputContainer}>
-          <input type="text" id="date" name="date" placeholder="MM / DD / YY"/>
+          <input type="date" />
         </div>
         <div className={styles.inputContainer}>
-          <input type="text" id="time" name="time" placeholder="HH : MM"/>
+          <input type="time" id="time-input" name="time" placeholder="HH:MM AM/PM"/>
         </div>
       </form>
       <Button text="Mint NFT" />

@@ -21,6 +21,7 @@ export default function Home(props) {
 
   async function connectBrowserWallet() {
     try {
+      console.log("HERE#####");
       await activate(injected);
       localStorage.setItem('isBrowserWalletConnected', true);
       setShowModal(false);
