@@ -9,7 +9,7 @@
   height: 532px;
   top: calc(50% - 532px/2 - 0.5px);
   color: white;
-  background: rgba(255, 0, 0, 0.2);
+  /*background: rgba(255, 0, 0, 0.2); for debugging */
 }
 
 .container h1 {
@@ -29,6 +29,19 @@
   align-items: flex-start;
   padding: 0px;
   gap: 48px;
+  margin-bottom: 48px;
+}
+
+.container p {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  /* White */
+  color: #FFFFFF;
+  opacity: 0.5;
+  margin-top: 20px;
 }
 
 .inputContainer {

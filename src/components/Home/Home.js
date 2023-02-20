@@ -74,10 +74,6 @@ export default function Home(props) {
         &nbsp;
         <a href="https://www.lens.xyz/" style={{color: 'red', fontWeight: 400}}>See how to get it.</a>
       </p>
-      <div style={{color: "white"}}>
-        <span>Active: {active.toString()}</span>
-        <span>Account: {account}</span>
-      </div>
     </div>
   )
 }
