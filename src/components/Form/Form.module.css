@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+
+  position: absolute;
+  width: 480px;
+  height: 532px;
+  top: calc(50% - 532px/2 - 0.5px);
+  color: white;
+  background: rgba(255, 0, 0, 0.2);
+}
+
+.container h1 {
+  width: 480px;
+  font-family: 'Magnat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 65px;
+
+  margin-bottom: 32px;;
+}
+
+.container form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 48px;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  width: 480px; /* TODO: find a better way to do this: make width of containing element */
+  height: 48px;
+  
+  background: none;
+  border-style: none;
+  border-bottom: 1px solid #FF3149;
+
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 19px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.container form input {
+  all: unset;
+}
+
+.backButton {
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 19px;
+  letter-spacing: 0em;
+  text-align: center;
+
+  margin-bottom: 24px;
+}
+

@@ -6,6 +6,7 @@ import Head from 'next/head';
 import Background from '../components/Background/Background.js';
 import Header from '../components/Header/Header.js';
 import Home from '../components/Home/Home.js';
+import Form from '../components/Form/Form.js';
 import Button from '../components/Buttons/Button.js';
 import Modal from '../components/Modal/Modal.js';
 import Footer from '../components/Footer/Footer.js';

@@ -6,10 +6,16 @@ import ConnectWalletButton from '../Buttons/ConnectWalletButton.js';
 import styles from './Header.module.css'
 import {useWindowWidth} from '@react-hook/window-size'
 
-const Header = (props) => {
+const POLYGON_CHAIN_ID = 137;
+
+function shortenAddr(addr) {
+  return addr.slice(0,6) + "…" + addr.slice(38,42);
+}
+
+export default function Header(props) {
   /* We use a different logo in the header when viewport is small */
   const [isMobile, setIsMobile] = useState(false);
-  const { active } = useWeb3React();
+  const { active, account } = useWeb3React();
 
   // see: https://blog.sethcorker.com/question/how-to-solve-referenceerror-next-js-window-is-not-defined/
   useEffect(() => {
@@ -27,11 +33,22 @@ const Header = (props) => {
     };
   }, []);
 
+  // logic is a bit complicated; see `wallet connection flowchart.pdf` in repo
+  var button = null;
+  if (active) {
+    console.log("here111");
+    if (window.ethereum.networkVersion != POLYGON_CHAIN_ID) {
+      button = <Button text={shortenAddr(account)} />;
+    } else if (props.whichPage == "form") {
+      button = <Button text="Switch Network" />;
+    }
+  }
+  
   // some header styling is conditional on whether address is displayed or not
-  var conditional_styling = { "justify-content": (props.showWallet != null)? "space-between" : "center" };
+  //var conditional_styling = { "justify-content": (props.button != null)? "space-between" : "center" };
 
   return (
-    <header className={styles.header} style={conditional_styling}>
+    <header className={styles.header}>
       <div className={styles["header-logo"]}>
         {isMobile? (
           <Image
@@ -47,9 +64,8 @@ const Header = (props) => {
           />
         )}
       </div>
-      {props.showWallet && <div><ConnectWalletButton /></div>}
+      {(active && window.ethereum.networkVersion == POLYGON_CHAIN_ID) && <Button text={shortenAddr(account)} />}
+      {(active && props.whichPage == "form") && <Button text="Switch Network" />}
     </header>
   )
 }
-
-export default Header
