@@ -126,34 +126,6 @@ def rotate(a, b, s, t, deg):
     v = b - (s - a) * sin_theta + (t - b) * cos_theta
     return (u, v)
     
-def add_planet(im, bg_im, position, display_pos, asc):
-    # resize planet image
-    im = resize_image(im, bg_im.size, image_params.PLANET_SIZE)
-    # get center of circle
-    # distance from center as % of background image
-    r = image_params.PLANET_RADIUS * bg_im.size[1]
-    # TODO: change name to "get center"?
-    (a, b) = get_center(bg_im.size, im.size)
-    b += 5 # TODO: formalize vertical offset so 0 is exactly on horizontal
-    (x, y) = get_coordinates(asc, a, b, r, display_pos)
-    x = round(x)
-    y = round(y)
-    bg_im.paste(im, (x,y), im)
-    
-    # add text
-    # TODO: put in seperate function
-    # add text
-    r = image_params.PLANET_RADIUS * bg_im.size[1] * 0.87
-    (a, b) = get_center(bg_im.size, (20, 20)) # TODO: FIX LAST PARAM; MAKE EXACT !!!
-    (x, y) = get_coordinates(asc, a, b, r, display_pos)
-    x = round(x)
-    y = round(y)
-    draw = ImageDraw.Draw(bg_im)
-    font = ImageFont.truetype("assets/Inter-Medium.ttf", 22)
-    draw.text((x,y), "{}°".format(math.floor(position)), font=font)
-
-    return bg_im
-
 def add_object(
         obj,
         bg_im,
