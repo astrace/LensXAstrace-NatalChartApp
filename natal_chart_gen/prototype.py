@@ -48,9 +48,8 @@ def generate(dt, geo, local=False):
     jd = swe.julday(dt.year, dt.month, dt.day, hour)
 
     # NOTE: ascendant is very important for orienting entire chart
-    house_cusps = swe.houses(jd, geo[0], geo[1], bytes('W', 'utf-8'))
-    # TODO: CHECK THIS
-    asc = constants.SIGNS[int(house_cusps[0][0] // 30) - 1]
+    _, ascmc = swe.houses(jd, geo[0], geo[1], bytes('W', 'utf-8'))
+    asc = constants.SIGNS[int(ascmc[0] // 30)]
 
     # set background image
     bg_im = set_background(asc, load_image)
@@ -63,7 +62,15 @@ def generate(dt, geo, local=False):
         sign = constants.SIGNS[int(abs_pos // 30)]
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
-  
+
+    # add angles
+    for abs_pos, name in [(ascmc[0], 'Asc'), (ascmc[1], 'Mc')]:
+        pos = abs_pos % 30
+        sign = constants.SIGNS[int(abs_pos // 30)]
+        p = Planet(name, pos, abs_pos, sign)
+        planets.append(p)
+
+
     # TODO: come up with more principled way to do this (i.e. not just running it twice)
     #       I *think* this can be solved by forward pass + backwards pass
     # NOTE: `spread_planets` might change the `display_pos` attribute (side effect)
@@ -200,7 +207,9 @@ def add_object(
 
 if __name__ == "__main__":
     tz = pytz.timezone('Europe/Sarajevo')
-    dt = datetime(1991, 4, 1, hour=17, minute=55, tzinfo=tz)
+    dt = tz.localize(datetime(1991, 4, 1, hour=17, minute=55))
+    print(dt)
     geo = (44.20169, 17.90397)
     im = generate(dt, geo, local=True)
     im.show()
+

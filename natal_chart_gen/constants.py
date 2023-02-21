@@ -14,5 +14,7 @@ PLANET_NAMES = {
     "Saturn": 5,
     "Uranus": 6,
     "Neptune": 7,
-    "Pluto": 8
+    "Pluto": 8,
+    "North Node": 11,
+    "Chiron": 16,
 }
