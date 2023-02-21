@@ -207,7 +207,9 @@ def add_object(
 
 if __name__ == "__main__":
     tz = pytz.timezone('Europe/Sarajevo')
-    dt = tz.localize(datetime(1991, 4, 1, hour=17, minute=55))
+    #dt = tz.localize(datetime(1991, 4, 1, hour=17, minute=55))
+    # stellium
+    dt = tz.localize(datetime(1962, 2, 4, hour=17, minute=55))
     print(dt)
     geo = (44.20169, 17.90397)
     im = generate(dt, geo, local=True)

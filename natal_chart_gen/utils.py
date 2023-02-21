@@ -91,22 +91,26 @@ def spread_planets(planets, min_dist=0):
     # convert planet size to approximate degrees it takes up
     # treats planet width as chord length & planet radius as radius; solve for angle
     theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
+
+    def _pass(clumps):
+        for clump in clumps:
+            n = len(clump)
+            if n == 1:
+                continue
+            # spread across min distance
+            min_distance = len(clump) * theta
+            center_point = (clump[0].display_pos + clump[-1].display_pos) / 2
+            new_positions = np.arange(
+                center_point - (n / 2) * theta,
+                center_point + (n / 2) * theta,
+                theta
+            )
+            # set display positions
+            for (p, pos) in zip(clump, new_positions):
+                p.display_pos = pos
     
     clumps = find_clumps(planets, theta)
-    
-    for clump in clumps:
-        n = len(clump)
-        if n == 1:
-            continue
-        # spread across min distance
-        min_distance = len(clump) * theta
-        center_point = (clump[0].display_pos + clump[-1].display_pos) / 2
-        new_positions = np.arange(
-            center_point - (n / 2) * theta,
-            center_point + (n / 2) * theta,
-            theta
-        )
-        # set display positions
-        for (p, pos) in zip(clump, new_positions):
-            p.display_pos = pos
-    
+    _pass(clumps)
+    clumps = find_clumps(planets, theta)
+    _pass(clumps[::-1])
+
