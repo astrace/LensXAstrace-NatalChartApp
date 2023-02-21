@@ -52,10 +52,15 @@ def generate(location_string, dt, local=False):
         planets.append(p)
   
     # TODO: come up with more principled way to do this (i.e. not just running it twice)
-    # NOTE: `spread_planets` might change the `display_pos` attribute
+    #       I *think* this can be solved by forward pass + backwards pass
+    # NOTE: `spread_planets` might change the `display_pos` attribute (side effect)
     utils.spread_planets(planets)
     utils.spread_planets(planets)
-    
+   
+    # allows for writing text on image
+    draw = ImageDraw.Draw(bg_im)
+    font = ImageFont.truetype("assets/Inter-Medium.ttf", image_params.TEXT_SIZE)
+
     for p in planets:
         im = Image.open(p.images['planet'])#.convert('RGBa')
         # add planet
@@ -79,7 +84,21 @@ def generate(location_string, dt, local=False):
             image_params.SIGN_RADIUS,
             lambda bg_im, obj, x, y: bg_im.paste(obj, (x,y), obj)
         )
+        # add text
+        # see: https://stackoverflow.com/questions/1528932/how-to-create-inline-objects-with-properties
+        add_object(
+            type('obj', (object,), {'size' : (image_params.TEXT_SIZE, image_params.TEXT_SIZE)}), # update sizing
+            bg_im,
+            p.display_pos,
+            asc,
+            None,
+            image_params.TEXT_RADIUS,
+            lambda bg_im, obj, x, y: draw.text((x,y), "{}°".format(math.floor(p.position)), font=font),
+            False
+        )
     return bg_im
+
+#paste_fn(bg_im, obj, x, y)
 
 def set_background(asc, load_image_fn=utils.load_image):
     # TODO: Parameterize filenames and put in `constants.py`
@@ -145,10 +164,12 @@ def add_object(
         asc,
         obj_size,
         obj_radius,
-        paste_fn
+        paste_fn,
+        resize=True
     ):
-    # resize planet image
-    obj = resize_image(obj, bg_im.size, obj_size)
+    if resize:
+        # resize obj image
+        obj = resize_image(obj, bg_im.size, obj_size)
     # get center of circle
     # distance from center as % of background image
     r = obj_radius * bg_im.size[1]
