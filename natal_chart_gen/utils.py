@@ -100,6 +100,9 @@ def spread_planets(planets, min_dist=0):
             # spread across min distance
             min_distance = len(clump) * theta
             center_point = (clump[0].display_pos + clump[-1].display_pos) / 2
+            if len(clump) > 5:
+                # center point should be in center of sign
+                center_point = center_point - center_point % 30 + 15 + theta / 2
             new_positions = np.arange(
                 center_point - (n / 2) * theta,
                 center_point + (n / 2) * theta,

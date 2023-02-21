@@ -57,6 +57,8 @@ def generate(dt, geo, local=False):
     # create planet object/layer list
     planets = []
     for name, no_body in constants.PLANET_NAMES.items():
+        if name == "Saturn":
+            continue
         abs_pos = swe.calc_ut(jd, no_body)[0][0]
         pos = abs_pos % 30
         sign = constants.SIGNS[int(abs_pos // 30)]
