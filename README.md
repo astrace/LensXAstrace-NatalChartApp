@@ -1,19 +1,12 @@
 # Astrace Natal Chart Generation
 
-TODO: High-level description
+### Helper Custom Image Rendering Algorithms
 
-## Prerequisites
+### Spreading planets
+This is important for rendering things like conjunctions, stelliums, etc (where planets may overlap). See `find_clumps` and `spread_planets` in `utils.py`.
 
-### AWS IAM
-
-## Local Testing of Generation Algorithm
-
-`python prototype.py`
-
-## Testing API Gateway
-
-TODO
-
-## Deployment
-
-TODO
+Before/After:
+<div>
+    <img src="tmpv1t_xxgo.PNG" alt="Image 1" style="width: 47%; display: inline-block;">
+    <img src="tmpcq8ghpra.PNG" alt="Image 2" style="width: 47%; display: inline-block;">
+</div>
