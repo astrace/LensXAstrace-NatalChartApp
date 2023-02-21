@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timezone
 import math
 import multiprocessing
 import os
@@ -6,11 +6,15 @@ from io import BytesIO
 
 from PIL import Image, ImageFont, ImageDraw
 from lambda_multiprocessing import Pool
-from kerykeion import KrInstance
+#from kerykeion import KrInstance
+import pytz
+import swisseph as swe
 
 import constants
 import image_params
 import utils
+
+swe.set_ephe_path('./assets/ephe')
 
 class Planet:
     def __init__(self, name, position, abs_pos, sign):
@@ -18,7 +22,7 @@ class Planet:
         self.images = {
             "planet": "{}/planets/{}.png".format("assets/images", name),
             "sign": "{}/signs/{}.png".format("assets/images", sign)
-        } 
+        }
         self.position = position
         self.abs_pos = abs_pos
         self.display_pos = abs_pos # subject to change
@@ -26,8 +30,9 @@ class Planet:
         # for debugging
         return "{}; abs_pos: {:.2f}".format(self.name, self.abs_pos)
 
-def generate(location_string, dt, local=False):
+def generate(dt, geo, local=False):
     # TODO: elaborate on format of input
+    # datetime has timezone
 
     if local:
         # for local generation/testing
@@ -35,19 +40,27 @@ def generate(location_string, dt, local=False):
     else:
         load_image = utils.load_image
 
-    chart = KrInstance("", dt.year, dt.month, dt.day, dt.hour, dt.minute, location_string)
+    tz = pytz.timezone('UTC')
+    dt = dt.astimezone(tz)
+    # calculate Julian day
+    # requires hour input as decimal with fraction
+    hour = dt.hour + (dt.minute + dt.second / 60) / 60
+    jd = swe.julday(dt.year, dt.month, dt.day, hour)
+
     # NOTE: ascendant is very important for orienting entire chart
-    asc = chart.first_house["sign"]
+    house_cusps = swe.houses(jd, geo[0], geo[1], bytes('W', 'utf-8'))
+    # TODO: CHECK THIS
+    asc = constants.SIGNS[int(house_cusps[0][0] // 30) - 1]
 
     # set background image
     bg_im = set_background(asc, load_image)
     
     # create planet object/layer list
     planets = []
-    for name in constants.PLANET_NAMES:
-        pos = chart.__dict__[name.lower()].position
-        abs_pos = chart.__dict__[name.lower()].abs_pos
-        sign = chart.__dict__[name.lower()].sign
+    for name, no_body in constants.PLANET_NAMES.items():
+        abs_pos = swe.calc_ut(jd, no_body)[0][0]
+        pos = abs_pos % 30
+        sign = constants.SIGNS[int(abs_pos // 30)]
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
   
@@ -103,7 +116,7 @@ def generate(location_string, dt, local=False):
 def set_background(asc, load_image_fn=utils.load_image):
     # TODO: Parameterize filenames and put in `constants.py`
     bg_color = load_image_fn('background_color.png')
-    bg_signs = load_image_fn('signs.png')
+    bg_signs = load_image_fn('signs2.png')
     bg_houses = load_image_fn('house_numbers.png')
     logo = load_image_fn('astrace_logo.png')
 
@@ -186,6 +199,8 @@ def add_object(
 
 
 if __name__ == "__main__":
-    dt = datetime.datetime(1991, 4, 1, 17, 55)
-    im = generate("zenica", dt, local=True)
+    tz = pytz.timezone('Europe/Sarajevo')
+    dt = datetime(1991, 4, 1, hour=17, minute=55, tzinfo=tz)
+    geo = (44.20169, 17.90397)
+    im = generate(dt, geo, local=True)
     im.show()
