@@ -3,9 +3,9 @@
 # minimize "degrees of freedom"
 
 # distance of objects (planet, sign, text) from center as % of background image
-PLANET_RADIUS = 0.28
-SIGN_RADIUS = 0.20
-TEXT_RADIUS = 0.15
+PLANET_RADIUS = 0.3
+SIGN_RADIUS = 0.265
+TEXT_RADIUS = 0.150
 # obj size as % of background image
 PLANET_SIZE = 0.055
 SIGN_SIZE = 0.055

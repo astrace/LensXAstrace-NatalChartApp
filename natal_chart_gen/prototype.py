@@ -58,6 +58,7 @@ def generate(location_string, dt, local=False):
     
     for p in planets:
         im = Image.open(p.images['planet'])#.convert('RGBa')
+        # add planet
         add_object(
             im,
             bg_im,
@@ -65,6 +66,17 @@ def generate(location_string, dt, local=False):
             asc,
             image_params.PLANET_SIZE,
             image_params.PLANET_RADIUS,
+            lambda bg_im, obj, x, y: bg_im.paste(obj, (x,y), obj)
+        )
+        im = Image.open(p.images['sign'])#.convert('RGBa')
+        # add sign
+        add_object(
+            im,
+            bg_im,
+            p.display_pos,
+            asc,
+            image_params.SIGN_SIZE,
+            image_params.SIGN_RADIUS,
             lambda bg_im, obj, x, y: bg_im.paste(obj, (x,y), obj)
         )
     return bg_im
