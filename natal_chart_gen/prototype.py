@@ -13,9 +13,12 @@ import image_params
 import utils
 
 class Planet:
-    def __init__(self, name, position, abs_pos):
+    def __init__(self, name, position, abs_pos, sign):
         self.name = name
-        self.image_fname = '{}/{}.png'.format("assets/images", name)
+        self.images = {
+            "planet": "{}/planets/{}.png".format("assets/images", name),
+            "sign": "{}/signs/{}.png".format("assets/images", sign)
+        } 
         self.position = position
         self.abs_pos = abs_pos
         self.display_pos = abs_pos # subject to change
@@ -35,18 +38,17 @@ def generate(location_string, dt, local=False):
     chart = KrInstance("", dt.year, dt.month, dt.day, dt.hour, dt.minute, location_string)
     # NOTE: ascendant is very important for orienting entire chart
     asc = chart.first_house["sign"]
-    print("ASCENDANT", asc)
 
     # set background image
     bg_im = set_background(asc, load_image)
-    bg_im.show()
     
     # create planet object/layer list
     planets = []
     for name in constants.PLANET_NAMES:
         pos = chart.__dict__[name.lower()].position
         abs_pos = chart.__dict__[name.lower()].abs_pos
-        p = Planet(name, pos, abs_pos)
+        sign = chart.__dict__[name.lower()].sign
+        p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
   
     # TODO: come up with more principled way to do this (i.e. not just running it twice)
@@ -55,7 +57,7 @@ def generate(location_string, dt, local=False):
     utils.spread_planets(planets)
     
     for p in planets:
-        im = Image.open(p.image_fname)#.convert('RGBa')
+        im = Image.open(p.images['planet'])#.convert('RGBa')
         add_object(
             im,
             bg_im,
