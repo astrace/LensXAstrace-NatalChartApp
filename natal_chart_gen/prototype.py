@@ -35,10 +35,12 @@ def generate(location_string, dt, local=False):
     chart = KrInstance("", dt.year, dt.month, dt.day, dt.hour, dt.minute, location_string)
     # NOTE: ascendant is very important for orienting entire chart
     asc = chart.first_house["sign"]
-   
+    print("ASCENDANT", asc)
+
     # set background image
     bg_im = set_background(asc, load_image)
-
+    bg_im.show()
+    
     # create planet object/layer list
     planets = []
     for name in constants.PLANET_NAMES:
@@ -54,8 +56,15 @@ def generate(location_string, dt, local=False):
     
     for p in planets:
         im = Image.open(p.image_fname)#.convert('RGBa')
-        add_planet(im, bg_im, p.position, p.display_pos, asc)
-
+        add_object(
+            im,
+            bg_im,
+            p.display_pos,
+            asc,
+            image_params.PLANET_SIZE,
+            image_params.PLANET_RADIUS,
+            lambda bg_im, obj, x, y: bg_im.paste(obj, (x,y), obj)
+        )
     return bg_im
 
 def set_background(asc, load_image_fn=utils.load_image):
@@ -143,8 +152,33 @@ def add_planet(im, bg_im, position, display_pos, asc):
 
     return bg_im
 
+def add_object(
+        obj,
+        bg_im,
+        display_pos,
+        asc,
+        obj_size,
+        obj_radius,
+        paste_fn
+    ):
+    # resize planet image
+    obj = resize_image(obj, bg_im.size, obj_size)
+    # get center of circle
+    # distance from center as % of background image
+    r = obj_radius * bg_im.size[1]
+    # TODO: change name to "get center"?
+    (a, b) = get_center(bg_im.size, obj.size)
+    # b += 5 # TODO: formalize vertical offset so 0 is exactly on horizontal
+    # OR: edit image so that 
+    (x, y) = get_coordinates(asc, a, b, r, display_pos)
+    x = round(x)
+    y = round(y)
+
+    paste_fn(bg_im, obj, x, y)
+    return bg_im
+
 
 if __name__ == "__main__":
-    dt = datetime.datetime(1991, 4, 1)
+    dt = datetime.datetime(1991, 4, 1, 17, 55)
     im = generate("zenica", dt, local=True)
     im.show()
