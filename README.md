@@ -7,6 +7,6 @@ This is important for rendering things like conjunctions, stelliums, etc (where 
 
 Before/After:
 <div>
-    <img src="tmpv1t_xxgo.PNG" alt="Image 1" style="width: 47%; display: inline-block;">
-    <img src="tmpcq8ghpra.PNG" alt="Image 2" style="width: 47%; display: inline-block;">
+    <img src="./before.png" alt="Image 1" style="width: 47%; display: inline-block;">
+    <img src="./after.png" alt="Image 2" style="width: 47%; display: inline-block;">
 </div>
