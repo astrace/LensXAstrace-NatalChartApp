@@ -128,24 +128,47 @@ def remove_singletons_and_merge_clumps(clumps1, clumps2):
                 clumps.add(frozenset(c1 | c2))
     return [list(c) for c in clumps]
 
-def spread_planets(planets, min_dist=0):
-    # `min_dist` is degrees apart that planets should be displayed
-    # in addition to width apart
-    # reason: stelliums etc.
-    # note: planet objects are changed within this function
-    # TODO: consider way to doing this without side effects
-    
-    # first: find a clump
-    # "clump" definition: x planets in a sector not having a total acceptable min width
-    
-    # convert planet size to approximate degrees it takes up
-    # treats planet width as chord length & planet radius as radius; solve for angle
-    theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
+def spread_planets(planets, theta=None, min_to_center=5):
+    """
+    Spread planets across the perimeter of a circle
+    with a minimum angular separation of theta
+    between two neighboring planets.
+
+    Args:
+        planets (list):
+            A list of Planet objects.
+        theta (float, optional):
+            A float value indicating the minimum angular separation between
+            adjacent planets on the perimeter of a circle. If not specified, 
+            the value is calculated based on the size and radius of the 
+            planet images.
+        min_to_center (int, optional):
+            An integer value indicating the minimum number of planets
+            required to center the group at the midpoint of a house.
+            If there are fewer than this number of planets
+            in the group, the center point will be the midpoint of the 
+            group's angular range.
+
+    Returns:
+        None. Modifies the display positions of the planets in place.
+
+    This function first finds clumps of planets located near
+    each other on the perimeter of a circle, using the `find_clumps`
+    function. For each clump, it calculates a new position for each
+    planet in the clump based on the desired angular separation and
+    the number of planets in the clump.
+
+    Note:
+        This function modifies the display positions
+        of the planets in place. 
+    """
+
+    if not theta:
+        # convert planet size to approximate degrees it takes up
+        # treats planet width as chord length & planet radius as radius; solve for angle
+        theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
 
     clumps = find_clumps(planets, theta)
-
-    print('CLUMPS')
-    print_clumps(clumps)
 
     for clump in clumps:
         n = len(clump)
@@ -154,7 +177,7 @@ def spread_planets(planets, min_dist=0):
         # spread across min distance
         min_distance = len(clump) * theta
         center_point = (clump[0].dpos + clump[-1].dpos) / 2
-        if len(clump) > 5:
+        if len(clump) > min_to_center:
             # center point should be in center of sign
             center_point = center_point - center_point % 30 + 15 + theta / 2
         new_positions = np.arange(
@@ -168,8 +191,7 @@ def spread_planets(planets, min_dist=0):
             p.dpos = pos
 
 def print_clumps(clumps):
+    # just a helper for debugging
     for c in clumps:
         print([str(p) for p in c])
-
-
 

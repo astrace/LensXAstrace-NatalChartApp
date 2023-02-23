@@ -206,8 +206,15 @@ if __name__ == "__main__":
     #dt = tz.localize(datetime(1991, 4, 1, hour=17, minute=55))
     # stellium
     #dt = tz.localize(datetime(1962, 2, 4, hour=17, minute=55))
-    dt = tz.localize(datetime(1994, 1, 11, hour=3, minute=33))
+    #dt = tz.localize(datetime(1994, 1, 11, hour=3, minute=33))
     geo = (44.20169, 17.90397)
+
+    """
+    Tuesday, January 11 1994, 07:33 AM
+    Sarajevo, Bosnia & Herzegovina
+    """
+    dt = tz.localize(datetime(1994, 1, 11, hour=7, minute=33))
+
     im = generate(dt, geo, local=True)
     im.show()
 
