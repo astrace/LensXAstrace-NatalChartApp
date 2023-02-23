@@ -25,7 +25,7 @@ class Planet:
         }
         self.position = position
         self.abs_pos = abs_pos
-        self.display_pos = abs_pos # subject to change
+        self.dpos = abs_pos # subject to change
     def __str__(self):
         # for debugging
         return "{}; abs_pos: {:.2f}".format(self.name, self.abs_pos)
@@ -57,8 +57,6 @@ def generate(dt, geo, local=False):
     # create planet object/layer list
     planets = []
     for name, no_body in constants.PLANET_NAMES.items():
-        if name == "Saturn":
-            continue
         abs_pos = swe.calc_ut(jd, no_body)[0][0]
         pos = abs_pos % 30
         sign = constants.SIGNS[int(abs_pos // 30)]
@@ -72,11 +70,7 @@ def generate(dt, geo, local=False):
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
-
-    # TODO: come up with more principled way to do this (i.e. not just running it twice)
-    #       I *think* this can be solved by forward pass + backwards pass
-    # NOTE: `spread_planets` might change the `display_pos` attribute (side effect)
-    utils.spread_planets(planets)
+    # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
     utils.spread_planets(planets)
    
     # allows for writing text on image
@@ -89,7 +83,7 @@ def generate(dt, geo, local=False):
         add_object(
             im,
             bg_im,
-            p.display_pos,
+            p.dpos,
             asc,
             image_params.PLANET_SIZE,
             image_params.PLANET_RADIUS,
@@ -100,7 +94,7 @@ def generate(dt, geo, local=False):
         add_object(
             im,
             bg_im,
-            p.display_pos,
+            p.dpos,
             asc,
             image_params.SIGN_SIZE,
             image_params.SIGN_RADIUS,
@@ -111,7 +105,7 @@ def generate(dt, geo, local=False):
         add_object(
             type('obj', (object,), {'size' : (image_params.TEXT_SIZE, image_params.TEXT_SIZE)}), # update sizing
             bg_im,
-            p.display_pos,
+            p.dpos,
             asc,
             None,
             image_params.TEXT_RADIUS,
@@ -182,7 +176,7 @@ def rotate(a, b, s, t, deg):
 def add_object(
         obj,
         bg_im,
-        display_pos,
+        dpos,
         asc,
         obj_size,
         obj_radius,
@@ -199,7 +193,7 @@ def add_object(
     (a, b) = get_center(bg_im.size, obj.size)
     # b += 5 # TODO: formalize vertical offset so 0 is exactly on horizontal
     # OR: edit image so that 
-    (x, y) = get_coordinates(asc, a, b, r, display_pos)
+    (x, y) = get_coordinates(asc, a, b, r, dpos)
     x = round(x)
     y = round(y)
 
@@ -208,11 +202,11 @@ def add_object(
 
 
 if __name__ == "__main__":
-    tz = pytz.timezone('Europe/Sarajevo')
+    tz = pytz.timezone('Europe/London')
     #dt = tz.localize(datetime(1991, 4, 1, hour=17, minute=55))
     # stellium
-    dt = tz.localize(datetime(1962, 2, 4, hour=17, minute=55))
-    print(dt)
+    #dt = tz.localize(datetime(1962, 2, 4, hour=17, minute=55))
+    dt = tz.localize(datetime(1994, 1, 11, hour=3, minute=33))
     geo = (44.20169, 17.90397)
     im = generate(dt, geo, local=True)
     im.show()

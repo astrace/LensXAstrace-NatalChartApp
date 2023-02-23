@@ -38,45 +38,95 @@ def calculate_position(degree):
     }
 
 def find_clumps(planets, theta):
-    # TODO: explain what `theta` is
-    # returns list of lists
-    # - sort planets according to location on perimeter
-    planets.sort(key=lambda p: p.display_pos)
-    # find "clumps"
-    clumps = []
-    curr_clump = []
-    
-    def _clump_check(p_1, p_n, n):
-        return abs(p_n - p_1) < theta * (n - 1)
-    
-    i = 0
-    while i < len(planets):
-        p = planets[i]
+    """Find clumps of planets located near each other on the perimeter of a circle.
+
+    Args:
+        planets (list): A list of Planet objects.
+        theta (float):  A float value indicating the maximum angular distance
+                        that two planets can be apart and still be considered
+                        part of the same clump.
+
+    Returns:
+        list: A list of lists, where each inner list contains the planets that are part
+              of the same clump.
+
+    This function sorts the planets based on their location on the perimeter of a circle
+    and then iterates through the sorted list to find clumps of planets that are close
+    to each other. It does this by performing two passes through the list of planets: one
+    forward pass and one backward pass. It then merges the clumps found in each pass and
+    returns a list of unique clumps. If two clumps overlap, they are merged into a single
+    clump.
+    """
+
+    def _clump_check(p1, pn, n):
+        """
+        This helper function takes the angular positions of two planets
+        and the number of planets between them and determines whether
+        the two planets are considered part of the same clump. The
+        maximum angular distance that two planets can be apart and still be
+        considered part of the same clump is determined by the value of "theta".
+        """
+        return abs(pn - p1) < theta * (n - 1)
+   
+    def _pass(planets):
+        clumps = []
+        curr_clump = []
         
-        # if it's the first planet, add it to current (empty) clump
-        # ow (or) check if the current planet belongs to the current clump
-        if i == 0 or _clump_check(curr_clump[0].display_pos, p.display_pos, 1 + len(curr_clump)):
-            curr_clump.append(p)
+        for i,p in enumerate(planets):
             
-        else:
-            clumps.append(curr_clump)
-            curr_clump = [p]
-        
-        i += 1
-        
-    clumps.append(curr_clump)
-    
-    # final check to see if there's a clump near 0 / 360
-    first_planet_pos = clumps[0][0].display_pos
-    last_planet_pos = clumps[-1][-1].display_pos
-    n = len(clumps[0]) + len(clumps[-1])
-    if _clump_check(first_planet_pos, last_planet_pos, n):
+            if i == 0:
+                # if it's the first planet, add it to current (empty) clump
+                curr_clump.append(p)
+                continue
+
+            # get current clump info
+            p1 = curr_clump[0].dpos
+            p2 = p.dpos # potentially not part of current clump
+            n = 1 + len(curr_clump)
+            
+            if _clump_check(p1, p2, n):
+                # if it's the first planet, add it to current (empty) clump
+                # or, if it satisfies the clump criteria, add it to the current clump
+                curr_clump.append(p)
+            else:
+                clumps.append(curr_clump)
+                curr_clump = [p]
+
+        clumps.append(curr_clump)
+        return clumps
+
+    # hard to explain why this needs to be done twice: forward & backwards pass
+    # ... there are edge cases where one pass fails
+    clumps1 = _pass(sorted(planets, key=lambda p: p.dpos))
+    clumps2 = _pass(sorted(planets, key=lambda p: p.dpos, reverse=True))
+
+    # check to see if there's a clump near 0 / 360
+    # Note: only needs to be done on first set of clumps
+    if _clump_check(
+            clumps1[0][0].dpos,
+            clumps1[-1][-1].dpos,
+            len(clumps1[0]) + len(clumps1[-1])
+        ):
         # merge
-        # TODO: Test this !!!
-        clumps[0] = clumps[-1] + clumps[0]
-        clumps = clumps[:-1]
-        
+        clumps1[0] = clumps1[-1] + clumps1[0]
+        clumps1 = clumps1[:-1]
+    
+    clumps = remove_singletons_and_merge_clumps(clumps1, clumps2)
+    
     return clumps
+
+def remove_singletons_and_merge_clumps(clumps1, clumps2):
+    clumps1 = [c for c in clumps1 if len(c) > 1]
+    clumps2 = [c for c in clumps2 if len(c) > 1]
+    clumps = set() # merged
+    for c1 in clumps1:
+        for c2 in clumps2:
+            c1, c2 = set(c1), set(c2)
+            if c1 == c2:
+                clumps.add(frozenset(c1))
+            elif len(c1 & c2) > 0:
+                clumps.add(frozenset(c1 | c2))
+    return [list(c) for c in clumps]
 
 def spread_planets(planets, min_dist=0):
     # `min_dist` is degrees apart that planets should be displayed
@@ -92,28 +142,34 @@ def spread_planets(planets, min_dist=0):
     # treats planet width as chord length & planet radius as radius; solve for angle
     theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
 
-    def _pass(clumps):
-        for clump in clumps:
-            n = len(clump)
-            if n == 1:
-                continue
-            # spread across min distance
-            min_distance = len(clump) * theta
-            center_point = (clump[0].display_pos + clump[-1].display_pos) / 2
-            if len(clump) > 5:
-                # center point should be in center of sign
-                center_point = center_point - center_point % 30 + 15 + theta / 2
-            new_positions = np.arange(
-                center_point - (n / 2) * theta,
-                center_point + (n / 2) * theta,
-                theta
-            )
-            # set display positions
-            for (p, pos) in zip(clump, new_positions):
-                p.display_pos = pos
-    
     clumps = find_clumps(planets, theta)
-    _pass(clumps)
-    clumps = find_clumps(planets, theta)
-    _pass(clumps[::-1])
+
+    print('CLUMPS')
+    print_clumps(clumps)
+
+    for clump in clumps:
+        n = len(clump)
+        if n == 1:
+            continue
+        # spread across min distance
+        min_distance = len(clump) * theta
+        center_point = (clump[0].dpos + clump[-1].dpos) / 2
+        if len(clump) > 5:
+            # center point should be in center of sign
+            center_point = center_point - center_point % 30 + 15 + theta / 2
+        new_positions = np.arange(
+            center_point - (n / 2) * theta,
+            center_point + (n / 2) * theta,
+            theta
+        )
+        # set display positions
+        clump.sort(key=lambda p: p.dpos)
+        for (p, pos) in zip(clump, new_positions):
+            p.dpos = pos
+
+def print_clumps(clumps):
+    for c in clumps:
+        print([str(p) for p in c])
+
+
 
