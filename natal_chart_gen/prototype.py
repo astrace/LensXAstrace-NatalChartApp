@@ -29,7 +29,9 @@ class Planet:
         self.dpos = abs_pos # subject to change
     def __str__(self):
         # for debugging
-        return "{}; abs_pos: {:.2f}".format(self.name, self.abs_pos)
+        return "{}; sign: {}, abs_pos: {:.2f}".format(
+            self.name, self.sign, self.abs_pos
+        )
 
 class Natal_Chart:
     required_objects = frozenset([

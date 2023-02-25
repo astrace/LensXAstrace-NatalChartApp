@@ -1,3 +1,4 @@
+import bisect
 import math
 import numpy as np
 import requests
@@ -111,11 +112,14 @@ def find_clumps(planets, theta):
         clumps1[0] = clumps1[-1] + clumps1[0]
         clumps1 = clumps1[:-1]
     
-    clumps = remove_singletons_and_merge_clumps(clumps1, clumps2)
+    clumps = _merge_clumps(clumps1, clumps2)
+    clumps = _split_clumps_by_sign(clumps) 
+    # remove singletons
+    clumps = [c for c in clumps if len(c) > 1]
     
     return clumps
 
-def remove_singletons_and_merge_clumps(clumps1, clumps2):
+def _merge_clumps(clumps1, clumps2):
     clumps1 = [c for c in clumps1 if len(c) > 1]
     clumps2 = [c for c in clumps2 if len(c) > 1]
     clumps = set() # merged
@@ -127,6 +131,22 @@ def remove_singletons_and_merge_clumps(clumps1, clumps2):
             elif len(c1 & c2) > 0:
                 clumps.add(frozenset(c1 | c2))
     return [list(c) for c in clumps]
+
+def _split_clumps_by_sign(clumps):
+    # this is needed for proper rendering in `spread_planets`
+    new_clumps = []
+    for c in clumps:
+        c.sort(key=lambda p: p.dpos)
+        if c[0].sign != c[-1].sign:
+            i = 0
+            while c[i].sign != c[-1].sign:
+                i += 1
+            new_clumps.append(c[:i])
+            new_clumps.append(c[i:])
+        else:
+            new_clumps.append(c)
+    return new_clumps
+        
 
 def spread_planets(planets, theta=None, min_to_center=5):
     """
@@ -183,19 +203,34 @@ def spread_planets(planets, theta=None, min_to_center=5):
         print(min_distance)
 
         if min_distance >= 30: # probably should do less
-            print("Here")
             # stellium takes up entire sign/house
             # put center of clump at center of sign/house
-            #center_point = center_point - center_point % 30 + 15 + theta / 2
             house_cusp = clump[0].dpos - clump[0].dpos % 30
             center_point = house_cusp + 15
             center_point += theta / 2 # improve centering a bit
         else:
             center_point = (clump[0].dpos + clump[-1].dpos) / 2
-        '''
-        if len(clump) > min_to_center:
-            # center point should be in center of sign
-        '''
+            
+            # check if this causes "bleeding" into *previous* house
+            before = clump[0].dpos
+            after = center_point - (n / 2) * theta
+            # different sign?
+            if before // 30 != after // 30:
+                print("bleeding into previous house")
+                bleed_over = 30 - after % 30
+                center_point += bleed_over
+                center_point += theta / 2 # improve positioning
+            
+            # check if this causes "bleeding" into *next* house
+            before = clump[-1].dpos
+            after = center_point + (n / 2) * theta
+            # different sign?
+            if before // 30 != after // 30:
+                print("bleeding into next house")
+                bleed_over = after % 30
+                center_point -= bleed_over
+                center_point -= theta / 2 # improve positioning
+        
         new_positions = np.arange(
             center_point - (n / 2) * theta,
             center_point + (n / 2) * theta,
