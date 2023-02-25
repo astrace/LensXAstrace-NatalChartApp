@@ -171,22 +171,37 @@ def spread_planets(planets, theta=None, min_to_center=5):
     clumps = find_clumps(planets, theta)
 
     for clump in clumps:
+        assert len(clump) > 1
+
+        clump.sort(key=lambda p: p.dpos)
         n = len(clump)
-        if n == 1:
-            continue
+
         # spread across min distance
         min_distance = len(clump) * theta
-        center_point = (clump[0].dpos + clump[-1].dpos) / 2
+        #center_point = _get_center_pt(clump, min_distance)
+
+        print(min_distance)
+
+        if min_distance >= 30: # probably should do less
+            print("Here")
+            # stellium takes up entire sign/house
+            # put center of clump at center of sign/house
+            #center_point = center_point - center_point % 30 + 15 + theta / 2
+            house_cusp = clump[0].dpos - clump[0].dpos % 30
+            center_point = house_cusp + 15
+            center_point += theta / 2 # improve centering a bit
+        else:
+            center_point = (clump[0].dpos + clump[-1].dpos) / 2
+        '''
         if len(clump) > min_to_center:
             # center point should be in center of sign
-            center_point = center_point - center_point % 30 + 15 + theta / 2
+        '''
         new_positions = np.arange(
             center_point - (n / 2) * theta,
             center_point + (n / 2) * theta,
             theta
         )
         # set display positions
-        clump.sort(key=lambda p: p.dpos)
         for (p, pos) in zip(clump, new_positions):
             p.dpos = pos
 

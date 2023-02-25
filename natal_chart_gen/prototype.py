@@ -92,7 +92,7 @@ def generate(dt, geo, local=False):
 
 def _generate(chart, load_image):
     # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
-    #utils.spread_planets(chart.objects.values())
+    utils.spread_planets(chart.objects.values())
   
 
     asc = chart.objects['Asc'].sign
