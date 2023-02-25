@@ -19,6 +19,7 @@ swe.set_ephe_path('./assets/ephe')
 class Planet:
     def __init__(self, name, position, abs_pos, sign):
         self.name = name
+        self.sign = sign
         self.images = {
             "planet": "{}/planets/{}.png".format("assets/images", name),
             "sign": "{}/signs/{}.png".format("assets/images", sign)
@@ -29,6 +30,25 @@ class Planet:
     def __str__(self):
         # for debugging
         return "{}; abs_pos: {:.2f}".format(self.name, self.abs_pos)
+
+class Natal_Chart:
+    required_objects = frozenset([
+        "Sun", "Moon", "Venus", "Mars",
+        "Jupiter", "Saturn", "Uranus", "Neptune",
+        "Pluto", "North Node", "Chiron",
+        "Asc", "Mc"
+    ])
+    def __init__(self, planets, jd=None):
+        self.objects = {}
+        for p in planets:
+            self.objects[p.name] = p
+        s1 = set(self.objects.keys())
+        if s1 != self.required_objects:
+            raise Exception(
+                'Planets/Objects missing:',
+                required_objects - s1 
+            )
+        self.jd = jd
 
 def generate(dt, geo, local=False):
     # TODO: elaborate on format of input
@@ -51,9 +71,6 @@ def generate(dt, geo, local=False):
     _, ascmc = swe.houses(jd, geo[0], geo[1], bytes('W', 'utf-8'))
     asc = constants.SIGNS[int(ascmc[0] // 30)]
 
-    # set background image
-    bg_im = set_background(asc, load_image)
-    
     # create planet object/layer list
     planets = []
     for name, no_body in constants.PLANET_NAMES.items():
@@ -70,14 +87,23 @@ def generate(dt, geo, local=False):
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
+    chart = Natal_Chart(planets, jd)
+    return _generate(chart, load_image)
+
+def _generate(chart, load_image):
     # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
-    utils.spread_planets(planets)
-   
+    #utils.spread_planets(chart.objects.values())
+  
+
+    asc = chart.objects['Asc'].sign
+    # set background image
+    bg_im = set_background(asc, load_image)
+    
     # allows for writing text on image
     draw = ImageDraw.Draw(bg_im)
     font = ImageFont.truetype("assets/Inter-Medium.ttf", image_params.TEXT_SIZE)
 
-    for p in planets:
+    for p in chart.objects.values():
         im = Image.open(p.images['planet'])#.convert('RGBa')
         # add planet
         add_object(

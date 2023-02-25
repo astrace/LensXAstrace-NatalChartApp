@@ -2,7 +2,8 @@
 # background image height/width in order to
 # minimize "degrees of freedom"
 
-# distance of objects (planet, sign, text) from center as % of background image
+# distance of objects (planet, sign, text)
+# from center as % of background image
 PLANET_RADIUS = 0.3
 TEXT_RADIUS = 0.273
 SIGN_RADIUS = 0.25
