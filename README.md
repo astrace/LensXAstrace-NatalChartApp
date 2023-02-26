@@ -14,3 +14,8 @@ Before/After:
 ### TODO
 
 <img src="./assets/Screenshot 2023-02-21 at 12.01.30.png" alt="Image 1" style="width: 30%; display: inline-block;">
+
+## Testing
+
+Testing is mostly manual. Test file `test.py` simply generates random natal charts and displays them. See: `./assets/test_recording.mov` for an example.
+
