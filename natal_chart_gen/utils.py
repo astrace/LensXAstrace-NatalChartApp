@@ -74,7 +74,6 @@ def find_clumps(planets, theta):
         curr_clump = []
         
         for i,p in enumerate(planets):
-            
             if i == 0:
                 # if it's the first planet, add it to current (empty) clump
                 curr_clump.append(p)
@@ -86,8 +85,7 @@ def find_clumps(planets, theta):
             n = 1 + len(curr_clump)
             
             if _clump_check(p1, p2, n):
-                # if it's the first planet, add it to current (empty) clump
-                # or, if it satisfies the clump criteria, add it to the current clump
+                # if it satisfies the clump criteria, add it to the current clump
                 curr_clump.append(p)
             else:
                 clumps.append(curr_clump)
@@ -98,22 +96,28 @@ def find_clumps(planets, theta):
 
     # hard to explain why this needs to be done twice: forward & backwards pass
     # ... there are edge cases where one pass fails
-    clumps1 = _pass(sorted(planets, key=lambda p: p.dpos))
-    clumps2 = _pass(sorted(planets, key=lambda p: p.dpos, reverse=True))
+    print(planets)
+    planets.sort(key=lambda p: p.dpos)
+    # NOTE: We add first planet again to the end in case of clumps near 0/360
+    p0 = planets[0]
+    p0.dpos += 360
+    clumps1 = _pass(planets + [p0])
+    planets.sort(key=lambda p: p.dpos, reverse=True)
+    clumps2 = _pass(planets)
 
-    # check to see if there's a clump near 0 / 360
-    # Note: only needs to be done on first set of clumps
-    if _clump_check(
-            clumps1[0][0].dpos,
-            clumps1[-1][-1].dpos,
-            len(clumps1[0]) + len(clumps1[-1])
-        ):
-        # merge
-        clumps1[0] = clumps1[-1] + clumps1[0]
-        clumps1 = clumps1[:-1]
-    
+    print("CLUMPS1")
+    print_clumps(clumps1)
+    print("CLUMPS2")
+    print_clumps(clumps2)
+
+    # TODO: CHECK FOR CLUMPS NEAR 0/360
+
     clumps = _merge_clumps(clumps1, clumps2)
+    print("MERGED CLUMPS")
+    print_clumps(clumps)
     clumps = _split_clumps_by_sign(clumps) 
+    print("SPLIT BY SIGN")
+    print_clumps(clumps)
     # remove singletons
     clumps = [c for c in clumps if len(c) > 1]
     
@@ -189,6 +193,7 @@ def spread_planets(planets, theta=None, min_to_center=5):
         theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
 
     clumps = find_clumps(planets, theta)
+    print_clumps(clumps)
 
     for clump in clumps:
         assert len(clump) > 1

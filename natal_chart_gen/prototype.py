@@ -48,7 +48,7 @@ class Natal_Chart:
         if s1 != self.required_objects:
             raise Exception(
                 'Planets/Objects missing:',
-                required_objects - s1 
+                self.required_objects - s1 
             )
         self.jd = jd
 
@@ -93,10 +93,7 @@ def generate(dt, geo, local=False):
     return _generate(chart, load_image)
 
 def _generate(chart, load_image):
-    # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
-    utils.spread_planets(chart.objects.values())
-  
-
+    
     asc = chart.objects['Asc'].sign
     # set background image
     bg_im = set_background(asc, load_image)
@@ -104,6 +101,10 @@ def _generate(chart, load_image):
     # allows for writing text on image
     draw = ImageDraw.Draw(bg_im)
     font = ImageFont.truetype("assets/Inter-Medium.ttf", image_params.TEXT_SIZE)
+
+    # custom rendering algos
+    # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
+    utils.spread_planets(list(chart.objects.values()))
 
     for p in chart.objects.values():
         im = Image.open(p.images['planet'])#.convert('RGBa')
