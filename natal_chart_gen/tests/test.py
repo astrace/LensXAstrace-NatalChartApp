@@ -1,3 +1,24 @@
+"""
+Module for generating mock astrological charts with stelliums.
+
+This module defines a function `create_mock_natal_chart` which creates a Natal Chart object
+from a list of planet positions, and a function `test_stelliums` which generates
+random astrological charts with stelliums and displays them.
+
+The `test_stelliums` function generates x random astrological charts with stelliums
+of random size and positions. Each image is annotated with the hash of the stellium,
+which is used to keep track of problem images.
+
+The images are displayed using the `show` method of the `Image` class.
+
+Example usage:
+
+    python test.py
+
+This will generate and display 20 random astrological charts with stelliums.
+
+"""
+
 from PIL import Image, ImageDraw, ImageFont
 import csv
 import os
