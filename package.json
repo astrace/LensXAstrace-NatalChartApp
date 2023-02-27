@@ -9,20 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@ethersproject/bignumber": "^5.7.0",
+    "@mui/icons-material": "^5.11.9",
+    "@mui/material": "^5.11.10",
     "@next/font": "^13.1.6",
     "@react-hook/window-size": "^3.1.1",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/walletlink-connector": "^6.2.14",
+    "autosuggest-highlight": "^3.3.4",
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "ethers": "^6.0.4",
     "next": "13.1.6",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-transition-group": "^4.4.5",
-    "reactjs-popup": "2.0.5"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",

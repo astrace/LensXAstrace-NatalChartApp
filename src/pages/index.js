@@ -5,7 +5,7 @@ import Header from '../components/Header/Header.js';
 import Home from '../components/Home/Home.js';
 import Form from '../components/Form/Form.js';
 import Footer from '../components/Footer/Footer.js';
-import styles from '@/styles/Index.module.css';
+import styles from '../styles/Index.module.css';
 
 export default function Index(props) {
   // TODO: change to enum
