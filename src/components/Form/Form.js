@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useWeb3React } from '@web3-react/core';
-import GoogleMaps from '../GeoAutocomplete.tsx';
+import GoogleMaps from '../GeoAutocomplete/GeoAutocomplete.tsx';
 import Button from '../Buttons/Button.js';
 import styles from './Form.module.css';
 
