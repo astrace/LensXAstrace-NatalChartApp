@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useWeb3React } from '@web3-react/core';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import GoogleMaps from '../GeoAutocomplete/GeoAutocomplete.tsx';
-import CustomDatePicker from '../DatePicker/CustomDatePicker.js';
+import GoogleMaps from './GeoAutocomplete.tsx';
+import CustomDatePicker from './CustomDatePicker.js';
 import Button from '../Buttons/Button.js';
 import styles from './Form.module.css';
 
