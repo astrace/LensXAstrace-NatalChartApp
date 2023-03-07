@@ -5,9 +5,9 @@ import Autocomplete from '@mui/material/Autocomplete';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
+import { styled } from '@mui/material/styles';
 
 // This key was created specifically for the demo in mui.com.
 // You need to create a new one for your application.
@@ -41,18 +41,28 @@ interface PlaceType {
   structured_formatting: StructuredFormatting;
 }
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#ff0000',
+const CssTextField = styled(TextField)({
+  '& label': {
+    color: 'red',
+  },
+  '& label.Mui-focused': {
+    color: 'red',
+  },
+  '& .MuiOutlinedInput-root': {
+    '& fieldset': {
+      border: 'none',
+      borderBottom: '1px solid red',
+      borderRadius: 0
+    },
+    '&:hover fieldset': {
+      border: '1px solid red',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: 'red'
     },
   },
-  typography: {
-    fontFamily: 'Inter',
-    color: 'white'
-  },
-  input: {
-    color: 'white'
+  "& .MuiInputBase-input": {
+    color: "white"
   }
 });
 
@@ -110,9 +120,7 @@ export default function GoogleMaps() {
       setOptions(value ? [value] : []);
       return undefined;
     }
-    console.log('HERE -1');
     fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
-      console.log('HERE');
       if (active) {
         let newOptions: readonly PlaceType[] = [];
         if (value) {
@@ -130,13 +138,13 @@ export default function GoogleMaps() {
   }, [value, inputValue, fetch]);
 
   return (
-    <ThemeProvider theme={theme}>
       <Autocomplete
         id="google-map-demo"
         sx={{
           width: "100%",
-          borderBottom: 1,
-          color: "red"
+          border: "none",
+          color: "red",
+          textColor: "red"
         }}
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : option.description
@@ -156,7 +164,11 @@ export default function GoogleMaps() {
           setInputValue(newInputValue);
         }}
         renderInput={(params) => (
-          <TextField {...params} sx={{ input: { color: 'white' } }} label="City of Birth" fullWidth />
+          <CssTextField
+            {...params}
+            label="City of Birth"
+            fullWidth
+          />
         )}
         renderOption={(props, option) => {
           const matches =
@@ -192,6 +204,5 @@ export default function GoogleMaps() {
           );
         }}
       />
-    </ThemeProvider>
   );
 }
