@@ -3,7 +3,8 @@ import { useWeb3React } from '@web3-react/core';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import GoogleMaps from './GeoAutocomplete.tsx';
-import CustomDatePicker from './CustomDatePicker.js';
+import CustomDateField from './CustomDateField.js';
+import CustomTimeField from './CustomTimeField.js';
 import Button from '../Buttons/Button.js';
 import styles from './Form.module.css';
 
@@ -22,10 +23,8 @@ export default function Form(props) {
       <h1>Launch your Lens astrological profile </h1>
       <form>
         <GoogleMaps />
-        <CustomDatePicker />
-        <div className={styles.inputContainer}>
-          <input type="time" id="time-input" name="time" placeholder="HH:MM AM/PM"/>
-        </div>
+        <CustomDateField />
+        <CustomTimeField />
       </form>
       <Button text="Mint NFT" />
       <p>Mint price: 0.02 ETH</p>
