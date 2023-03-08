@@ -5,10 +5,13 @@ export const CustomTextField = styled(TextField)({
   '& label': {
     color: 'red',
   },
+  '& .MuiInput-underline': {
+    color: 'red',
+  },
   '& label.Mui-focused': {
     color: 'red',
   },
-  '& .MuiOutlinedInput-root': {
+  '& .MuiInput-root': {
     '& fieldset': {
       border: 'none',
       borderBottom: '1px solid red',
@@ -23,5 +26,14 @@ export const CustomTextField = styled(TextField)({
   },
   "& .MuiInputBase-input": {
     color: "white"
-  }
+  },
+  '& .MuiInput-underline': {
+      borderBottom: '1px solid red'
+    },
+'& .MuiInput-underline.Mui-focused:after': {
+      borderBottom: '1px solid red'
+    },
+  '& .MuiInputBase-root::after': {
+    borderBottomColor: 'red',
+  },
 });

@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
-import { styled } from '@mui/material/styles';
+import { renderTextInput } from './renderTextInput.js'
 
 // This key was created specifically for the demo in mui.com.
 // You need to create a new one for your application.
@@ -40,31 +40,6 @@ interface PlaceType {
   description: string;
   structured_formatting: StructuredFormatting;
 }
-
-const CssTextField = styled(TextField)({
-  '& label': {
-    color: 'red',
-  },
-  '& label.Mui-focused': {
-    color: 'red',
-  },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      border: 'none',
-      borderBottom: '1px solid red',
-      borderRadius: 0
-    },
-    '&:hover fieldset': {
-      border: '1px solid red',
-    },
-    '&.Mui-focused fieldset': {
-      borderColor: 'red'
-    },
-  },
-  "& .MuiInputBase-input": {
-    color: "white"
-  }
-});
 
 export default function GoogleMaps() {
   const [value, setValue] = React.useState<PlaceType | null>(null);
@@ -142,9 +117,6 @@ export default function GoogleMaps() {
         id="google-map-demo"
         sx={{
           width: "100%",
-          border: "none",
-          color: "red",
-          textColor: "red"
         }}
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : option.description
@@ -163,13 +135,7 @@ export default function GoogleMaps() {
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);
         }}
-        renderInput={(params) => (
-          <CssTextField
-            {...params}
-            label="City of Birth"
-            fullWidth
-          />
-        )}
+        renderInput={(params) => renderTextInput(params, "City of Birth")}
         renderOption={(props, option) => {
           const matches =
             option.structured_formatting.main_text_matched_substrings || [];

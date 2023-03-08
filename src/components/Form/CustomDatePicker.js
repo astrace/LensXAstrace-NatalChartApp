@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { CustomTextField } from './CustomTextField.js';
+import { renderTextInput } from './renderTextInput.js'
 
 export default function CustomDatePicker(props) {
   const [value, setValue] = useState('');
@@ -9,27 +11,12 @@ export default function CustomDatePicker(props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} >
       <DatePicker
-        disableOpenPicker
-        label="Date of Birth"
         value={value}
         onChange={(newValue) => {
           setValue(newValue);
         }}
-        InputProps={{
-          sx : {
-            "& .MuiSvgIcon-root": {color: "red"}
-          }
-        }}
-        sx={{
-          "& .MuiFormControl-root": {color: "white"}
-        }}
-        renderInput={(params) => (
-          <CustomTextField
-            {...params}
-            label="Date of Birth"
-            fullWidth
-          />
-        )}
+        renderInput={(params) => renderTextInput(params, "Date of Birth")}
+        disableOpenPicker
       />
     </LocalizationProvider>
 )};
