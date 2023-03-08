@@ -34,9 +34,10 @@ export default function CustomDatePicker(props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} >
       <CustomDateField
+        value={props.value}
         label="Date of Birth"
         onChange={(newValue) => {
-          setValue(newValue);
+          props.setValue(newValue);
         }}
         variant="standard"
       />

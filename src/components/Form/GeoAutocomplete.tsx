@@ -27,22 +27,8 @@ function loadScript(src: string, position: HTMLElement | null, id: string) {
 
 const autocompleteService = { current: null };
 
-interface MainTextMatchedSubstrings {
-  offset: number;
-  length: number;
-}
-interface StructuredFormatting {
-  main_text: string;
-  secondary_text: string;
-  main_text_matched_substrings?: readonly MainTextMatchedSubstrings[];
-}
-interface PlaceType {
-  description: string;
-  structured_formatting: StructuredFormatting;
-}
 
-export default function GoogleMaps() {
-  const [value, setValue] = React.useState<PlaceType | null>(null);
+export default function GoogleMaps(props) {
   const [inputValue, setInputValue] = React.useState('');
   const [options, setOptions] = React.useState<readonly PlaceType[]>([]);
   const loaded = React.useRef(false);
@@ -92,14 +78,14 @@ export default function GoogleMaps() {
       return undefined;
     }
     if (inputValue === '') {
-      setOptions(value ? [value] : []);
+      setOptions(props.value ? [props.value] : []);
       return undefined;
     }
     fetch({ input: inputValue }, (results?: readonly PlaceType[]) => {
       if (active) {
         let newOptions: readonly PlaceType[] = [];
-        if (value) {
-          newOptions = [value];
+        if (props.value) {
+          newOptions = [props.value];
         }
         if (results) {
           newOptions = [...newOptions, ...results];
@@ -110,7 +96,7 @@ export default function GoogleMaps() {
     return () => {
       active = false;
     };
-  }, [value, inputValue, fetch]);
+  }, [props.value, inputValue, fetch]);
 
   return (
       <Autocomplete
@@ -126,11 +112,11 @@ export default function GoogleMaps() {
         autoComplete
         includeInputInList
         filterSelectedOptions
-        value={value}
+        value={props.value}
         noOptionsText="No city selected."
         onChange={(event: any, newValue: PlaceType | null) => {
           setOptions(newValue ? [newValue, ...options] : options);
-          setValue(newValue);
+          props.setValue(newValue);
         }}
         onInputChange={(event, newInputValue) => {
           setInputValue(newInputValue);

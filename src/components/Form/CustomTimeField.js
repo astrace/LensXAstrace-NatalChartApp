@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { TimeField } from '@mui/x-date-pickers/TimeField';
-import { renderTextInput } from './renderTextInput.js'
 import { styled } from '@mui/material/styles';
 
 const CssTimeField = styled(TimeField)({
@@ -31,17 +29,14 @@ const CssTimeField = styled(TimeField)({
 });
 
 export default function CustomTimeField(props) {
-  const [value, setValue] = useState('');
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} >
       <CssTimeField
         label="Time of Birth"
-        inputProps={{
-          placeholder: "hellp"
-        }}
+        value={props.value}
         onChange={(newValue) => {
-          setValue(newValue);
+          props.setValue(newValue);
         }}
         variant="standard"
       />
