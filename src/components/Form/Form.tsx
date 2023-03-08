@@ -5,6 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import GoogleMaps from './GeoAutocomplete.tsx';
 import CustomDateField from './CustomDateField.js';
 import CustomTimeField from './CustomTimeField.js';
+import DisabledButton from '../Buttons/DisabledButton.js';
 import Button from '../Buttons/Button.js';
 import styles from './Form.module.css';
 
@@ -36,6 +37,11 @@ export default function Form(props) {
   }, [active])
 
   useEffect(() => {
+    console.log("FORM CHANGED");
+    if (time != null) {
+      console.log("time.error");
+      console.log(time.error);
+    } 
     if (city != null && date != null && time != null) {
       console.log('FORM FILLED');
       console.log(city);
@@ -56,7 +62,10 @@ export default function Form(props) {
         <CustomDateField value={date} setValue={setDate} />
         <CustomTimeField value={time} setValue={setTime} />
       </form>
-      <Button text="Mint Natal Chart" />
+      {formFilled
+        ? <Button text="Mint Natal Chart" />
+        : <DisabledButton text="Mint Natal Chart" />
+      }
       <p>Mint price: 0.02 ETH</p>
     </div>
 )};

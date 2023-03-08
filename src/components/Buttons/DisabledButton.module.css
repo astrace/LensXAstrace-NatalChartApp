@@ -5,40 +5,15 @@
   gap: 5px;
   padding: 14.5px 24px;
 
-  background:
-    radial-gradient(
-      91.54% 254.17% at 43.01% -135.42%,
-      rgba(255, 103, 121, 0.75) 0%,
-      rgba(255, 75, 97, 0.18) 66.67%,
-      rgba(255, 62, 85, 0) 100%
-    ),
-    linear-gradient(
-      120.51deg,
-      rgba(255, 0, 29, 0.14) -33.04%,
-      rgba(252, 0, 27, 0.08) 11.99%,
-      rgba(246, 0, 28, 0.65) 59.37%,
-      rgba(237, 0, 27, 0.21) 127.07%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(4, 1, 22, 0.55) 0%,
-      rgba(4, 1, 22, 0) 75%
-    );
-    background-blend-mode: lighten, hard-light, normal;
-    mix-blend-mode: normal;
-    box-shadow: 0px 6px 15px rgba(255, 0, 15, 0.26);
-    backdrop-filter: blur(35px);
+  background: linear-gradient(180deg, rgba(221, 118, 118, 0.25) 281.59%, rgba(4, 1, 22, 0) 365.62%);
+  mix-blend-mode: normal;
+  backdrop-filter: blur(35px);
 
-    border: 2px solid #f32051;
-    border-radius: 12px;
-    border-image-source:
-      linear-gradient(
-        155.31deg,
-        rgba(255, 255, 255, 0.5) 12.33%,
-        rgba(255, 255, 255, 0) 34.31%,
-        rgba(255, 255, 255, 0) 52.66%,
-        rgba(255, 255, 255, 0.54) 74.67%
-      );
+  border: 1px solid;
+  border-color: #592f46;
+  border-radius: 12px;
+
+  cursor: not-allowed;
 }
 
 .text {
@@ -47,23 +22,6 @@
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
-
-  color: white;
-  text-shadow: 0px 0px 8px #FF000F;
+  color: #9c8e96;
 }
 
-.button:hover {
-  background: radial-gradient(39.68% 97.03% at 100.16% 62.2%, rgba(255, 103, 121, 0.21) 0%, rgba(255, 75, 97, 0.0504) 66.67%, rgba(255, 62, 85, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, radial-gradient(91.54% 254.17% at 43.01% -135.42%, rgba(255, 103, 121, 0.5) 0%, rgba(255, 75, 97, 0.12) 66.67%, rgba(255, 62, 85, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, radial-gradient(146.92% 16.67% at 112.31% -9.38%, rgba(255, 103, 121, 0.5) 0%, rgba(255, 75, 97, 0.12) 66.67%, rgba(255, 62, 85, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, radial-gradient(57.12% 175.77% at 50.05% 3.55%, rgba(255, 103, 121, 0.5) 0%, rgba(255, 62, 85, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, linear-gradient(121.24deg, rgba(255, 0, 29, 0.76) -16.7%, rgba(252, 0, 29, 0.19) 10.44%, rgba(251, 0, 28, 0.07) 29.96%, rgba(246, 0, 28, 0.28) 57.94%, rgba(241, 0, 27, 0.19) 93.38%, rgba(240, 0, 27, 0.13) 102.43%, rgba(237, 0, 27, 0.13) 128.07%), linear-gradient(180deg, rgba(4, 1, 22, 0.55) 0%, rgba(4, 1, 22, 0) 75%);
-  background-blend-mode: hard-light, lighten, lighten, overlay, hard-light, normal;
-  mix-blend-mode: normal;
-  box-shadow: 0px 0px 37px rgba(253, 0, 46, 0.6), 0px 6px 15px rgba(255, 0, 15, 0.26);
-  backdrop-filter: blur(35px);
-
-  box-shadow: 0px 0px 37px rgba(253, 0, 46, 0.6), 0px 6px 15px rgba(255, 0, 15, 0.26);
-
-  border: 2px solid #f32051;
-
-border-image-source: linear-gradient(155.31deg, rgba(255, 255, 255, 0.5) 12.33%, rgba(255, 255, 255, 0) 34.31%, rgba(255, 255, 255, 0) 52.66%, rgba(255, 255, 255, 0.54) 74.67%);
-
-
-}

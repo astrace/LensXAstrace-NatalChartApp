@@ -29,16 +29,8 @@
     box-shadow: 0px 6px 15px rgba(255, 0, 15, 0.26);
     backdrop-filter: blur(35px);
 
-    border: 2px solid #f32051;
+    border: 2px solid #93000a;
     border-radius: 12px;
-    border-image-source:
-      linear-gradient(
-        155.31deg,
-        rgba(255, 255, 255, 0.5) 12.33%,
-        rgba(255, 255, 255, 0) 34.31%,
-        rgba(255, 255, 255, 0) 52.66%,
-        rgba(255, 255, 255, 0.54) 74.67%
-      );
 }
 
 .text {

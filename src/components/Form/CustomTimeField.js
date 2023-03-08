@@ -30,13 +30,27 @@ const CssTimeField = styled(TimeField)({
 
 export default function CustomTimeField(props) {
 
+  const handleChange = function () {
+    props.setValue
+  }
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} >
       <CssTimeField
         label="Time of Birth"
         value={props.value}
         onChange={(newValue) => {
+          console.log("time of birth changed");
           props.setValue(newValue);
+        }}
+        onSelectedSectionsChange={(sections) => {
+          console.log('SECTIONS');
+          console.log(sections);
+          console.log(props.value);
+          console.log(props.value);
+        }}
+        onError={() => {
+          console.log('error');
         }}
         variant="standard"
       />
