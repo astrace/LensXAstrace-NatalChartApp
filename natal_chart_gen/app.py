@@ -7,8 +7,18 @@ from datetime import datetime
 import boto3
 
 from prototype import generate
-
 def lambda_handler(event, context):
+    """Generates an astrological chart image and uploads it to S3, returning a pre-signed URL to access it.
+
+        Args:
+            event (dict): A dictionary containing parameters for generating the chart image, including:
+                - location_string (str): A string representing the location of birth for the person the chart is for.
+                - datetime_string (str): A string representing the date and time of birth for the person the chart is for, in the format 'MM/DD/YY HH:MM:SS'.
+            context: Unused in this function.
+
+        Returns:
+            dict: A dictionary containing a pre-signed URL to access the generated chart image.
+    """
     s3 = boto3.client('s3')
 
     location_str = event["queryStringParameters"]["location_string"]

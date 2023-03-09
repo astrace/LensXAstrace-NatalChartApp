@@ -18,25 +18,20 @@ swe.set_ephe_path('./assets/ephe')
 
 class Planet:
     """
-    A class representing a planet in the solar system.
-
     Attributes:
     - name: A string representing the name of the planet.
-    - sign: A string representing the zodiac sign where the planet is located.
-    - images: A dictionary containing the paths to the planet image and the zodiac sign image.
-    - position: A tuple (x, y) representing the current position of the planet in the sky.
-    - abs_pos: A float representing the absolute position of the planet in the sky, measured in degrees counterclockwise from 0 degree Aries on the ecliptic.
-    - dpos: A float representing the change in position of the planet in the sky, measured in degrees.
+    - sign: A string representing the zodiac sign associated with the planet.
+    - images: A dictionary containing the paths to the planet images and the zodiac sign images.
+    - position: A float (between 0-360 degrees), representing our angle on the plane, measured in degrees
+    - abs_pos: A float representing the absolute angle in the plane, measured in degrees counterclockwise.
+    - dpos: A float representing a (possible) change in abs_pos in the plane, measured in degrees.
 
     Methods:
-    - __str__(): Returns a string representation of the planet object, including the planet name, zodiac sign, and absolute position.
+    - __str__(): Returns a string representation of the planet object.
 
-    Note:
-    - The `images` attribute is a dictionary containing two keys: 'planet' and 'sign', each corresponding to the path to the planet image and the zodiac sign image, respectively.
-    - The `position` attribute is a tuple representing the current x and y coordinates of the planet's position in the sky.
-    - The `abs_pos` attribute is a float representing the absolute position of the planet in the sky, measured in degrees counterclockwise from 0 degree Aries on the ecliptic.
-    - The `dpos` attribute is a float representing the change in position of the planet in the sky, measured in degrees.
-    """
+    Notes: 
+        - By default, dpos = abs_pos on initialization. The spread_planets() function may change dpos to calculate an angle offset, for display purposes.
+            """
 
     def __init__(self, name, position, abs_pos, sign):
         self.name = name
@@ -56,16 +51,11 @@ class Planet:
 
 class Natal_Chart:
     """
-    A class representing a natal chart object.
-    
     Attributes:
     -----------
-    required_objects : frozenset
-        A set of all required planet names.
-    objects : dict
-        A dictionary containing planet names as keys and corresponding Planet objects as values.
-    jd : float or None
-        Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
+        -required_objects: A frozenset of all required planet names.
+        -objects: A dictionary containing planet names as keys and corresponding Planet objects as values.
+        -jd : [???] Julian day integer representing the date and time of the natal chart. If None, it is assumed that the 
         chart is for the current date and time.
     """
     required_objects = frozenset([
@@ -79,11 +69,9 @@ class Natal_Chart:
         """
         Parameters:
         -----------
-        planets : list
-            A list of Planet objects representing the planets in the natal chart.
-        jd : float or None, optional (default=None)
-            Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
-            chart is for the current date and time.
+        planets: A list of Planet objects representing the planets in the natal chart.
+        jd : optional (default=None) Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
+            chart is for the current date and time [???].
         
         Raises:
         -------
@@ -101,7 +89,7 @@ class Natal_Chart:
         self.jd = jd
 
 def generate(dt, geo, local=False):
-    # TODO: elaborate on format of input
+    # TODO: elaborate on format of input [???]
     # datetime has timezone
 
     if local:
@@ -194,6 +182,23 @@ def _generate(chart, load_image):
 #paste_fn(bg_im, obj, x, y)
 
 def set_background(asc, load_image_fn=utils.load_image):
+    """
+    Creates a composite image consisting of a background color, a zodiac wheel, house numbers, and a logo.
+
+    Args:
+        asc (str): The ascendant sign, one of the 12 zodiac signs.
+        load_image_fn (Callable): A function that loads an image file and returns an instance of `PIL.Image.Image`. 
+                                  Default: `utils.load_image`.
+
+    Returns:
+        Image: A composite image containing the background color, the zodiac wheel rotated so that the ascendant is in the first house,
+               the house numbers, and the logo.
+
+    Raises:
+        FileNotFoundError: If any of the required image files (background_color.png, signs2.png, house_numbers.png, astrace_logo.png)
+                            cannot be found in the current directory.
+
+    """
     # TODO: Parameterize filenames and put in `constants.py`
     bg_color = load_image_fn('background_color.png')
     bg_signs = load_image_fn('signs2.png')
@@ -251,8 +256,6 @@ def resize_image(im, bg_size, p):
     return im.resize(new_size, Image.LANCZOS)
 
 def get_coordinates(asc, a, b, r, theta):
-    # get (x,y) location of 0 degree Aries
-
     """
     Calculates the position of a point that is `r` units away from a center point (`a`, `b`) at an angle of `theta` degrees from the point that is located `deg` degrees counterclockwise from 0 degree Aries on the ecliptic.
 
@@ -270,7 +273,7 @@ def get_coordinates(asc, a, b, r, theta):
     - The `asc` argument should be a string representing a zodiac sign, where 0 degree Aries is located. It is used to calculate the starting position of the point on the ecliptic.
     - The function `rotate()` is used to calculate the resulting position after rotation around the center point.
     """
-
+    # get (x,y) location of 0 degree Aries
     deg = -90 - constants.SIGNS.index(asc) * 30
     x = a + r * math.sin(math.radians(deg))
     y = b + r * math.cos(math.radians(deg))
@@ -279,10 +282,6 @@ def get_coordinates(asc, a, b, r, theta):
     return (u, v)
 
 def rotate(a, b, s, t, deg):
-    # -> circle with center (a,b)
-    # return resulting position when rotating `deg`
-    # degrees from starting position (s,t)
-
     """
     Rotates the point (`s`, `t`) around the point (`a`, `b`) by `deg` degrees and returns the resulting position.
 
@@ -296,7 +295,9 @@ def rotate(a, b, s, t, deg):
     Returns:
     A tuple (u, v) representing the resulting position of the rotated point.
     """
-
+    # -> circle with center (a,b)
+    # return resulting position when rotating `deg`
+    # degrees from starting position (s,t)
     cos_theta = math.cos(math.radians(deg))
     sin_theta = math.sin(math.radians(deg))
     u = a + (s - a) * cos_theta + (t - b) * sin_theta
@@ -333,18 +334,23 @@ def add_object(
 
 if __name__ == "__main__":
     tz = pytz.timezone('Europe/London')
+    #tz = pytz.timezone('America/New_York')
+    
+    
     #dt = tz.localize(datetime(1991, 4, 1, hour=17, minute=55))
     # stellium
     #dt = tz.localize(datetime(1962, 2, 4, hour=17, minute=55))
     #dt = tz.localize(datetime(1994, 1, 11, hour=3, minute=33))
     geo = (44.20169, 17.90397)
-
+    #geo = (45.4215, 75.6972)
     """
     Tuesday, January 11 1994, 07:33 AM
     Sarajevo, Bosnia & Herzegovina
     """
     dt = tz.localize(datetime(1994, 1, 11, hour=7, minute=33))
-
+    #dt = tz.localize(datetime(1987,11,8,hour=0,minute=5))
+    
+    # To generate a natal chart, we need a date of birth + time of day (with time-zone), and location on Earth.
     im = generate(dt, geo, local=True)
     im.show()
 
