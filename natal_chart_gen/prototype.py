@@ -31,7 +31,7 @@ class Planet:
 
     Notes: 
         - By default, dpos = abs_pos on initialization. The spread_planets() function may change dpos to calculate an angle offset, for display purposes.
-            """
+    """
 
     def __init__(self, name, position, abs_pos, sign):
         self.name = name
@@ -52,7 +52,6 @@ class Planet:
 class Natal_Chart:
     """
     Attributes:
-    -----------
         -required_objects: A frozenset of all required planet names.
         -objects: A dictionary containing planet names as keys and corresponding Planet objects as values.
         -jd : [???] Julian day integer representing the date and time of the natal chart. If None, it is assumed that the 
@@ -68,14 +67,12 @@ class Natal_Chart:
     def __init__(self, planets, jd=None):
         """
         Parameters:
-        -----------
-        planets: A list of Planet objects representing the planets in the natal chart.
-        jd : optional (default=None) Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
+        - planets: A list of Planet objects representing the planets in the natal chart.
+        - jd : optional (default=None) Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
             chart is for the current date and time [???].
         
         Raises:
-        -------
-        Exception : if any planet/object is missing in the chart
+        - Exception : if any planet/object is missing in the chart
         """
         self.objects = {}
         for p in planets:
@@ -89,7 +86,13 @@ class Natal_Chart:
         self.jd = jd
 
 def generate(dt, geo, local=False):
-    # TODO: elaborate on format of input [???]
+    """
+    This main function gathers all Natal Chart input information, generating a Natal_Chart data object.
+    It then returns _generate() as a thunk. 
+    
+    """
+
+    # TODO: elaborate on format of input
     # datetime has timezone
 
     if local:
@@ -129,7 +132,13 @@ def generate(dt, geo, local=False):
     return _generate(chart, load_image)
 
 def _generate(chart, load_image):
+    """
+     This is a hidden/helper function for the main generate() function.
+
+     The actual building of the image (piecing together background placement, rotation, and object-sign pairs...)
+     is done here. The clumps algorithm is also run from here.
     
+    """
     asc = chart.objects['Asc'].sign
     # set background image
     bg_im = set_background(asc, load_image)
@@ -140,9 +149,13 @@ def _generate(chart, load_image):
 
     # custom rendering algos
     # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
+    #Before we make an image, we need to check for clumps and adjust our calculated chart data objects, accordingly...
     utils.spread_planets(list(chart.objects.values()))
 
     for p in chart.objects.values():
+        """
+        Each planet-text-sign image grouping is constructed here.
+        """
         im = Image.open(p.images['planet'])#.convert('RGBa')
         # add planet
         add_object(

@@ -51,6 +51,7 @@ Formatting of Comments:
     - The "Notes" subsections are usually low information, integrate them into the other sections unless absolutely necessary.
     - The One-Line Summary that ChatGPT generates is often omitted. For example, the purpose of <class Planet> is just obvious from it's name.
     - String placed after the functional signatures, using triple quotes.
+    - Trivial functions don't have Docstrings (example: utils.print_clumps()).
 
 
 

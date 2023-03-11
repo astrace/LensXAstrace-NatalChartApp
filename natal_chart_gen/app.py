@@ -14,15 +14,17 @@ def lambda_handler(event, context):
             event (dict): A dictionary containing parameters for generating the chart image, including:
                 - location_string (str): A string representing the location of birth for the person the chart is for.
                 - datetime_string (str): A string representing the date and time of birth for the person the chart is for, in the format 'MM/DD/YY HH:MM:SS'.
-            context: Unused in this function.
+            context: Currently unused in this function. Placeholder for now.
 
         Returns:
-            dict: A dictionary containing a pre-signed URL to access the generated chart image.
+            responseObject (dict): A dictionary containing 200 status response fields 
+            + data payload (image), to send to server.
     """
     s3 = boto3.client('s3')
 
     location_str = event["queryStringParameters"]["location_string"]
     datetime_str = event["queryStringParameters"]["datetime_string"]
+
     # datetime_str = '09/19/22 13:55:26'
     dt = datetime.strptime(datetime_str, '%m/%d/%y %H:%M:%S')
 

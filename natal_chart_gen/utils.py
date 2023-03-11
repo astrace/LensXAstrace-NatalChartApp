@@ -79,20 +79,6 @@ def write_image_to_s3(im, bucket, key, region_name='us-east-1'):
     object.put(Body=file_stream.getvalue())
 
 def calculate_position(degree):
-    """
-    Calculates the sign and position of a degree in the zodiac.
-
-    Args:
-        degree (int): The degree to calculate the position of, as an integer from 0 to 359.
-
-    Returns:
-        A dictionary containing the sign and position of the input degree, with the following keys:
-            - 'sign' (int): The index of the sign that the degree falls in, as defined in `constants.SIGNS`.
-            - 'position' (float): The position of the degree within its sign, as a float from 0 to 29.999...
-
-    Raises:
-        ValueError: If the input degree is not an integer between 0 and 359, inclusive.
-    """
     return {
         "sign": constants.SIGNS.index(degree // 30),
         "position": degree % 30
@@ -194,12 +180,6 @@ def _merge_clumps(clumps1, clumps2):
     Returns:
         A list of merged integer clusters, where each cluster is represented as a list of integers.
 
-    Note:
-        The input cluster lists are not modified by this function.
-
-    Example:
-        If clumps1 = [[1, 2, 3], [5, 6]] and clumps2 = [[2, 3, 4], [5, 7, 8], [9, 10]],
-        then _merge_clumps(clumps1, clumps2) will return [[1, 2, 3, 4], [5, 6, 7, 8]].
     """
     clumps1 = [c for c in clumps1 if len(c) > 1]
     clumps2 = [c for c in clumps2 if len(c) > 1]
@@ -226,14 +206,6 @@ def _split_clumps_by_sign(clumps):
 
     Note:
         This function is specifically designed for use in the `spread_planets` function.
-
-    Example:
-        If clumps = [[Planet(name='Mercury', degree=14.0, sign='Pisces'), Planet(name='Mars', degree=18.0, sign='Pisces')],
-                     [Planet(name='Venus', degree=5.0, sign='Aries'), Planet(name='Saturn', degree=28.0, sign='Pisces')]],
-        then _split_clumps_by_sign(clumps) will return [[Planet(name='Mercury', degree=14.0, sign='Pisces')],
-                                                         [Planet(name='Mars', degree=18.0, sign='Pisces')],
-                                                         [Planet(name='Venus', degree=5.0, sign='Aries')],
-                                                         [Planet(name='Saturn', degree=28.0, sign='Pisces')]].
     """
     new_clumps = []
     for c in clumps:
