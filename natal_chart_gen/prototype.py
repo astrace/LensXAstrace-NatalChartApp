@@ -183,21 +183,18 @@ def _generate(chart, load_image):
 
 def set_background(asc, load_image_fn=utils.load_image):
     """
-    Creates a composite image consisting of a background color, a zodiac wheel, house numbers, and a logo.
+    Creates a composite image consisting of a Zodiac Sign, House and Logo Layer overlayed together.
 
     Args:
         asc (str): The ascendant sign, one of the 12 zodiac signs.
-        load_image_fn (Callable): A function that loads an image file and returns an instance of `PIL.Image.Image`. 
-                                  Default: `utils.load_image`.
+        load_image_fn (Callable): A function that loads an image file. Default: `utils.load_image`.
 
     Returns:
         Image: A composite image containing the background color, the zodiac wheel rotated so that the ascendant is in the first house,
                the house numbers, and the logo.
 
     Raises:
-        FileNotFoundError: If any of the required image files (background_color.png, signs2.png, house_numbers.png, astrace_logo.png)
-                            cannot be found in the current directory.
-
+        FileNotFoundError: If any of the required image files cannot be found in the current directory.
     """
     # TODO: Parameterize filenames and put in `constants.py`
     bg_color = load_image_fn('background_color.png')

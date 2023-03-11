@@ -27,7 +27,30 @@ Curiously, when python outputs the image, it gets passed to my Pinta program and
 
 #### Code Investigation and Documentation:
 
+We have **four major** files in our Python Backend:
 
+1) **Prototype:** Contains the main method, and outputs a Natal Chart. Contains Planet and Natal Chart objects. generate() and its hidden helper _generate() do the main body of work. Other support functions that perform PIL operations, plane geometry, etc are also placed here.
+
+2) **Utils:** Contains helper functions to upload/download generated charts to Amazon S3 buckets (using the boto library). Contain's Sasa's "clumping" algorithm, that spreads out planet-sign clusters that overfill a particular natal chart house. 
+
+3) **App:** A smaller file contains one function: lambda_handler(). This calls prototype.generate() and then posts the output to the Amazon S3 Bucket. This is essentially middle-ware.
+
+4) **Test:** Our testing file. Just a main method python script. No frameworks currently.
+
+And **two minor** files:
+
+1) Constants: Basic URLS, file names, etc used throughout the application.
+
+2) Image_Params: A file that contains numerical values, to make the generated images look nice.
+
+Formatting of Comments:
+
+- ChatGPT was used to generate strings. The strings were then checked for accuracy, and then trimmed down to take up less space.
+- Some rules to format the strings:
+    - Keep the convention that Chat GPT has used.
+    - The "Notes" subsections are usually low information, integrate them into the other sections unless absolutely necessary.
+    - The One-Line Summary that ChatGPT generates is often omitted. For example, the purpose of <class Planet> is just obvious from it's name.
+    - String placed after the functional signatures, using triple quotes.
 
 
 
