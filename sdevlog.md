@@ -53,9 +53,13 @@ Formatting of Comments:
     - String placed after the functional signatures, using triple quotes.
     - Trivial functions don't have Docstrings (example: utils.print_clumps()).
 
+#### Random Background Feature:
 
+We have *N* possible backgrounds, and wish to randomly select one for one of our natal charts. For simplicity, assume that the probability of choosing any background is equiprobable (so $ \thicksim \tfrac{1}{N}$).
 
+TODO:
 
+1) Make a simple script to use PIL to generate 2203px x 2203px solid colour pngs. Make 8 pngs. Colours: gold, teal, emeraldgreen, skyblue, salmonpink, deepred, sunsetorange, seagreen. Format the backgrounds with the names <color/shade name>.png.
 
 
 
