@@ -11,6 +11,19 @@ import constants
 import image_params
 
 def load_image(filename):
+    """
+    Loads an image from a file located at a URL defined in `constants.py`.
+
+    Args:
+        filename (str): The name of the image file to load.
+
+    Returns:
+        Image: An instance of `PIL.Image.Image` representing the loaded image.
+
+    Raises:
+        requests.exceptions.RequestException: If the HTTP request to download the image fails.
+        OSError: If the image file is not in a recognized format or is otherwise corrupted.
+    """
     url = constants.IMAGES_URL + filename
     print("Loading {} ...".format(url))
     resp = requests.get(url)
@@ -18,6 +31,24 @@ def load_image(filename):
     return im
 
 def read_image_from_s3(bucket, key, region_name='us-east-1'):
+    """
+    Reads an image from an S3 bucket in AWS.
+
+    Args:
+        bucket (str): The name of the S3 bucket containing the image file.
+        key (str): The S3 object key for the image file.
+        region_name (str): The name of the AWS region where the S3 bucket is located. Default: 'us-east-1'.
+
+    Returns:
+        Image: An instance of `PIL.Image.Image` representing the image read from the S3 bucket.
+
+    Raises:
+        botocore.exceptions.NoCredentialsError: If AWS credentials are not found or are invalid.
+        botocore.exceptions.EndpointConnectionError: If a connection to the S3 endpoint cannot be established.
+        botocore.exceptions.ParamValidationError: If the input parameters are invalid.
+        botocore.exceptions.ClientError: If an error occurs on the S3 client side, such as access denied or a missing bucket.
+        OSError: If the image file is not in a recognized format or is otherwise corrupted.
+    """
     print('Reading {} from S3 bucket {} ...'.format(key, bucket))
     s3 = boto3.client('s3')
     file_byte_string = s3.get_object(Bucket=bucket, Key=key)['Body'].read()
@@ -25,6 +56,21 @@ def read_image_from_s3(bucket, key, region_name='us-east-1'):
     return Image.open(BytesIO(file_byte_string))
     
 def write_image_to_s3(im, bucket, key, region_name='us-east-1'):
+    """
+    Writes an image to an S3 bucket in AWS.
+
+    Args:
+        im (Image): An instance of `PIL.Image.Image` representing the image to write.
+        bucket (str): The name of the S3 bucket to write the image to.
+        key (str): The S3 object key to assign to the written image file.
+        region_name (str): The name of the AWS region where the S3 bucket is located. Default: 'us-east-1'.
+
+    Raises:
+        botocore.exceptions.NoCredentialsError: If AWS credentials are not found or are invalid.
+        botocore.exceptions.EndpointConnectionError: If a connection to the S3 endpoint cannot be established.
+        botocore.exceptions.ParamValidationError: If the input parameters are invalid.
+        botocore.exceptions.ClientError: If an error occurs on the S3 client side, such as access denied or a missing bucket.
+    """
     s3 = boto3.resource('s3', region_name)
     bucket = s3.Bucket(bucket)
     object = bucket.Object(key)
@@ -124,6 +170,17 @@ def find_clumps(planets, theta):
     return clumps
 
 def _merge_clumps(clumps1, clumps2):
+    """
+    Merges two lists of integer clusters into a single list of merged clusters.
+
+    Args:
+        clumps1 (List[List[int]]): A list of integer clusters, represented as lists of integers.
+        clumps2 (List[List[int]]): A second list of integer clusters, also represented as lists of integers.
+
+    Returns:
+        A list of merged integer clusters, where each cluster is represented as a list of integers.
+
+    """
     clumps1 = [c for c in clumps1 if len(c) > 1]
     clumps2 = [c for c in clumps2 if len(c) > 1]
     clumps = set() # merged
@@ -138,6 +195,18 @@ def _merge_clumps(clumps1, clumps2):
 
 def _split_clumps_by_sign(clumps):
     # this is needed for proper rendering in `spread_planets`
+    """
+    Splits a list of planet clusters by sign, and returns a new list of clusters.
+
+    Args:
+        clumps (List[List[Planet]]): A list of planet clusters, represented as lists of `Planet` objects.
+
+    Returns:
+        A list of planet clusters, where each cluster is sorted by degree and split into multiple clusters by sign.
+
+    Note:
+        This function is specifically designed for use in the `spread_planets` function.
+    """
     new_clumps = []
     for c in clumps:
         c.sort(key=lambda p: p.dpos)

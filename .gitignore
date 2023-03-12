@@ -134,3 +134,8 @@ dmypy.json
 
 .DS_Store
 cache
+
+#Sean's Dev Log - no need to commit.
+*/sdevlog.md
+#Sean's venv folders
+.astrenv
