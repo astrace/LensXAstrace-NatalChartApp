@@ -45,7 +45,7 @@ def test_stelliums():
         positions += [random.uniform(0, 360) for _ in range(m)]
         return create_mock_natal_chart(positions)
 
-    for _ in range(4):
+    for _ in range(20):
         """
           generate conjunction/stellium with x planets,
           where x is randomly chosen between 2 and number of possible objects.

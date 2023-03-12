@@ -102,8 +102,8 @@ def generate(dt, geo, local=False):
     # datetime has timezone
 
     if local:
-        # for local generation/testing
-        load_image = lambda filename: Image.open("assets/images/" + filename)
+        # for local generation/testing. Old Value for open: "assets/images/"
+        load_image = lambda filename: Image.open(constants.BACKGROUND_FILES + filename)
     else:
         load_image = utils.load_image
 
@@ -213,7 +213,7 @@ def random_asset(asset_dict):
 
     Notes:
         - Currently, we assume that the load_image_fn will be called.
-        This has a hard-coded path to ./assets/images. So all filenames
+        This has a has a path to ./assets/images. So all filenames
         are relative to this!
 
     Error Checking (Later):
@@ -222,9 +222,7 @@ def random_asset(asset_dict):
         - all keys and values are valid strings.
 
     """
-    val = asset_dict[math.ceil(random.uniform(0,len(asset_dict.keys())))]
-    print("Our selected background is:" + val)
-    return val
+    return asset_dict[math.ceil(random.uniform(0,len(asset_dict.keys())))]
 
 #paste_fn(bg_im, obj, x, y)
 def set_background(asc, load_image_fn=utils.load_image):

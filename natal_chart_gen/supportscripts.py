@@ -25,29 +25,18 @@ def gen_solid_color_img(dims,color):
 
 def random_uniform_test():
     """
-        Lets test the uniform function with rounding. Do we get equiprobable
-        selection?
+        Lets test the uniform function with rounding. Do we get an equiprobable selection?
     """
-    n = 8
-    valCount = {
-        1:0,
-        2:0,
-        3:0,
-        4:0,
-        5:0,
-        6:0,
-        7:0,
-        8:0,
+    valCount = { 
+        1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0,
     }
     #Numbers for each bin are fairly close (+/- 1000). Looks OK.
     for _ in range(1000001):
-        valCount[ceil(uniform(0,8))] += 1
+        valCount[ceil(uniform(0,len(valCount.keys())))] += 1
     print(valCount)
-
-
 
 #For now, just call functions you want from here.
 if __name__ == "__main__":
-    for color in color_dict.keys():
-        gen_solid_color_img(bg_dims,color)
-    #random_uniform_test()
+    #for color in color_dict.keys():
+    #    gen_solid_color_img(bg_dims,color)
+    random_uniform_test()

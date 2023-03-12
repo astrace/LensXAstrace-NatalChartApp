@@ -1,8 +1,7 @@
 IMAGES_URL = 'https://d1tswrzvc9aaiy.cloudfront.net/images/'
 
-#Note: BACKGROUND_FILES was not used anywhere. Constant has
-#been modified to accomidate a backgrounds folder.
-BACKGROUND_FILES_PATH = "./assets/images/"
+#Note: BACKGROUND_FILES was not used anywhere. Constant has been modified to accomidate a backgrounds folder.
+BACKGROUND_FILES = "./assets/images/"
 #Actually a dictionary...but importing the Enum module is an extra dependency.
 BACKGROUND_FILES_ENUM = {
     1:"deepred.png",
