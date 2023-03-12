@@ -14,6 +14,8 @@ import constants
 import image_params
 import utils
 
+import random
+
 swe.set_ephe_path('./assets/ephe')
 
 class Planet:
@@ -73,7 +75,7 @@ class Natal_Chart:
         Parameters:
         - planets: A list of Planet objects representing the planets in the natal chart.
         - jd : optional (default=None) Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
-            chart is for the current date and time [???].
+            chart is for the current date and time.
         
         Raises:
         - Exception : if any planet/object is missing in the chart
@@ -198,8 +200,33 @@ def _generate(chart, load_image):
         )
     return bg_im
 
-#paste_fn(bg_im, obj, x, y)
 
+def random_asset(asset_dict):
+    """
+    This function takes a pre-defined asset dictionary, and selects an asset.
+    If there are N assets, we draw from a ~Uniform(N) discrete distribution.
+
+    Args:
+        - asset_dict: A dictionary that maps asset names to asset filenames.
+
+    Returns: An asset filename.
+
+    Notes:
+        - Currently, we assume that the load_image_fn will be called.
+        This has a hard-coded path to ./assets/images. So all filenames
+        are relative to this!
+
+    Error Checking (Later):
+        - is a dictionary
+        - dictionary has at least one item
+        - all keys and values are valid strings.
+
+    """
+    val = asset_dict[math.ceil(random.uniform(0,len(asset_dict.keys())))]
+    print("Our selected background is:" + val)
+    return val
+
+#paste_fn(bg_im, obj, x, y)
 def set_background(asc, load_image_fn=utils.load_image):
     """
     Creates a composite image consisting of a Zodiac Sign, House and Logo Layer overlayed together.
@@ -216,7 +243,8 @@ def set_background(asc, load_image_fn=utils.load_image):
         FileNotFoundError: If any of the required image files cannot be found in the current directory.
     """
     # TODO: Parameterize filenames and put in `constants.py`
-    bg_color = load_image_fn('background_color.png')
+    #bg_color = load_image_fn('background_color.png')
+    bg_color = load_image_fn(random_asset(constants.BACKGROUND_FILES_ENUM))
     bg_signs = load_image_fn('signs2.png')
     bg_houses = load_image_fn('house_numbers.png')
     logo = load_image_fn('astrace_logo.png')
@@ -224,6 +252,8 @@ def set_background(asc, load_image_fn=utils.load_image):
     # rotate zodiac wheel so ascendant is in the first house
     bg_signs = bg_signs.rotate(-30 * constants.SIGNS.index(asc))
     # combine background color with zodiac wheel
+    print(bg_color)
+    print(bg_signs)
     bg_im = Image.alpha_composite(bg_color, bg_signs)
     # remove alpha channel (makes pasting layers simpler)
     bg_im = bg_im.convert("RGB")

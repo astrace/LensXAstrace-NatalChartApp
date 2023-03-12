@@ -1,4 +1,7 @@
 from PIL import Image
+from random import uniform
+from math import ceil
+
 
 asset_img_path = "./assets/images/"
 bg_dims = (2203,2203)
@@ -16,11 +19,35 @@ def gen_solid_color_img(dims,color):
 
         Notes: Code taken from: https://stackoverflow.com/questions/38900511/how-to-create-a-new-color-image-with-python-imaging
     """
-    img = Image.new("RGB", dims, color_dict[color])
+    img = Image.new("RGBA", dims, color_dict[color])
     #img.show()
     img.save(asset_img_path + color + ".png")
+
+def random_uniform_test():
+    """
+        Lets test the uniform function with rounding. Do we get equiprobable
+        selection?
+    """
+    n = 8
+    valCount = {
+        1:0,
+        2:0,
+        3:0,
+        4:0,
+        5:0,
+        6:0,
+        7:0,
+        8:0,
+    }
+    #Numbers for each bin are fairly close (+/- 1000). Looks OK.
+    for _ in range(1000001):
+        valCount[ceil(uniform(0,8))] += 1
+    print(valCount)
+
+
 
 #For now, just call functions you want from here.
 if __name__ == "__main__":
     for color in color_dict.keys():
         gen_solid_color_img(bg_dims,color)
+    #random_uniform_test()

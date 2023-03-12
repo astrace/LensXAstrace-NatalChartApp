@@ -61,11 +61,31 @@ TODO:
 
 1) Make a simple script to use PIL to generate 2203px x 2203px solid colour pngs. Make 8 pngs. Colours: gold, teal, emeraldgreen, skyblue, salmonpink, deepred, sunsetorange, seagreen. Format the backgrounds with the names <color/shade name>.png.
 
+2) Changing the generation code:
 
+- We would like a random background to be selected, when generating our Natal Chart. Where are backgrounds referencedin utils, prototype and other places?
 
+Prototype.py:
+    - _generate()
+    - function def: set_background()
 
+Constants.py:
+    - BACKGROUND_FILE constant
+        - This isn't used in prototype.
+        - Modify it to be BACKGROUND_FILES_PATH
 
+When we run generate(), we are currently loading from a local setup (local=True). We actually have a load_image_fn that is passed through the calls, as a form of polymorphism. This depends on whether we call the image generation locally, or externally.
+- We have to keep the function passing between generate, _generate and set_background(). **This should not be tampered with.**
 
+For the purposes of this code sprint, our load_image function is as follows:
+
+```
+lambda filename: Image.open("assets/images/" + filename) 
+
+```
+**Where do we place the randomization code?** 
+
+We make a separate function that takes a dictionary of values-filenames, and calls a randomization routine. This way, other functions (such as for forelayer selection) can also call this routine.
 
 
 ## References:
