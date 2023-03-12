@@ -22,15 +22,16 @@ class Planet:
     - name: A string representing the name of the planet.
     - sign: A string representing the zodiac sign associated with the planet.
     - images: A dictionary containing the paths to the planet images and the zodiac sign images.
-    - position: A float (between 0-360 degrees), representing our angle on the plane, measured in degrees
-    - abs_pos: A float representing the absolute angle in the plane, measured in degrees counterclockwise.
-    - dpos: A float representing a (possible) change in abs_pos in the plane, measured in degrees.
+    - position: A float between 0 (inclusive) to 30 (exclusive) degrees, representing our angle on the plane.
+    - abs_pos: A float representing the absolute angle in the plane, measured in degrees going counterclockwise.
+    - dpos: Display Position - A float representing a (possible) change in abs_pos in the plane, measured in degrees.
 
     Methods:
     - __str__(): Returns a string representation of the planet object.
 
     Notes: 
-        - By default, dpos = abs_pos on initialization. The spread_planets() function may change dpos to calculate an angle offset, for display purposes.
+        - By default, dpos = abs_pos on initialization. 
+        - The spread_planets() function may change dpos to calculate an angle offset, for display purposes.
     """
 
     def __init__(self, name, position, abs_pos, sign):
@@ -54,8 +55,11 @@ class Natal_Chart:
     Attributes:
         -required_objects: A frozenset of all required planet names.
         -objects: A dictionary containing planet names as keys and corresponding Planet objects as values.
-        -jd : [???] Julian day integer representing the date and time of the natal chart. If None, it is assumed that the 
+        -jd : Julian day integer representing the date and time of the natal chart. If None, it is assumed that the 
         chart is for the current date and time.
+
+    Notes:
+        - The Julian date format is used becasue the swisseph astrolibrary requires it.
     """
     required_objects = frozenset([
         "Sun", "Moon", "Venus", "Mars",
@@ -88,7 +92,7 @@ class Natal_Chart:
 def generate(dt, geo, local=False):
     """
     This main function gathers all Natal Chart input information, generating a Natal_Chart data object.
-    It then returns _generate() as a thunk. 
+    It then returns the output of _generate(), which returns a constructed image.
     
     """
 
@@ -137,6 +141,8 @@ def _generate(chart, load_image):
 
      The actual building of the image (piecing together background placement, rotation, and object-sign pairs...)
      is done here. The clumps algorithm is also run from here.
+
+     Returns a constructed image, built with the PIL library.
     
     """
     asc = chart.objects['Asc'].sign
@@ -270,17 +276,18 @@ def get_coordinates(asc, a, b, r, theta):
     Calculates the position of a point that is `r` units away from a center point (`a`, `b`) at an angle of `theta` degrees from the point that is located `deg` degrees counterclockwise from 0 degree Aries on the ecliptic.
 
     Args:
-    - asc: A string representing the zodiac sign where 0 degree Aries is located.
+    - asc: A string representing the zodiac sign.
     - a: A float representing the x-coordinate of the center point.
     - b: A float representing the y-coordinate of the center point.
     - r: A float representing the distance from the center point to the point of interest.
-    - theta: A float representing the angle between the line connecting the center point and the point of interest and the x-axis.
+    - theta: A float representing the angle from line connecting the center point (a,b), and calculated point (x,y). Used to 
+    rotate (x,y) about (a,b), yielding the point (u,v).
 
     Returns:
     A tuple (u, v) representing the position of the point of interest after being rotated around the center point (`a`, `b`) by an angle `theta` degrees counterclockwise.
 
     Note:
-    - The `asc` argument should be a string representing a zodiac sign, where 0 degree Aries is located. It is used to calculate the starting position of the point on the ecliptic.
+    - The `asc` argument should be a string representing a zodiac sign.
     - The function `rotate()` is used to calculate the resulting position after rotation around the center point.
     """
     # get (x,y) location of 0 degree Aries

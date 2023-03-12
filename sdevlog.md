@@ -73,3 +73,5 @@ Formatting of Comments:
 3) [Activate script doesn't appear in venv/bin?](https://stackoverflow.com/questions/41687841/there-is-no-activate-when-i-am-trying-to-run-my-virtual-env)
 
 4) [Install Python 3.9](https://linuxize.com/post/how-to-install-python-3-9-on-ubuntu-20-04/)
+
+5) [Upload New Branch to Remote](https://stackoverflow.com/questions/2765421/how-do-i-push-a-new-local-branch-to-a-remote-git-repository-and-track-it-too)
