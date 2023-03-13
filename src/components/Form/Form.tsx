@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useWeb3React } from '@web3-react/core';
 import TextField from '@mui/material/TextField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import GoogleMaps from './GeoAutocomplete.tsx';
+import GoogleMaps from './GeoAutocomplete';
 import CustomDateField from './CustomDateField.js';
 import CustomTimeField from './CustomTimeField.js';
 import DisabledButton from '../Buttons/DisabledButton.js';
