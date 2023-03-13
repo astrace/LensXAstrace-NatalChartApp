@@ -57,7 +57,7 @@ export default function Header(props) {
   }
 
   return (
-    <header className={styles.header}>
+    <header className={styles.header} style={{'justify-content': ConnButton() == null ? 'center': 'space-between'}}>
       <div className={styles["header-logo"]}>
         {isMobile? (
           <Image
