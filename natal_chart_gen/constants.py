@@ -1,9 +1,9 @@
 IMAGES_URL = 'https://d1tswrzvc9aaiy.cloudfront.net/images/'
 
-#Note: BACKGROUND_FILES was not used anywhere. Constant has been modified to accomidate a backgrounds folder.
-BACKGROUND_FILES = "./assets/images/"
+BG_IMG_DIR = "./assets/images/"
+
 #Actually a dictionary...but importing the Enum module is an extra dependency.
-BACKGROUND_FILES_ENUM = {
+BG_IMG_FILES = {
     1:"deepred.png",
     2:"emeraldgreen.png",
     3:"gold.png",
@@ -13,6 +13,22 @@ BACKGROUND_FILES_ENUM = {
     7:"teal.png",
     8:"violet.png",
 }
+
+BG_IMG_FILES2 = {
+    "Natal_NFT_BGs-1.png":0.098,
+    "Natal_NFT_BGs-2.png":0.098,
+    "Natal_NFT_BGs-3.png":0.098,
+    "Natal_NFT_BGs-4.png":0.098,
+    "Natal_NFT_BGs-5.png":0.098,
+    "Natal_NFT_BGs-6.png":0.098,
+    "Natal_NFT_BGs-7.png":0.098,
+    "Natal_NFT_BGs-8.png":0.098,
+    "Natal_NFT_BGs-9.png":0.098,
+    "Natal_NFT_BGs-10.png":0.098,
+    "Natal_NFT_BGs-Rare_Red.png":0.02,
+    "Natal_NFT_BGs-Rare_Black.png":0.01,
+}
+
 
 SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
 

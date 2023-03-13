@@ -15,6 +15,7 @@ import image_params
 import utils
 
 import random
+from sys import exit
 
 swe.set_ephe_path('./assets/ephe')
 
@@ -103,7 +104,7 @@ def generate(dt, geo, local=False):
 
     if local:
         # for local generation/testing. Old Value for open: "assets/images/"
-        load_image = lambda filename: Image.open(constants.BACKGROUND_FILES + filename)
+        load_image = lambda filename: Image.open(constants.BG_IMG_DIR + filename)
     else:
         load_image = utils.load_image
 
@@ -224,6 +225,43 @@ def random_asset(asset_dict):
     """
     return asset_dict[math.ceil(random.uniform(0,len(asset_dict.keys())))]
 
+def random_asset2(asset_dict):
+    #first, check to see that the dictionary values() normalize to 1.
+    try:
+        psum = 0
+        for prob in asset_dict.values():
+            psum += prob
+        #This check is written this way, to deal with the possibility 
+        # of small round-off errors (machine arithmetic or human error).
+        if (psum < 0.9999 or psum > 1.0001):
+            raise Exception("Error: Asset dictionary probabilities not normalized. Aborting.")
+    except Exception as e:
+        print(e)
+        exit(2)
+
+    """
+        If we get here, then our dictionary was normalized OK. We may proceed.
+
+        We treat our discrete probabilities as domains in the [0,1] continuum
+        In theory, it does not matter how the domains are arranged. So we just traverse the list in the order they appear.
+        
+        Note that this solution is imperatively programmed. We could import numpy/scipy, or build lots of constructs. This 
+        solution is not elegant, but it relatively terse+efficient and does the job.
+    """
+
+    #Note: As per:https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order
+    #we can assume that keys() and values() will always return in the same order (the order of definition or insertion),
+    #assuming our dictionary is never altered. As it is predefined, this cannot change.
+    rand_num = random.uniform(0,1)
+    chosen_item = ""
+    for item in asset_dict.keys():
+        prob = asset_dict[item]
+        rand_num -= prob
+        if (rand_num <= 0):
+            chosen_item=item
+            break
+    return chosen_item
+
 #paste_fn(bg_im, obj, x, y)
 def set_background(asc, load_image_fn=utils.load_image):
     """
@@ -242,7 +280,7 @@ def set_background(asc, load_image_fn=utils.load_image):
     """
     # TODO: Parameterize filenames and put in `constants.py`
     #bg_color = load_image_fn('background_color.png')
-    bg_color = load_image_fn(random_asset(constants.BACKGROUND_FILES_ENUM))
+    bg_color = load_image_fn("backgrounds/" + random_asset2(constants.BG_IMG_FILES2))
     bg_signs = load_image_fn('signs2.png')
     bg_houses = load_image_fn('house_numbers.png')
     logo = load_image_fn('astrace_logo.png')
