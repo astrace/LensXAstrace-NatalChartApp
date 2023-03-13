@@ -49,9 +49,7 @@ export default function Index(props) {
   // connect on page load if already connected previously
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
-        console.log("attempting to connect on page load");
       if (localStorage?.getItem('isBrowserWalletConnected') === 'true') {
-        console.log("HERE");
         try {
           await handleConnect();
         } catch (ex) {
@@ -64,8 +62,6 @@ export default function Index(props) {
 
   // if we disconnect while on this page, save that info
   useEffect(() => {
-    console.log("active status changed");
-    console.log(active);
     if (!active) {
       localStorage.setItem('isBrowserWalletConnected', false);
     }

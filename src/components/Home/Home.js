@@ -13,10 +13,15 @@ import wallet_connect_icon from '../../icons/wallet_connect.svg';
 export default function Home(props) {
   const [showModal, setShowModal] = useState(false);
   const { active, chainId, library } = useWeb3React();
- 
+
+  // weird edge case:
+  //  if we disconnect manually via browser wallet,
+  //  we want to assure modal doesn't reopen.
+  useEffect(() => {
+    if (!active) { setShowModal(false); }
+  }, [active])
+
   function ConnButton() {
-    console.log("Connection Button function");
-    console.log(active, chainId);
     if (!active) {
       // Case: Wallet is not connected
       // Display: "Connect Wallet" button & render modal when clicked 

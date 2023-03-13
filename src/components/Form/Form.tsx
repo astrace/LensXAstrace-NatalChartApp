@@ -37,16 +37,10 @@ export default function Form(props) {
   }, [active])
 
   useEffect(() => {
-    console.log("FORM CHANGED");
     if (time != null) {
-      console.log("time.error");
       console.log(time.error);
     } 
     if (city != null && date != null && time != null) {
-      console.log('FORM FILLED');
-      console.log(city);
-      console.log(date);
-      console.log(time);
       setFormFilled(true);
     } else {
       setFormFilled(false);
