@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import Image from 'next/image';
 import Button from '../Buttons/Button.js';
 import ConnectWalletButton from '../Buttons/ConnectWalletButton.js';
+import Image from 'next/image';
+import React, { useState, useEffect, useRef } from 'react';
+import WalletConnection from '../../enums/WalletConnection.tsx';
 import styles from './Header.module.css'
-import {useWindowWidth} from '@react-hook/window-size'
+import { switch2Polygon} from '../../utils/networkConnect.js';
+import { useWeb3React } from '@web3-react/core';
+import { useWindowWidth } from '@react-hook/window-size'
 
 const POLYGON_CHAIN_ID = 137;
 
@@ -15,7 +17,8 @@ function shortenAddr(addr) {
 export default function Header(props) {
   /* We use a different logo in the header when viewport is small */
   const [isMobile, setIsMobile] = useState(false);
-  const { active, account } = useWeb3React();
+  const { active, account, chainId } = useWeb3React();
+  const { showButton, setShowButton } = useState(false);
 
   // see: https://blog.sethcorker.com/question/how-to-solve-referenceerror-next-js-window-is-not-defined/
   useEffect(() => {
@@ -33,19 +36,25 @@ export default function Header(props) {
     };
   }, []);
 
-  // logic is a bit complicated; see `wallet connection flowchart.pdf` in repo
-  var button = null;
-  if (active) {
-    if (window.ethereum.networkVersion != POLYGON_CHAIN_ID) {
-      button = <Button text={shortenAddr(account)} />;
-    } else if (props.whichPage == "form") {
-      button = <Button text="Switch Network" />;
+  function ConnButton() {
+    if (props.page == "home") {
+      // only show address if connected to Polygon network
+      if (active && chainId == 137) {
+        return <Button text={shortenAddr(account)} />
+      }
+    } else {
+      // form page
+      if (!active) {
+        return <Button text="Connect" onClick={props.connect} />
+      } else {
+        if (chainId == 137) {
+          return <Button text={shortenAddr(account)} />
+        } else {
+          return <Button text="Switch Network" onClick={switch2Polygon(library)} />
+        }
+      }
     }
   }
-
-  
-  // some header styling is conditional on whether address is displayed or not
-  //var conditional_styling = { "justify-content": (props.button != null)? "space-between" : "center" };
 
   return (
     <header className={styles.header}>
@@ -64,8 +73,7 @@ export default function Header(props) {
           />
         )}
       </div>
-      {(active && window.ethereum.networkVersion == POLYGON_CHAIN_ID) && <Button text={shortenAddr(account)} />}
-      {(active && props.whichPage == "form") && <Button text="Switch Network" />}
+    <ConnButton />
     </header>
   )
 }

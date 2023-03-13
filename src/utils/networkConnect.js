@@ -5,6 +5,7 @@ const switch2Polygon = async (library) => {
       params: [{ chainId: "0x89" }], // hex of 137, polygon mainnet
     });
   } catch (switchError) {
+    console.log(switchError);
     // 4902 error code indicates the chain is missing on the wallet
     if (switchError.code === 4902) {
       try {

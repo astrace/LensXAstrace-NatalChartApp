@@ -2,7 +2,6 @@
   position: fixed;
   display: flex;
   /* see conditional in-line styling for 'justify-content' */
-  justify-content: space-between;
   align-items: center;
   width: inherit;
   height: 70px;
