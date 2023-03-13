@@ -49,7 +49,7 @@ export default function Index(props) {
   // connect on page load if already connected previously
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
-      if (localStorage?.getItem('isBrowserWalletConnected') === 'true') {
+      if (localStorage?.getItem('isBrowserWalletConnected') === true) {
         try {
           await handleConnect();
         } catch (ex) {
