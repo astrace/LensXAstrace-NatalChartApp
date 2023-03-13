@@ -2,7 +2,7 @@ import Button from '../Buttons/Button.js';
 import ConnectWalletButton from '../Buttons/ConnectWalletButton.js';
 import Image from 'next/image';
 import React, { useState, useEffect, useRef } from 'react';
-import WalletConnection from '../../enums/WalletConnection.tsx';
+import WalletConnection from '../../enums/WalletConnection';
 import styles from './Header.module.css'
 import { switch2Polygon} from '../../utils/networkConnect.js';
 import { useWeb3React } from '@web3-react/core';

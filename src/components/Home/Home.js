@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { switch2Polygon} from '../../utils/networkConnect.js';
-import WalletConnection from '../../enums/WalletConnection.tsx';
+import WalletConnection from '../../enums/WalletConnection';
 import Button from '../Buttons/Button.js';
 import Modal from '../Modal/Modal.js';
 import styles from './Home.module.css'

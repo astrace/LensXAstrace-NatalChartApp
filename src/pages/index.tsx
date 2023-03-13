@@ -1,12 +1,12 @@
 import React, { useState,  useCallback, useEffect } from "react";
 import { useWeb3React } from '@web3-react/core';
 import { InjectedConnector } from '@web3-react/injected-connector';
-import WalletConnection from '../enums/WalletConnection.tsx';
+import WalletConnection from '../enums/WalletConnection';
 import Head from 'next/head';
 import Background from '../components/Background/Background.js';
 import Header from '../components/Header/Header.js';
 import Home from '../components/Home/Home.js';
-import Form from '../components/Form/Form.tsx';
+import Form from '../components/Form/Form';
 import Footer from '../components/Footer/Footer.js';
 import styles from '../styles/Index.module.css';
 
