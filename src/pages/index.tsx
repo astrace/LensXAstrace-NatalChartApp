@@ -40,7 +40,7 @@ export default function Index(props) {
       await activate(injected);
       // let { provider } = await connector.activate();
       // web3 = new Web3(provider); 
-      localStorage.setItem('isBrowserWalletConnected', true);
+      localStorage.setItem('isBrowserWalletConnected', 'true');
     } catch (ex) {
       console.log(ex);
     }
@@ -49,7 +49,7 @@ export default function Index(props) {
   // connect on page load if already connected previously
   useEffect(() => {
     const connectWalletOnPageLoad = async () => {
-      if (localStorage?.getItem('isBrowserWalletConnected') === true) {
+      if (localStorage?.getItem('isBrowserWalletConnected') == 'true') {
         try {
           await handleConnect();
         } catch (ex) {
@@ -63,7 +63,7 @@ export default function Index(props) {
   // if we disconnect while on this page, save that info
   useEffect(() => {
     if (!active) {
-      localStorage.setItem('isBrowserWalletConnected', false);
+      localStorage.setItem('isBrowserWalletConnected', 'false');
     }
   }, [active])
 
