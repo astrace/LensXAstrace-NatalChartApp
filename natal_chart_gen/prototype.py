@@ -14,7 +14,7 @@ import constants
 import image_params
 import utils
 
-import random
+from random import uniform
 from sys import exit
 
 swe.set_ephe_path('./assets/ephe')
@@ -204,28 +204,24 @@ def _generate(chart, load_image):
 
 def random_asset(asset_dict):
     """
-    This function takes a pre-defined asset dictionary, and selects an asset.
-    If there are N assets, we draw from a ~Uniform(N) discrete distribution.
+        A helper function that selects a random asset filename, given a probability dictionary.
 
-    Args:
-        - asset_dict: A dictionary that maps asset names to asset filenames.
+        Args:
+            - asset_dict: A dictionary that has asset filenames for keys, mapping to probability values
 
-    Returns: An asset filename.
+        Returns:
+            - asset_name: A string name that was chosen from the dictionary.
 
-    Notes:
-        - Currently, we assume that the load_image_fn will be called.
-        This has a has a path to ./assets/images. So all filenames
-        are relative to this!
-
-    Error Checking (Later):
-        - is a dictionary
-        - dictionary has at least one item
-        - all keys and values are valid strings.
-
+        Exceptions:
+            - Exception: Generic exception thrown if probabilities of dictionary are not normalized. Will call sys.exit(2) if detected.
+            
+        Notes:
+            - This code assumes that dict.keys() and dict.values() always returns the same values in the same order.
+            if the dictionary is finalized, this should always be true for python 3.6+. See:
+            https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order
+            - Users must take care to normalize their probability dictionaries. So the sum of all probs = 1.
     """
-    return asset_dict[math.ceil(random.uniform(0,len(asset_dict.keys())))]
 
-def random_asset2(asset_dict):
     #first, check to see that the dictionary values() normalize to 1.
     try:
         psum = 0
@@ -238,26 +234,15 @@ def random_asset2(asset_dict):
     except Exception as e:
         print(e)
         exit(2)
-
-    """
-        If we get here, then our dictionary was normalized OK. We may proceed.
-
-        We treat our discrete probabilities as domains in the [0,1] continuum
-        In theory, it does not matter how the domains are arranged. So we just traverse the list in the order they appear.
-        
-        Note that this solution is imperatively programmed. We could import numpy/scipy, or build lots of constructs. This 
-        solution is not elegant, but it relatively terse+efficient and does the job.
-    """
-
-    #Note: As per:https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order
-    #we can assume that keys() and values() will always return in the same order (the order of definition or insertion),
-    #assuming our dictionary is never altered. As it is predefined, this cannot change.
-    rand_num = random.uniform(0,1)
+    # If we get here, then our dictionary was normalized OK. We may proceed.
+    #Let each probability be a small interval on (0,1). We randomly select from ~Uni(0,1), and
+    #subtract off interval lengths until we "land" in a particular interval zone. We just use the order of the dict keys, conviniently...
+    rand_num = uniform(0,1)
     chosen_item = ""
     for item in asset_dict.keys():
         prob = asset_dict[item]
         rand_num -= prob
-        if (rand_num <= 0):
+        if (rand_num <= 0): #Landed in a zone. Choose the item associated with this zone!
             chosen_item=item
             break
     return chosen_item
@@ -280,7 +265,7 @@ def set_background(asc, load_image_fn=utils.load_image):
     """
     # TODO: Parameterize filenames and put in `constants.py`
     #bg_color = load_image_fn('background_color.png')
-    bg_color = load_image_fn("backgrounds/" + random_asset2(constants.BG_IMG_FILES2))
+    bg_color = load_image_fn("backgrounds/" + random_asset(constants.BG_IMG_FILES))
     bg_signs = load_image_fn('signs2.png')
     bg_houses = load_image_fn('house_numbers.png')
     logo = load_image_fn('astrace_logo.png')

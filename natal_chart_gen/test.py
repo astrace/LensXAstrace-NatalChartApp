@@ -2,8 +2,8 @@ from PIL import Image
 import random
 random.seed(111)
 
-from prototype import Planet, Natal_Chart, _generate, random_asset2
-from constants import PLANET_NAMES, SIGNS, BG_IMG_FILES2
+from prototype import Planet, Natal_Chart, _generate, random_asset
+from constants import PLANET_NAMES, SIGNS, BG_IMG_FILES
 
 
 def create_mock_natal_chart(positions):
@@ -63,16 +63,16 @@ def test_random_asset():
         The purpose here is to ensure that our share of trials for each item matches our probabilities.
     """
     binning_dict = {}
-    for name in BG_IMG_FILES2.keys():
+    for name in BG_IMG_FILES.keys():
         binning_dict[name] = 0
     
     print(binning_dict)
 
     for _ in range(2000001):
-       binning_dict[random_asset2(BG_IMG_FILES2)] += 1
+       binning_dict[random_asset(BG_IMG_FILES)] += 1
 
     #Normalize our binning dict, converting to decimal values.
-    for item in BG_IMG_FILES2.keys():
+    for item in BG_IMG_FILES.keys():
         binning_dict[item] /= 2000000
     print(binning_dict)
 

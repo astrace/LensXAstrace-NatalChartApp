@@ -88,6 +88,15 @@ lambda filename: Image.open("assets/images/" + filename)
 We make a separate function that takes a dictionary of values-filenames, and calls a randomization routine. This way, other functions (such as for forelayer selection) can also call this routine.
 
 
+#### Revisions to randomization codes:
+
+- Our dictionary has been modified to have filename:probability pairs.
+- We treat our discrete probabilities as domains in the [0,1] continuum In theory, it does not matter how the domains are arranged. So we just traverse the list in the order they appear.
+- Note that this solution is imperatively programmed. We could import numpy/scipy, or build lots of constructs. This solution is not elegant, but it relatively terse+efficient and does the job.
+
+- Note: As per:https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order we can assume that keys() and values() will always return in the same order (the order of definition or insertion), assuming our dictionary is never altered. As it is predefined, this cannot change.
+
+
 ## References:
 
 1) [Staring venv in VS Code (Linux)](https://www.pythonguis.com/tutorials/getting-started-vs-code-python/#:~:text=To%20use%20a%20virtual%20environment,selecting%20%3E%20Python%3A%20Select%20Interpreter%20.)

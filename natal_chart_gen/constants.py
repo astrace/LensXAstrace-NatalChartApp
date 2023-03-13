@@ -2,19 +2,7 @@ IMAGES_URL = 'https://d1tswrzvc9aaiy.cloudfront.net/images/'
 
 BG_IMG_DIR = "./assets/images/"
 
-#Actually a dictionary...but importing the Enum module is an extra dependency.
 BG_IMG_FILES = {
-    1:"deepred.png",
-    2:"emeraldgreen.png",
-    3:"gold.png",
-    4:"salmonpink.png",
-    5:"skyblue.png",
-    6:"sunsetorange.png",
-    7:"teal.png",
-    8:"violet.png",
-}
-
-BG_IMG_FILES2 = {
     "Natal_NFT_BGs-1.png":0.098,
     "Natal_NFT_BGs-2.png":0.098,
     "Natal_NFT_BGs-3.png":0.098,
@@ -25,7 +13,7 @@ BG_IMG_FILES2 = {
     "Natal_NFT_BGs-8.png":0.098,
     "Natal_NFT_BGs-9.png":0.098,
     "Natal_NFT_BGs-10.png":0.098,
-    "Natal_NFT_BGs-Rare_Red.png":0.02,
+    "Natal_NFT_BGs-Rare_Red.png":0.01,
     "Natal_NFT_BGs-Rare_Black.png":0.01,
 }
 
