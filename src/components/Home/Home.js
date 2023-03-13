@@ -31,8 +31,8 @@ export default function Home(props) {
           <Modal
             title="Connect Wallet"
             buttons={[
-              <Button onClick={props.connect} text="Browser Wallet" src={ethereum_icon}  />,
-              <Button text="WalletConnect" src={wallet_connect_icon} />
+              <Button key="browser-wallet" onClick={props.connect} text="Browser Wallet" src={ethereum_icon}  />,
+              <Button key="wallet-connect" text="WalletConnect" src={wallet_connect_icon} />
             ]}
             onClose={() => setShowModal(false) }
             show={showModal}
