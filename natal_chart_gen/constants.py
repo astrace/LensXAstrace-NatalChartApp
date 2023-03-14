@@ -1,6 +1,7 @@
 IMAGES_URL = 'https://d1tswrzvc9aaiy.cloudfront.net/images/'
 
-BG_IMG_DIR = "./assets/images/"
+IMG_DIR = "./assets/images"
+BG_IMG_DIR = "backgrounds"
 
 BG_IMG_FILES = {
     "Natal_NFT_BGs-1.png":0.098,

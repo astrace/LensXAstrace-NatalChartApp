@@ -1,21 +1,19 @@
 from datetime import datetime, timezone
+from io import BytesIO
+from random import uniform
+from sys import exit
 import math
 import multiprocessing
 import os
-from io import BytesIO
 
 from PIL import Image, ImageFont, ImageDraw
 from lambda_multiprocessing import Pool
-#from kerykeion import KrInstance
 import pytz
 import swisseph as swe
 
 import constants
 import image_params
 import utils
-
-from random import uniform
-from sys import exit
 
 swe.set_ephe_path('./assets/ephe')
 
@@ -104,7 +102,7 @@ def generate(dt, geo, local=False):
 
     if local:
         # for local generation/testing. Old Value for open: "assets/images/"
-        load_image = lambda filename: Image.open(constants.BG_IMG_DIR + filename)
+        load_image = lambda filename: Image.open(os.path.join(constants.IMG_DIR, filename))
     else:
         load_image = utils.load_image
 
@@ -136,9 +134,9 @@ def generate(dt, geo, local=False):
         planets.append(p)
 
     chart = Natal_Chart(planets, jd)
-    return _generate(chart, load_image)
+    return _generate(chart, load_image, bg_file)
 
-def _generate(chart, load_image):
+def _generate(chart, load_image, bg_file=None):
     """
      This is a hidden/helper function for the main generate() function.
 
@@ -148,9 +146,12 @@ def _generate(chart, load_image):
      Returns a constructed image, built with the PIL library.
     
     """
+    if not bg_file:
+        bg_file = random_asset(constants.BG_IMG_FILES)
+
     asc = chart.objects['Asc'].sign
     # set background image
-    bg_im = set_background(asc, load_image)
+    bg_im = set_background(asc, bg_file, load_image)
     
     # allows for writing text on image
     draw = ImageDraw.Draw(bg_im)
@@ -248,13 +249,14 @@ def random_asset(asset_dict):
     return chosen_item
 
 #paste_fn(bg_im, obj, x, y)
-def set_background(asc, load_image_fn=utils.load_image):
+def set_background(asc, bg_file, load_image_fn=utils.load_image):
     """
     Creates a composite image consisting of a Zodiac Sign, House and Logo Layer overlayed together.
 
     Args:
         asc (str): The ascendant sign, one of the 12 zodiac signs.
         load_image_fn (Callable): A function that loads an image file. Default: `utils.load_image`.
+        bg_file (str): The filename of the background image
 
     Returns:
         Image: A composite image containing the background color, the zodiac wheel rotated so that the ascendant is in the first house,
@@ -265,7 +267,7 @@ def set_background(asc, load_image_fn=utils.load_image):
     """
     # TODO: Parameterize filenames and put in `constants.py`
     #bg_color = load_image_fn('background_color.png')
-    bg_color = load_image_fn("backgrounds/" + random_asset(constants.BG_IMG_FILES))
+    bg_color = load_image_fn(os.path.join(constants.BG_IMG_DIR, bg_file))
     bg_signs = load_image_fn('signs2.png')
     bg_houses = load_image_fn('house_numbers.png')
     logo = load_image_fn('astrace_logo.png')
@@ -273,8 +275,6 @@ def set_background(asc, load_image_fn=utils.load_image):
     # rotate zodiac wheel so ascendant is in the first house
     bg_signs = bg_signs.rotate(-30 * constants.SIGNS.index(asc))
     # combine background color with zodiac wheel
-    print(bg_color)
-    print(bg_signs)
     bg_im = Image.alpha_composite(bg_color, bg_signs)
     # remove alpha channel (makes pasting layers simpler)
     bg_im = bg_im.convert("RGB")
