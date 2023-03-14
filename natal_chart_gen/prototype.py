@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from io import BytesIO
 from random import uniform
 from sys import exit
+from numpy.random import choice
 import math
 import multiprocessing
 import os
@@ -133,6 +134,7 @@ def generate(dt, geo, local=False):
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
+    bg_file=None
     chart = Natal_Chart(planets, jd)
     return _generate(chart, load_image, bg_file)
 
@@ -224,21 +226,19 @@ def random_asset(asset_dict):
     """
 
     #first, check to see that the dictionary values() normalize to 1.
-    try:
-        psum = 0
-        for prob in asset_dict.values():
-            psum += prob
+    """try:
+        psum = sum(asset_dict.values())
         #This check is written this way, to deal with the possibility 
         # of small round-off errors (machine arithmetic or human error).
         if (psum < 0.9999 or psum > 1.0001):
             raise Exception("Error: Asset dictionary probabilities not normalized. Aborting.")
     except Exception as e:
         print(e)
-        exit(2)
+        exit(2) """
     # If we get here, then our dictionary was normalized OK. We may proceed.
     #Let each probability be a small interval on (0,1). We randomly select from ~Uni(0,1), and
     #subtract off interval lengths until we "land" in a particular interval zone. We just use the order of the dict keys, conviniently...
-    rand_num = uniform(0,1)
+    """rand_num = uniform(0,1)
     chosen_item = ""
     for item in asset_dict.keys():
         prob = asset_dict[item]
@@ -246,7 +246,10 @@ def random_asset(asset_dict):
         if (rand_num <= 0): #Landed in a zone. Choose the item associated with this zone!
             chosen_item=item
             break
-    return chosen_item
+        return chosen_item
+    """
+    return choice(list(asset_dict.keys()), p=list(asset_dict.values()))
+
 
 #paste_fn(bg_im, obj, x, y)
 def set_background(asc, bg_file, load_image_fn=utils.load_image):

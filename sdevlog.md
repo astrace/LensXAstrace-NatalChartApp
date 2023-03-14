@@ -96,6 +96,14 @@ We make a separate function that takes a dictionary of values-filenames, and cal
 
 - Note: As per:https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order we can assume that keys() and values() will always return in the same order (the order of definition or insertion), assuming our dictionary is never altered. As it is predefined, this cannot change.
 
+#### How to update my current branch, from the origin remote?
+
+If you have already pushed your current branch to origin, just use:
+
+```
+git pull
+```
+
 
 ## References:
 
@@ -108,3 +116,5 @@ We make a separate function that takes a dictionary of values-filenames, and cal
 4) [Install Python 3.9](https://linuxize.com/post/how-to-install-python-3-9-on-ubuntu-20-04/)
 
 5) [Upload New Branch to Remote](https://stackoverflow.com/questions/2765421/how-do-i-push-a-new-local-branch-to-a-remote-git-repository-and-track-it-too)
+
+6) [Update your current branch from more recent origin](https://stackoverflow.com/questions/11278497/update-a-local-branch-with-the-changes-from-a-tracked-remote-branch)

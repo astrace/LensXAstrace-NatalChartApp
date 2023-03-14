@@ -14,7 +14,7 @@ BG_IMG_FILES = {
     "Natal_NFT_BGs-8.png":0.098,
     "Natal_NFT_BGs-9.png":0.098,
     "Natal_NFT_BGs-10.png":0.098,
-    "Natal_NFT_BGs-Rare_Red.png":0.01,
+    "Natal_NFT_BGs-Rare_Red.png":0.02,
     "Natal_NFT_BGs-Rare_Black.png":0.01,
 }
 
