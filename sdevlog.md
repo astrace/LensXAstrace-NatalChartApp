@@ -104,6 +104,89 @@ If you have already pushed your current branch to origin, just use:
 git pull
 ```
 
+#### Solving the clumping issues with n=2 Problem:
+
+I have looked over the code. Our call stack is:
+
+spread_planets()
+|
+|
+find_clumps()
+    clump_check()
+    pass()
+    merge()
+|
+|
+merge_clumps()
+|
+|
+split_clumps_by_sign()
+|
+|
+
+Firstly, can we generate arbitrary examples with n=2? How do we do this? Sasa has written a generate_stellium() function, with the following call stack:
+
+test_stellium()
+    -_generate_stellium()
+    |
+    |
+    create_mock_natal_chart()
+|
+|
+_generate_stellium()
+|
+|
+_generate()
+
+test_all_bg_images()
+|
+|
+random_chart()
+|
+|
+random_datetime()
+|
+|
+random_location()
+
+So we already have a stellium generator, that can generate pairs of Stelliums.
+
+When we print out the clumps, and run the algorithm, we don't see groupings of two listed in the clumps datastructure. Why?
+
+#### Problems with Boundary conditions when spreading planets:
+
+It turns out that we were not doing a deep copy when adding a planet to the end of the planet list, when running find_clumps(). So the spread issues near 0/360 were fixed.
+
+Likely though, there are other issues we need to deal with. Lets list some tests that we can run.
+
+1) All planets just separated by 20 degrees, starting from 0
+
+2) Pairs of Two: spread two pairs all over the place equidistant.
+
+3) Pairs of two test, spread out over the perimeter.
+
+4) Pairs of three, equidistant
+
+5) Pairs of three, loading the boundaries.
+
+6) 2 Pairs of 5 and 3, equidistant
+
+7) Same test, but pairs of 5 and three straddle the boundaries
+
+8) One pair of 9, the rest in another group.
+
+9) Same test, near the boundaries.
+
+10) Everything in one house
+
+11) Everything in one house, straddling boundary
+
+12) Everything in one house, in house 1 or 12 (spillover)
+
+#### Getting the VS Code Debugger to work:
+
+The debugger defaults to the root of the project - but we are running code in /natal_chart_gen/. I had to make a launch.json file and specify an absolute path to get things to work properly. VS Code generates the file for you!
+
 
 ## References:
 
@@ -117,4 +200,4 @@ git pull
 
 5) [Upload New Branch to Remote](https://stackoverflow.com/questions/2765421/how-do-i-push-a-new-local-branch-to-a-remote-git-repository-and-track-it-too)
 
-6) [Update your current branch from more recent origin](https://stackoverflow.com/questions/11278497/update-a-local-branch-with-the-changes-from-a-tracked-remote-branch)
+<!-- 6) [Update your current branch from more recent origin](https://stackoverflow.com/questions/11278497/update-a-local-branch-with-the-changes-from-a-tracked-remote-branch) -->

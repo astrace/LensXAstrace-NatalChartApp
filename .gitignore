@@ -136,7 +136,8 @@ dmypy.json
 cache
 
 #Sean's Dev Log - no need to commit.
-*/sdevlog.md
+sdevlog.md
 #Sean's venv folders
 .astrenv
-
+#Ignore .vscode folder for integrated python debugger.
+.vscode/
