@@ -1,12 +1,14 @@
 from datetime import datetime, timezone
+from io import BytesIO
+from random import uniform
+from sys import exit
+from numpy.random import choice
 import math
 import multiprocessing
 import os
-from io import BytesIO
 
 from PIL import Image, ImageFont, ImageDraw
 from lambda_multiprocessing import Pool
-#from kerykeion import KrInstance
 import pytz
 import swisseph as swe
 
@@ -73,7 +75,7 @@ class Natal_Chart:
         Parameters:
         - planets: A list of Planet objects representing the planets in the natal chart.
         - jd : optional (default=None) Julian day number representing the date and time of the natal chart. If None, it is assumed that the 
-            chart is for the current date and time [???].
+            chart is for the current date and time.
         
         Raises:
         - Exception : if any planet/object is missing in the chart
@@ -100,8 +102,8 @@ def generate(dt, geo, local=False):
     # datetime has timezone
 
     if local:
-        # for local generation/testing
-        load_image = lambda filename: Image.open("assets/images/" + filename)
+        # for local generation/testing. Old Value for open: "assets/images/"
+        load_image = lambda filename: Image.open(os.path.join(constants.IMG_DIR, filename))
     else:
         load_image = utils.load_image
 
@@ -132,10 +134,11 @@ def generate(dt, geo, local=False):
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
+    bg_file=None
     chart = Natal_Chart(planets, jd)
-    return _generate(chart, load_image)
+    return _generate(chart, load_image, bg_file)
 
-def _generate(chart, load_image):
+def _generate(chart, load_image, bg_file=None):
     """
      This is a hidden/helper function for the main generate() function.
 
@@ -145,9 +148,12 @@ def _generate(chart, load_image):
      Returns a constructed image, built with the PIL library.
     
     """
+    if not bg_file:
+        bg_file = random_asset(constants.BG_IMG_FILES)
+
     asc = chart.objects['Asc'].sign
     # set background image
-    bg_im = set_background(asc, load_image)
+    bg_im = set_background(asc, bg_file, load_image)
     
     # allows for writing text on image
     draw = ImageDraw.Draw(bg_im)
@@ -198,15 +204,62 @@ def _generate(chart, load_image):
         )
     return bg_im
 
-#paste_fn(bg_im, obj, x, y)
 
-def set_background(asc, load_image_fn=utils.load_image):
+def random_asset(asset_dict):
+    """
+        A helper function that selects a random asset filename, given a probability dictionary.
+
+        Args:
+            - asset_dict: A dictionary that has asset filenames for keys, mapping to probability values
+
+        Returns:
+            - asset_name: A string name that was chosen from the dictionary.
+
+        Exceptions:
+            - Exception: Generic exception thrown if probabilities of dictionary are not normalized. Will call sys.exit(2) if detected.
+            
+        Notes:
+            - This code assumes that dict.keys() and dict.values() always returns the same values in the same order.
+            if the dictionary is finalized, this should always be true for python 3.6+. See:
+            https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order
+            - Users must take care to normalize their probability dictionaries. So the sum of all probs = 1.
+    """
+
+    #first, check to see that the dictionary values() normalize to 1.
+    """try:
+        psum = sum(asset_dict.values())
+        #This check is written this way, to deal with the possibility 
+        # of small round-off errors (machine arithmetic or human error).
+        if (psum < 0.9999 or psum > 1.0001):
+            raise Exception("Error: Asset dictionary probabilities not normalized. Aborting.")
+    except Exception as e:
+        print(e)
+        exit(2) """
+    # If we get here, then our dictionary was normalized OK. We may proceed.
+    #Let each probability be a small interval on (0,1). We randomly select from ~Uni(0,1), and
+    #subtract off interval lengths until we "land" in a particular interval zone. We just use the order of the dict keys, conviniently...
+    """rand_num = uniform(0,1)
+    chosen_item = ""
+    for item in asset_dict.keys():
+        prob = asset_dict[item]
+        rand_num -= prob
+        if (rand_num <= 0): #Landed in a zone. Choose the item associated with this zone!
+            chosen_item=item
+            break
+        return chosen_item
+    """
+    return choice(list(asset_dict.keys()), p=list(asset_dict.values()))
+
+
+#paste_fn(bg_im, obj, x, y)
+def set_background(asc, bg_file, load_image_fn=utils.load_image):
     """
     Creates a composite image consisting of a Zodiac Sign, House and Logo Layer overlayed together.
 
     Args:
         asc (str): The ascendant sign, one of the 12 zodiac signs.
         load_image_fn (Callable): A function that loads an image file. Default: `utils.load_image`.
+        bg_file (str): The filename of the background image
 
     Returns:
         Image: A composite image containing the background color, the zodiac wheel rotated so that the ascendant is in the first house,
@@ -216,7 +269,8 @@ def set_background(asc, load_image_fn=utils.load_image):
         FileNotFoundError: If any of the required image files cannot be found in the current directory.
     """
     # TODO: Parameterize filenames and put in `constants.py`
-    bg_color = load_image_fn('background_color.png')
+    #bg_color = load_image_fn('background_color.png')
+    bg_color = load_image_fn(os.path.join(constants.BG_IMG_DIR, bg_file))
     bg_signs = load_image_fn('signs2.png')
     bg_houses = load_image_fn('house_numbers.png')
     logo = load_image_fn('astrace_logo.png')

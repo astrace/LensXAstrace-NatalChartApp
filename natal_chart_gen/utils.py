@@ -142,7 +142,6 @@ def find_clumps(planets, theta):
 
     # hard to explain why this needs to be done twice: forward & backwards pass
     # ... there are edge cases where one pass fails
-    print(planets)
     planets.sort(key=lambda p: p.dpos)
     # NOTE: We add first planet again to the end in case of clumps near 0/360
     p0 = planets[0]
@@ -151,19 +150,10 @@ def find_clumps(planets, theta):
     planets.sort(key=lambda p: p.dpos, reverse=True)
     clumps2 = _pass(planets)
 
-    print("CLUMPS1")
-    print_clumps(clumps1)
-    print("CLUMPS2")
-    print_clumps(clumps2)
-
     # TODO: CHECK FOR CLUMPS NEAR 0/360
 
     clumps = _merge_clumps(clumps1, clumps2)
-    print("MERGED CLUMPS")
-    print_clumps(clumps)
     clumps = _split_clumps_by_sign(clumps) 
-    print("SPLIT BY SIGN")
-    print_clumps(clumps)
     # remove singletons
     clumps = [c for c in clumps if len(c) > 1]
     
@@ -262,7 +252,6 @@ def spread_planets(planets, theta=None, min_to_center=5):
         theta = math.degrees(2 * math.asin(0.5 * (image_params.PLANET_SIZE / 2) / image_params.PLANET_RADIUS)) 
 
     clumps = find_clumps(planets, theta)
-    print_clumps(clumps)
 
     for clump in clumps:
         assert len(clump) > 1
@@ -273,8 +262,6 @@ def spread_planets(planets, theta=None, min_to_center=5):
         # spread across min distance
         min_distance = len(clump) * theta
         #center_point = _get_center_pt(clump, min_distance)
-
-        print(min_distance)
 
         if min_distance >= 30: # probably should do less
             # stellium takes up entire sign/house
@@ -290,7 +277,6 @@ def spread_planets(planets, theta=None, min_to_center=5):
             after = center_point - (n / 2) * theta
             # different sign?
             if before // 30 != after // 30:
-                print("bleeding into previous house")
                 bleed_over = 30 - after % 30
                 center_point += bleed_over
                 center_point += theta / 2 # improve positioning
@@ -300,7 +286,6 @@ def spread_planets(planets, theta=None, min_to_center=5):
             after = center_point + (n / 2) * theta
             # different sign?
             if before // 30 != after // 30:
-                print("bleeding into next house")
                 bleed_over = after % 30
                 center_point -= bleed_over
                 center_point -= theta / 2 # improve positioning

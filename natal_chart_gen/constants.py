@@ -1,6 +1,23 @@
 IMAGES_URL = 'https://d1tswrzvc9aaiy.cloudfront.net/images/'
 
-BACKGROUND_FILE = "background.png"
+IMG_DIR = "./assets/images"
+BG_IMG_DIR = "backgrounds"
+
+BG_IMG_FILES = {
+    "Natal_NFT_BGs-1.png":0.098,
+    "Natal_NFT_BGs-2.png":0.098,
+    "Natal_NFT_BGs-3.png":0.098,
+    "Natal_NFT_BGs-4.png":0.098,
+    "Natal_NFT_BGs-5.png":0.098,
+    "Natal_NFT_BGs-6.png":0.098,
+    "Natal_NFT_BGs-7.png":0.098,
+    "Natal_NFT_BGs-8.png":0.098,
+    "Natal_NFT_BGs-9.png":0.098,
+    "Natal_NFT_BGs-10.png":0.098,
+    "Natal_NFT_BGs-Rare_Red.png":0.02,
+    "Natal_NFT_BGs-Rare_Black.png":0.01,
+}
+
 
 SIGNS = ['Ari', 'Tau', 'Gem', 'Can', 'Leo', 'Vir', 'Lib', 'Sco', 'Sag', 'Cap', 'Aqu', 'Pis']
 
