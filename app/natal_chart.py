@@ -3,6 +3,7 @@ from io import BytesIO
 from numpy.random import choice
 import math
 import multiprocessing
+import re
 import os
 
 from PIL import Image, ImageFont, ImageDraw
@@ -88,15 +89,57 @@ class Natal_Chart:
             )
         self.jd = jd
 
-def generate(dt, geo, local=False):
+
+def generate(local_time: str, location: str, local: bool = False) -> Image:
     """
-    This main function gathers all Natal Chart input information, generating a Natal_Chart data object.
-    It then returns the output of _generate(), which returns a constructed image.
-    
+    Generate a natal chart based on birth information.
+
+    Args:
+        local_time (str):
+            Local date and time of birth in ISO 8601 format (YYYY-MM-DDTHH:MM:SS).
+        location (str):
+            Geographical coordinates of birth location in the format 'LAT,LON',
+            where LAT is the latitude and LON is the longitude.
+        local (bool, optional):
+            Generate natal chart locally. This is useful for visual testing.
+            Note: When running locally, the program will read image files from the local file system
+            instead of fetching them from S3. (default: False)
+
+    Returns:
+        Image: A PIL Image object representing the generated natal chart.
+
+    Raises:
+        ValueError: If the input arguments are invalid.
+
+    Example usage:
+        generate('2022-01-01T12:00:00', '40.7128,-74.0060')
     """
 
-    # TODO: elaborate on format of input
-    # datetime has timezone
+    # Check that local_time is a valid ISO 8601 date and time
+    try:
+        dt = datetime.fromisoformat(local_time)
+    except ValueError:
+        raise ValueError(
+            f"Invalid local_time: {local_time}."
+            " Must be in ISO 8601 format (YYYY-MM-DDTHH:MM:SS)."
+        )
+    # Check that location is a valid latitude and longitude string
+    try:
+        lat, lon = location.split(',')
+        lat = float(lat)
+        lon = float(lon)
+    except ValueError:
+        raise ValueError(
+            f"Invalid location: {location}."
+            " Must be in the format 'LAT,LON',"
+            " where LAT is the latitude and LON is the longitude."
+        )
+    # Check that local is a boolean
+    if not isinstance(local, bool):
+        raise ValueError(
+            f"Invalid local parameter: {local}. "
+            " Must be a boolean value."
+        )
 
     if local:
         # for local generation/testing. Old Value for open: "assets/images/"
@@ -104,15 +147,13 @@ def generate(dt, geo, local=False):
     else:
         load_image = utils.load_image
 
-    tz = pytz.timezone('UTC')
-    dt = dt.astimezone(tz)
     # calculate Julian day
     # requires hour input as decimal with fraction
     hour = dt.hour + (dt.minute + dt.second / 60) / 60
     jd = swe.julday(dt.year, dt.month, dt.day, hour)
 
     # NOTE: ascendant is very important for orienting entire chart
-    _, ascmc = swe.houses(jd, geo[0], geo[1], bytes('W', 'utf-8'))
+    _, ascmc = swe.houses(jd, lat, lon, bytes('W', 'utf-8'))
     asc = constants.SIGNS[int(ascmc[0] // 30)]
 
     # create planet object/layer list
