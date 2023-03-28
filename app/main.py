@@ -6,7 +6,6 @@ import multiprocessing
 import os
 
 from PIL import Image, ImageFont, ImageDraw
-from lambda_multiprocessing import Pool
 import pytz
 import swisseph as swe
 
