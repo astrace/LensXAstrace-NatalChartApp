@@ -1,7 +1,5 @@
 from datetime import datetime, timezone
 from io import BytesIO
-from random import uniform
-from sys import exit
 from numpy.random import choice
 import math
 import multiprocessing
@@ -207,7 +205,7 @@ def _generate(chart, load_image, bg_file=None):
 
 def random_asset(asset_dict):
     """
-        A helper function that selects a random asset filename, given a probability dictionary.
+        A helper function that selects a random asset filename, given a probability dictionary. Just wraps numpy.random.choice()
 
         Args:
             - asset_dict: A dictionary that has asset filenames for keys, mapping to probability values
@@ -216,37 +214,11 @@ def random_asset(asset_dict):
             - asset_name: A string name that was chosen from the dictionary.
 
         Exceptions:
-            - Exception: Generic exception thrown if probabilities of dictionary are not normalized. Will call sys.exit(2) if detected.
+            - ValueError: thrown by numpy if probabilities of dictionary are not normalized.
             
         Notes:
-            - This code assumes that dict.keys() and dict.values() always returns the same values in the same order.
-            if the dictionary is finalized, this should always be true for python 3.6+. See:
-            https://stackoverflow.com/questions/835092/python-dictionary-are-keys-and-values-always-the-same-order
-            - Users must take care to normalize their probability dictionaries. So the sum of all probs = 1.
-    """
-
-    #first, check to see that the dictionary values() normalize to 1.
-    """try:
-        psum = sum(asset_dict.values())
-        #This check is written this way, to deal with the possibility 
-        # of small round-off errors (machine arithmetic or human error).
-        if (psum < 0.9999 or psum > 1.0001):
-            raise Exception("Error: Asset dictionary probabilities not normalized. Aborting.")
-    except Exception as e:
-        print(e)
-        exit(2) """
-    # If we get here, then our dictionary was normalized OK. We may proceed.
-    #Let each probability be a small interval on (0,1). We randomly select from ~Uni(0,1), and
-    #subtract off interval lengths until we "land" in a particular interval zone. We just use the order of the dict keys, conviniently...
-    """rand_num = uniform(0,1)
-    chosen_item = ""
-    for item in asset_dict.keys():
-        prob = asset_dict[item]
-        rand_num -= prob
-        if (rand_num <= 0): #Landed in a zone. Choose the item associated with this zone!
-            chosen_item=item
-            break
-        return chosen_item
+            - This wrapper is pretty shallow - it just hides the more long-winded code seen in the return statement below.
+            - If the randomness functionality does not expand in the future, this function wrapper should be removed.
     """
     return choice(list(asset_dict.keys()), p=list(asset_dict.values()))
 

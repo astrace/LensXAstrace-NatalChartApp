@@ -6,6 +6,7 @@ from io import BytesIO
 
 import boto3
 from PIL import Image
+from copy import deepcopy
 
 import constants
 import image_params
@@ -144,11 +145,31 @@ def find_clumps(planets, theta):
     # ... there are edge cases where one pass fails
     planets.sort(key=lambda p: p.dpos)
     # NOTE: We add first planet again to the end in case of clumps near 0/360
+    ##Note2: We must make a deep copy - because the dpos will change for both the p0 at the beginning and ends.
+    """ Old code (with shallow copying)
     p0 = planets[0]
     p0.dpos += 360
     clumps1 = _pass(planets + [p0])
+    """
+    pEnd = deepcopy(planets[0])
+    pEnd.dpos += 360
+    clumps1 = _pass(planets + [pEnd])
+    
+
     planets.sort(key=lambda p: p.dpos, reverse=True)
     clumps2 = _pass(planets)
+
+    """
+    //Used for debugging - will remove when pull request finished.
+    print("We ran two passes, and found two sets of clumps. Heres what we got:")
+    print("Clumps1 List:")
+    for clump in clumps1:
+        print(str([str(p) for p in clump]))
+
+    print("Clumps2 List:")
+    for clump in clumps2:
+        print(str([str(p) for p in clump]))
+    """
 
     # TODO: CHECK FOR CLUMPS NEAR 0/360
 
@@ -160,7 +181,7 @@ def find_clumps(planets, theta):
     return clumps
 
 def _merge_clumps(clumps1, clumps2):
-    """
+    """"(
     Merges two lists of integer clusters into a single list of merged clusters.
 
     Args:
@@ -181,7 +202,13 @@ def _merge_clumps(clumps1, clumps2):
                 clumps.add(frozenset(c1))
             elif len(c1 & c2) > 0:
                 clumps.add(frozenset(c1 | c2))
+    """ Used for debugging - remove once pull request finished.
+    print("Our merged clump list:")
+    for clump in clumps:
+        print(str([str(p) for p in clump]))
+    """
     return [list(c) for c in clumps]
+
 
 def _split_clumps_by_sign(clumps):
     # this is needed for proper rendering in `spread_planets`
@@ -208,6 +235,11 @@ def _split_clumps_by_sign(clumps):
             new_clumps.append(c[i:])
         else:
             new_clumps.append(c)
+    """ Used for debugging.
+    print("Regrouping clumps by sign. Output below:")
+    for clump in new_clumps:
+        print(str([str(p) for p in clump]))
+    """
     return new_clumps
         
 
@@ -254,6 +286,7 @@ def spread_planets(planets, theta=None, min_to_center=5):
     clumps = find_clumps(planets, theta)
 
     for clump in clumps:
+    
         assert len(clump) > 1
 
         clump.sort(key=lambda p: p.dpos)
@@ -275,13 +308,15 @@ def spread_planets(planets, theta=None, min_to_center=5):
             # check if this causes "bleeding" into *previous* house
             before = clump[0].dpos
             after = center_point - (n / 2) * theta
+            
             # different sign?
             if before // 30 != after // 30:
                 bleed_over = 30 - after % 30
                 center_point += bleed_over
                 center_point += theta / 2 # improve positioning
-            
+
             # check if this causes "bleeding" into *next* house
+            #S: Why is this done all over again?
             before = clump[-1].dpos
             after = center_point + (n / 2) * theta
             # different sign?
@@ -290,6 +325,7 @@ def spread_planets(planets, theta=None, min_to_center=5):
                 center_point -= bleed_over
                 center_point -= theta / 2 # improve positioning
         
+        #S: Once all the centering and detection is done, we assign new positions
         new_positions = np.arange(
             center_point - (n / 2) * theta,
             center_point + (n / 2) * theta,
