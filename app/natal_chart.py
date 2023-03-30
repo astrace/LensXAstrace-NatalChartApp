@@ -14,7 +14,7 @@ import constants
 import image_params
 import utils
 
-swe.set_ephe_path('./assets/ephe')
+swe.set_ephe_path(os.environ['EPHE_BUCKET_NAME'])
 
 class Planet:
     """

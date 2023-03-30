@@ -7,7 +7,7 @@ random.seed(111)
 
 import swisseph as swe
 
-from prototype import Planet, Natal_Chart, _generate
+from natal_chart import Planet, Natal_Chart, _generate
 from constants import PLANET_NAMES, SIGNS, IMG_DIR
 
 load_image = lambda filename: Image.open(os.path.join(IMG_DIR, filename))

@@ -5,7 +5,7 @@ def main():
     parser = argparse.ArgumentParser(
         prog="natal_chart_cli",
         description="Generate a natal chart based on birth information",
-        epilog="Example usage: python natal_chart_cli.py '1989-06-11T00:30:00' '53.2791,-2.8978' --local",
+        epilog="Example usage: natal_chart_cli.py '2022-01-01T12:00:00' '40.7128,-74.0060'",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
@@ -36,6 +36,4 @@ def main():
     im = generate(args.local_time, args.location, args.local)
     im.show()
 
-if __name__ == "__main__":
-    main()
 
