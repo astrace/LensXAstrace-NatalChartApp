@@ -141,3 +141,7 @@ sdevlog.md
 .astrenv
 #Ignore .vscode folder for integrated python debugger.
 .vscode/
+
+# remove files copied over to cdk except main handler file
+cdk/lambda/*
+!cdk/lambda/lambda.py
