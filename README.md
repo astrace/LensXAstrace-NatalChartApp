@@ -1,21 +1,37 @@
-# Astrace Natal Chart Generation
+# Project Name
 
-### Helper Custom Image Rendering Algorithms
+Short description of the project, including its purpose and main features.
 
-### Spreading planets
-This is important for rendering things like conjunctions, stelliums, etc (where planets may overlap). See `find_clumps` and `spread_planets` in `utils.py`.
+## Table of Contents
 
-Before/After:
-<div>
-    <img src="./assets/before.png" alt="Image 1" style="width: 47%; display: inline-block;">
-    <img src="./assets/after.png" alt="Image 2" style="width: 47%; display: inline-block;">
-</div>
+- [Project Name](#project-name)
+- [Table of Contents](#table-of-contents)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Usage](#usage)
+  - [Image Algorithm](#image-algorithm)
+  - [Frontend](#frontend)
+  - [Smart Contracts](#smart-contracts)
+- [Deployment](#deployment)
 
-### TODO
+## Getting Started
 
-<img src="./assets/Screenshot 2023-02-21 at 12.01.30.png" alt="Image 1" style="width: 30%; display: inline-block;">
+### Prerequisites
 
-## Testing
+### Installation
 
-Testing is mostly manual. Test file `test.py` simply generates random natal charts and displays them. See: `./assets/test_recording.mov` for an example.
+## Usage
 
+### Image Algorithm
+
+#### Running Locally
+
+- How to run the image generation algorithm locally.
+- Any necessary configuration or setup instructions.
+
+### Frontend
+
+### Smart Contracts
+
+# Deployment
