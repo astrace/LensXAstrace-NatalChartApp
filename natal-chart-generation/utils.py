@@ -24,20 +24,24 @@ class LocalImageLoader(ImageLoader):
 
     def load_all_images(self):
         def _load_all_images(fname):
-            print(fname)
             if os.path.isdir(fname):
                 for fname2 in os.listdir(self.image_dir):
                     _load_all_images(fname2)
             else:
-                if filename[-4:] not in ['.png', 'jpg']:
+                if fname[-4:] not in ['.png', 'jpg']:
                     return
-                file_path = Path(self.image_dir) / filename
-                self.image_cache[filename] = Image.open(file_path)
+                file_path = Path(self.image_dir) / fname
+                self.image_cache[fname] = Image.open(file_path)
+        _load_all_images(self.image_dir)
 
     def load(self, filename: str) -> Image:
+        print(filename)
         if filename not in self.image_cache:
+            print('not in cache')
             file_path = Path(self.image_dir) / filename
             self.image_cache[filename] = Image.open(file_path)
+        else:
+            print('in cache')
         return self.image_cache[filename]
 
 class RemoteImageLoader:

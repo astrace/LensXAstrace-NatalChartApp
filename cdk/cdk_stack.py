@@ -38,7 +38,7 @@ class NatalChartCdkStack(Stack):
         s3deploy.BucketDeployment(
             self,
             "ImageLayerDeployment",
-            sources=[s3deploy.Source.asset("../app/images")],
+            sources=[s3deploy.Source.asset("../natal-chart-generation/images")],
             destination_bucket=img_layer_bucket,
             memory_limit=1024
         )
@@ -86,12 +86,12 @@ class NatalChartCdkStack(Stack):
 
         # copy main program files into lambda folder
         filenames = [
-            "../app/natal_chart.py",
-            "../app/utils.py",
-            "../app/image_params.py",
-            "../app/constants.py",
-            "../app/ephe",
-            "../app/fonts"
+            "../natal-chart-generation/natal_chart.py",
+            "../natal-chart-generation/utils.py",
+            "../natal-chart-generation/image_params.py",
+            "../natal-chart-generation/constants.py",
+            "../natal-chart-generation/ephe",
+            "../natal-chart-generation/fonts"
         ]
         os.system(f"rsync -av --exclude='.*' {' '.join(filenames)} lambda/")
 
@@ -104,7 +104,7 @@ class NatalChartCdkStack(Stack):
             handler="handler",
             layers=[
                 _lambda.PythonLayerVersion(
-                    self, "DependenciesLayer", entry="../app"
+                    self, "DependenciesLayer", entry="../natal-chart-generation"
                 )
             ],
             environment={
