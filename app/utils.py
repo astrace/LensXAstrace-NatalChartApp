@@ -2,82 +2,53 @@ import bisect
 import math
 import numpy as np
 import requests
+import tempfile
 from io import BytesIO
+from pathlib import Path
 
 import boto3
 from PIL import Image
 from copy import deepcopy
 
-import constants
 import image_params
 
-def load_image(filename):
-    """
-    Loads an image from a file located at a URL defined in `constants.py`.
+class ImageLoader:
+    def load(self, file_path: str) -> Image:
+        pass
 
-    Args:
-        filename (str): The name of the image file to load.
+class LocalImageLoader(ImageLoader):
+    def __init__(self, image_dir):
+        self.image_dir = image_dir
+        self.image_cache = {}
 
-    Returns:
-        Image: An instance of `PIL.Image.Image` representing the loaded image.
+    def load_all_images(self):
+        for filename in os.listdir(self.image_dir):
+            file_path = Path(self.image_dir) / filename
+            self.image_cache[filename] = Image.open(file_path)
 
-    Raises:
-        requests.exceptions.RequestException: If the HTTP request to download the image fails.
-        OSError: If the image file is not in a recognized format or is otherwise corrupted.
-    """
-    url = constants.IMAGES_URL + filename
-    print("Loading {} ...".format(url))
-    resp = requests.get(url)
-    im = Image.open(BytesIO(resp.content))
-    return im
+    def load(self, filename: str) -> Image:
+        if filename not in self.image_cache:
+            file_path = Path(self.image_dir) / filename
+            self.image_cache[filename] = Image.open(file_path)
+        return self.image_cache[filename]
 
-def read_image_from_s3(bucket, key, region_name='us-east-1'):
-    """
-    Reads an image from an S3 bucket in AWS.
+class RemoteImageLoader:
+    def __init__(self, distribution_url, bucket_name):
+        self.distribution_url = distribution_url
+        self.bucket_name = bucket_name
+        self.s3 = boto3.client('s3')
+        # load all files to temporary directory
+        self.tmp_dir = tempfile.TemporaryDirectory()
 
-    Args:
-        bucket (str): The name of the S3 bucket containing the image file.
-        key (str): The S3 object key for the image file.
-        region_name (str): The name of the AWS region where the S3 bucket is located. Default: 'us-east-1'.
-
-    Returns:
-        Image: An instance of `PIL.Image.Image` representing the image read from the S3 bucket.
-
-    Raises:
-        botocore.exceptions.NoCredentialsError: If AWS credentials are not found or are invalid.
-        botocore.exceptions.EndpointConnectionError: If a connection to the S3 endpoint cannot be established.
-        botocore.exceptions.ParamValidationError: If the input parameters are invalid.
-        botocore.exceptions.ClientError: If an error occurs on the S3 client side, such as access denied or a missing bucket.
-        OSError: If the image file is not in a recognized format or is otherwise corrupted.
-    """
-    print('Reading {} from S3 bucket {} ...'.format(key, bucket))
-    s3 = boto3.client('s3')
-    file_byte_string = s3.get_object(Bucket=bucket, Key=key)['Body'].read()
-    x = BytesIO(file_byte_string)
-    return Image.open(BytesIO(file_byte_string))
-    
-def write_image_to_s3(im, bucket, key, region_name='us-east-1'):
-    """
-    Writes an image to an S3 bucket in AWS.
-
-    Args:
-        im (Image): An instance of `PIL.Image.Image` representing the image to write.
-        bucket (str): The name of the S3 bucket to write the image to.
-        key (str): The S3 object key to assign to the written image file.
-        region_name (str): The name of the AWS region where the S3 bucket is located. Default: 'us-east-1'.
-
-    Raises:
-        botocore.exceptions.NoCredentialsError: If AWS credentials are not found or are invalid.
-        botocore.exceptions.EndpointConnectionError: If a connection to the S3 endpoint cannot be established.
-        botocore.exceptions.ParamValidationError: If the input parameters are invalid.
-        botocore.exceptions.ClientError: If an error occurs on the S3 client side, such as access denied or a missing bucket.
-    """
-    s3 = boto3.resource('s3', region_name)
-    bucket = s3.Bucket(bucket)
-    object = bucket.Object(key)
-    file_stream = BytesIO()
-    im.save(file_stream, format='png')
-    object.put(Body=file_stream.getvalue())
+    def load(self, image_key):
+        url = f"https://{self.distribution_url}/{image_key}"
+        response = requests.get(url)
+        file_path = Path(self.tmp_dir.name) / image_key\
+        # create directories if they don't exist
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(file_path, 'wb') as f:
+            f.write(response.content)
+        return Image.open(file_path)
 
 def calculate_position(degree):
     return {

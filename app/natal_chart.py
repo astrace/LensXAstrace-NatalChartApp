@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from io import BytesIO
 from numpy.random import choice
+from pathlib import Path
 import math
 import multiprocessing
 import re
@@ -10,11 +11,11 @@ from PIL import Image, ImageFont, ImageDraw
 import pytz
 import swisseph as swe
 
-import constants
+from constants import EPHE_DIR, IMG_DIR, IMG_FILES, PLANET_NAMES, SIGNS
 import image_params
 import utils
 
-swe.set_ephe_path(os.environ['EPHE_BUCKET_NAME'])
+swe.set_ephe_path(EPHE_DIR)
 
 class Planet:
     """
@@ -38,8 +39,8 @@ class Planet:
         self.name = name
         self.sign = sign
         self.images = {
-            "planet": "{}/planets/{}.png".format("assets/images", name),
-            "sign": "{}/signs/{}.png".format("assets/images", sign)
+            "planet": IMG_FILES['PLANETS'][name.upper()],
+            "sign": IMG_FILES['SIGNS'][sign.upper()]
         }
         self.position = position
         self.abs_pos = abs_pos
@@ -142,41 +143,41 @@ def generate(local_time: str, location: str, local: bool = False) -> Image:
         )
 
     if local:
-        # for local generation/testing. Old Value for open: "assets/images/"
-        load_image = lambda filename: Image.open(os.path.join(constants.IMG_DIR, filename))
+        # for local generation/testing
+        image_loader = utils.LocalImageLoader(IMG_DIR)
     else:
-        load_image = utils.load_image
+        # read from environment vars passed during deployment
+        image_loader = utils.RemoteImageLoader(
+            os.environ['CLOUDFRONT_DISTRIBUTION_URL'],
+            os.environ['IMG_LAYER_BUCKET_NAME'],
+        )
 
     # calculate Julian day
     # requires hour input as decimal with fraction
     hour = dt.hour + (dt.minute + dt.second / 60) / 60
     jd = swe.julday(dt.year, dt.month, dt.day, hour)
-
-    # NOTE: ascendant is very important for orienting entire chart
     _, ascmc = swe.houses(jd, lat, lon, bytes('W', 'utf-8'))
-    asc = constants.SIGNS[int(ascmc[0] // 30)]
 
     # create planet object/layer list
     planets = []
-    for name, no_body in constants.PLANET_NAMES.items():
+    for name, no_body in PLANET_NAMES.items():
         abs_pos = swe.calc_ut(jd, no_body)[0][0]
         pos = abs_pos % 30
-        sign = constants.SIGNS[int(abs_pos // 30)]
+        sign = SIGNS[int(abs_pos // 30)]
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
     # add angles
     for abs_pos, name in [(ascmc[0], 'Asc'), (ascmc[1], 'Mc')]:
         pos = abs_pos % 30
-        sign = constants.SIGNS[int(abs_pos // 30)]
+        sign = SIGNS[int(abs_pos // 30)]
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
-    bg_file=None
     chart = Natal_Chart(planets, jd)
-    return _generate(chart, load_image, bg_file)
+    return _generate(chart, image_loader)
 
-def _generate(chart, load_image, bg_file=None):
+def _generate(chart, image_loader, bg_file=None):
     """
      This is a hidden/helper function for the main generate() function.
 
@@ -187,26 +188,24 @@ def _generate(chart, load_image, bg_file=None):
     
     """
     if not bg_file:
-        bg_file = random_asset(constants.BG_IMG_FILES)
+        bg_file = random_asset(IMG_FILES['BACKGROUNDS'])
 
     asc = chart.objects['Asc'].sign
     # set background image
-    bg_im = set_background(asc, bg_file, load_image)
+    bg_im = set_background_layers(asc, bg_file, image_loader)
     
     # allows for writing text on image
     draw = ImageDraw.Draw(bg_im)
-    font = ImageFont.truetype("assets/Inter-Medium.ttf", image_params.TEXT_SIZE)
+    font = ImageFont.truetype("fonts/Inter-Medium.ttf", image_params.TEXT_SIZE)
 
-    # custom rendering algos
     # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
-    #Before we make an image, we need to check for clumps and adjust our calculated chart data objects, accordingly...
     utils.spread_planets(list(chart.objects.values()))
 
     for p in chart.objects.values():
         """
         Each planet-text-sign image grouping is constructed here.
         """
-        im = Image.open(p.images['planet'])#.convert('RGBa')
+        im = image_loader.load(p.images['planet'])
         # add planet
         add_object(
             im,
@@ -217,7 +216,7 @@ def _generate(chart, load_image, bg_file=None):
             image_params.PLANET_RADIUS,
             lambda bg_im, obj, x, y: bg_im.paste(obj, (x,y), obj)
         )
-        im = Image.open(p.images['sign'])#.convert('RGBa')
+        im = image_loader.load(p.images['sign'])
         # add sign
         add_object(
             im,
@@ -263,14 +262,12 @@ def random_asset(asset_dict):
     return choice(list(asset_dict.keys()), p=list(asset_dict.values()))
 
 
-#paste_fn(bg_im, obj, x, y)
-def set_background(asc, bg_file, load_image_fn=utils.load_image):
+def set_background_layers(asc, bg_file, image_loader):
     """
     Creates a composite image consisting of a Zodiac Sign, House and Logo Layer overlayed together.
 
     Args:
         asc (str): The ascendant sign, one of the 12 zodiac signs.
-        load_image_fn (Callable): A function that loads an image file. Default: `utils.load_image`.
         bg_file (str): The filename of the background image
 
     Returns:
@@ -281,16 +278,15 @@ def set_background(asc, bg_file, load_image_fn=utils.load_image):
         FileNotFoundError: If any of the required image files cannot be found in the current directory.
     """
     # TODO: Parameterize filenames and put in `constants.py`
-    #bg_color = load_image_fn('background_color.png')
-    bg_color = load_image_fn(os.path.join(constants.BG_IMG_DIR, bg_file))
-    bg_signs = load_image_fn('signs2.png')
-    bg_houses = load_image_fn('house_numbers.png')
-    logo = load_image_fn('astrace_logo.png')
+    bg = image_loader.load(bg_file)
+    bg_signs = image_loader.load(IMG_FILES['ZODIAC_WHEEL'])
+    bg_houses = image_loader.load(IMG_FILES['HOUSE_NUMBERS'])
+    logo = image_loader.load(IMG_FILES['LOGO'])
 
     # rotate zodiac wheel so ascendant is in the first house
-    bg_signs = bg_signs.rotate(-30 * constants.SIGNS.index(asc))
+    bg_signs = bg_signs.rotate(-30 * SIGNS.index(asc))
     # combine background color with zodiac wheel
-    bg_im = Image.alpha_composite(bg_color, bg_signs)
+    bg_im = Image.alpha_composite(bg, bg_signs)
     # remove alpha channel (makes pasting layers simpler)
     bg_im = bg_im.convert("RGB")
     # paste house numbers
@@ -357,7 +353,7 @@ def get_coordinates(asc, a, b, r, theta):
     - The function `rotate()` is used to calculate the resulting position after rotation around the center point.
     """
     # get (x,y) location of 0 degree Aries
-    deg = -90 - constants.SIGNS.index(asc) * 30
+    deg = -90 - SIGNS.index(asc) * 30
     x = a + r * math.sin(math.radians(deg))
     y = b + r * math.cos(math.radians(deg))
     # then rotate

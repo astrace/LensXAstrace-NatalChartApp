@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import argparse
 from natal_chart import generate
 
@@ -36,4 +38,4 @@ def main():
     im = generate(args.local_time, args.location, args.local)
     im.show()
 
-
+main()
