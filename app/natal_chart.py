@@ -145,6 +145,7 @@ def generate(local_time: str, location: str, local: bool = False) -> Image:
     if local:
         # for local generation/testing
         image_loader = utils.LocalImageLoader(IMG_DIR)
+        image_loader.load_all_images()
     else:
         # read from environment vars passed during deployment
         image_loader = utils.RemoteImageLoader(

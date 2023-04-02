@@ -1,6 +1,7 @@
 import bisect
 import math
 import numpy as np
+import os
 import requests
 import tempfile
 from io import BytesIO
@@ -22,9 +23,16 @@ class LocalImageLoader(ImageLoader):
         self.image_cache = {}
 
     def load_all_images(self):
-        for filename in os.listdir(self.image_dir):
-            file_path = Path(self.image_dir) / filename
-            self.image_cache[filename] = Image.open(file_path)
+        def _load_all_images(fname):
+            print(fname)
+            if os.path.isdir(fname):
+                for fname2 in os.listdir(self.image_dir):
+                    _load_all_images(fname2)
+            else:
+                if filename[-4:] not in ['.png', 'jpg']:
+                    return
+                file_path = Path(self.image_dir) / filename
+                self.image_cache[filename] = Image.open(file_path)
 
     def load(self, filename: str) -> Image:
         if filename not in self.image_cache:
@@ -39,7 +47,7 @@ class RemoteImageLoader:
         self.s3 = boto3.client('s3')
         # load all files to temporary directory
         self.tmp_dir = tempfile.TemporaryDirectory()
-
+    
     def load(self, image_key):
         url = f"https://{self.distribution_url}/{image_key}"
         response = requests.get(url)
