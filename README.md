@@ -35,6 +35,11 @@ pip install -r requirements.txt
 ./natal_chart_cli.py -h
 ```
 
+#### Testing Locally
+
+#### Running Remotely
+See: [Deployment](#deployment)
+
 ### Frontend
 
 ### Smart Contracts
