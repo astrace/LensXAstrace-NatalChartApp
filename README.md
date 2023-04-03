@@ -26,8 +26,14 @@ An app that generates natal charts based on a person's birth information. The na
 
 #### Running Locally
 
-- How to run the image generation algorithm locally.
-- Any necessary configuration or setup instructions.
+Change directory. Set up a virtual environment. Install dependencies. Run script.
+```
+cd natal-chart-generation
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+./natal_chart_cli.py -h
+```
 
 ### Frontend
 
