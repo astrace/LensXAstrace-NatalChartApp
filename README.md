@@ -24,6 +24,8 @@ An app that generates natal charts based on a person's birth information. The na
 
 ### Image Algorithm
 
+For detailed information about the algorithm, [click here](./natal-chart-generation/README.md).
+
 #### Running Locally
 
 Change directory. Set up a virtual environment. Install dependencies. Run script.
