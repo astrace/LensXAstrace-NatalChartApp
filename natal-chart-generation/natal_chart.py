@@ -11,7 +11,7 @@ from PIL import Image, ImageFont, ImageDraw
 import pytz
 import swisseph as swe
 
-from constants import EPHE_DIR, IMG_DIR, IMG_FILES, PLANET_NAMES, SIGNS
+from constants import EPHE_DIR, FONT_FILE, IMG_DIR, IMG_FILES, PLANET_NAMES, SIGNS
 import image_params
 import utils
 
@@ -51,7 +51,7 @@ class Planet:
             self.name, self.sign, self.abs_pos
         )
 
-class Natal_Chart:
+class NatalChart:
     """
     Attributes:
         -required_objects: A frozenset of all required planet names.
@@ -90,6 +90,11 @@ class Natal_Chart:
             )
         self.jd = jd
 
+    def positions(self):
+        """
+        Returns a sorted list of absolute position of all planets/objects. Mostly used for testing.
+        """
+        return sorted(x.abs_pos for x in self.objects.values())
 
 def generate(local_time: str, location: str, local: bool = False) -> Image:
     """
@@ -175,7 +180,7 @@ def generate(local_time: str, location: str, local: bool = False) -> Image:
         p = Planet(name, pos, abs_pos, sign)
         planets.append(p)
 
-    chart = Natal_Chart(planets, jd)
+    chart = NatalChart(planets, jd)
     return _generate(chart, image_loader)
 
 def _generate(chart, image_loader, bg_file=None):
@@ -197,7 +202,13 @@ def _generate(chart, image_loader, bg_file=None):
     
     # allows for writing text on image
     draw = ImageDraw.Draw(bg_im)
-    font = ImageFont.truetype("fonts/Inter-Medium.ttf", image_params.TEXT_SIZE)
+
+    # Get the current script's directory
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Construct an absolute path to the font file
+    font_path = os.path.join(script_dir, FONT_FILE)
+    # Use the absolute path when creating the font
+    font = ImageFont.truetype(font_path, image_params.TEXT_SIZE)
 
     # NOTE: `spread_planets` might change the `dpos` attribute (side effect)
     utils.spread_planets(list(chart.objects.values()))

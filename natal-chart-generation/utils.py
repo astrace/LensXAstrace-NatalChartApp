@@ -35,13 +35,9 @@ class LocalImageLoader(ImageLoader):
         _load_all_images(self.image_dir)
 
     def load(self, filename: str) -> Image:
-        print(filename)
         if filename not in self.image_cache:
-            print('not in cache')
             file_path = Path(self.image_dir) / filename
             self.image_cache[filename] = Image.open(file_path)
-        else:
-            print('in cache')
         return self.image_cache[filename]
 
 class RemoteImageLoader:

@@ -17,6 +17,8 @@ PLANET_NAMES = {
     "Chiron": 16,
 }
 
+FONT_FILE = "fonts/Inter-Medium.ttf"
+
 IMG_DIR = 'images'
 # NOTE: Background files have associated probabilites of being selected
 IMG_FILES = {
