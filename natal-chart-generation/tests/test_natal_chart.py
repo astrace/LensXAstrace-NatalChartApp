@@ -17,7 +17,7 @@ import warnings
 warnings.filterwarnings("ignore", category=ResourceWarning)
 
 import constants
-import test_utils
+import _utils
 import utils
 
 from constants import IMG_DIR
@@ -33,19 +33,19 @@ class TestNatalChart(unittest.TestCase):
     def test_natal_charts_with_stelliums(self):
         for _ in range(3):
             n = random.randint(2, 10)
-            chart = test_utils.generate_stellium(n)
+            chart = _utils.generate_stellium(n)
             self.visual_test(chart)
 
     def test_natal_charts_with_backgrounds(self):
         bg_images = constants.IMG_FILES['BACKGROUNDS'].keys()
         for bg_im_file in bg_images:
-            chart = test_utils.random_chart()
+            chart = _utils.random_chart()
             self.visual_test(chart, bg_im_file)
 
     def test_natal_charts_near_zero_degrees(self):
         for _ in range(3):
             n = random.randint(2, 10)
-            chart = test_utils.generate_stellium_near_zero_degrees(n)
+            chart = _utils.generate_stellium_near_zero_degrees(n)
             self.visual_test(chart)
 
     def visual_test(self, natal_chart_obj, bg_file=None):
@@ -94,7 +94,7 @@ def retest_failed_cases(log_file_path):
         print(f"Retesting failed case: {test_case['positions']}")
         print(f"Previous comment: {test_case['comment']}")
         test_instance = TestNatalChart()
-        chart = test_utils.create_mock_natal_chart(test_case["positions"])
+        chart = _utils.create_mock_natal_chart(test_case["positions"])
         test_instance.visual_test(chart)
 
 
