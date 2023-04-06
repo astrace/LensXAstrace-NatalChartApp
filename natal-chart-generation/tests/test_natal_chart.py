@@ -20,14 +20,15 @@ import constants
 import _utils
 import utils
 
-from constants import IMG_DIR
+from constants import IMG_DIR, IMG_FILES
 IMG_DIR = '../' + IMG_DIR
 from natal_chart import _generate
 
 # Test class
 class TestNatalChart(unittest.TestCase):
-    image_loader = utils.LocalImageLoader(IMG_DIR)
-    image_loader.load_all_images()
+    image_loader = utils.LocalImageLoader(IMG_DIR, IMG_FILES)
+    bg_im_size = image_loader.load_all_images()
+    image_loader.resize_all_images()
     unixtime = int(time.time())
 
     def test_natal_charts_with_stelliums(self):

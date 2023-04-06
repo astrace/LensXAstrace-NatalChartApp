@@ -149,8 +149,9 @@ def generate(local_time: str, location: str, local: bool = False) -> Image:
 
     if local:
         # for local generation/testing
-        image_loader = utils.LocalImageLoader(IMG_DIR)
-        image_loader.load_all_images()
+        image_loader = utils.LocalImageLoader(IMG_DIR, IMG_FILES)
+        bg_im_size = image_loader.load_all_images()
+        image_loader.resize_all_images()
     else:
         # read from environment vars passed during deployment
         image_loader = utils.RemoteImageLoader(
@@ -249,7 +250,6 @@ def _generate(chart, image_loader, bg_file=None):
             None,
             image_params.TEXT_RADIUS,
             lambda bg_im, obj, x, y: draw.text((x,y), "{}°".format(math.floor(p.position)), font=font),
-            False
         )
     return bg_im
 
@@ -302,11 +302,9 @@ def set_background_layers(asc, bg_file, image_loader):
     # remove alpha channel (makes pasting layers simpler)
     bg_im = bg_im.convert("RGB")
     # paste house numbers
-    bg_houses = resize_image(bg_houses, bg_im.size, image_params.HOUSE_NUMBER_RADIUS)
     (a, b) = get_center(bg_im.size, bg_houses.size)
     bg_im.paste(bg_houses, (a,b), bg_houses)
     # paste logo
-    logo = resize_image(logo, bg_im.size, image_params.LOGO_RADIUS)
     (a, b) = get_center(bg_im.size, logo.size)
     bg_im.paste(logo, (a,b), logo)
     return bg_im
@@ -327,23 +325,6 @@ def get_center(bg_size, fg_size):
     offset_w = (bg_w - img_w) // 2
     offset_h = (bg_h - img_h) // 2
     return offset_w, offset_h
-
-def resize_image(im, bg_size, p):
-    """
-    Resizes the input image `im` to a new size that is `p` percent of the `bg_size` image size.
-
-    Args:
-    - im: The input image to be resized.
-    - bg_size: A tuple (width, height) representing the size of the background image.
-    - p: A float representing the percentage of the `bg_size` image size to which the `im` should be resized.
-
-    Returns:
-    The resized image as a PIL Image object.
-    """
-    new_width = p * bg_size[0]
-    new_height = (new_width / im.size[0]) * im.size[1]
-    new_size = tuple(map(int, (new_width, new_height)))
-    return im.resize(new_size, Image.LANCZOS)
 
 def get_coordinates(asc, a, b, r, theta):
     """
@@ -403,11 +384,7 @@ def add_object(
         obj_size,
         obj_radius,
         paste_fn,
-        resize=True
     ):
-    if resize:
-        # resize obj image
-        obj = resize_image(obj, bg_im.size, obj_size)
     # get center of circle
     # distance from center as % of background image
     r = obj_radius * bg_im.size[1]

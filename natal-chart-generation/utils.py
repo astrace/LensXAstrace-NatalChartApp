@@ -18,27 +18,48 @@ class ImageLoader:
         pass
 
 class LocalImageLoader(ImageLoader):
-    def __init__(self, image_dir):
+    def __init__(self, image_dir, image_files):
         self.image_dir = image_dir
+        self.image_files = image_files
         self.image_cache = {}
+        # not exactly optimal to load background image twice,
+        # but also not *that* inefficient
+        self.bg_im_size = self.load(list(image_files['BACKGROUNDS'].keys())[0]).size[0]
 
     def load_all_images(self):
-        def _load_all_images(fname):
-            if os.path.isdir(fname):
-                for fname2 in os.listdir(self.image_dir):
-                    _load_all_images(fname2)
-            else:
-                if fname[-4:] not in ['.png', 'jpg']:
-                    return
-                file_path = Path(self.image_dir) / fname
-                self.image_cache[fname] = Image.open(file_path)
-        _load_all_images(self.image_dir)
+        def _load_all_images(d: dict):
+            for k,v in d.items():
+                if type(v) == str:
+                    self.load(v)
+                elif type(v) in [int, float]:
+                    self.load(k)
+                else:
+                    _load_all_images(v)
+
+        _load_all_images(self.image_files)
 
     def load(self, filename: str) -> Image:
         if filename not in self.image_cache:
+            print(f'Loading {filename}')
             file_path = Path(self.image_dir) / filename
             self.image_cache[filename] = Image.open(file_path)
         return self.image_cache[filename]
+
+    def resize_all_images(self):
+        for (fname, p) in [
+            # zodiac wheel
+            (self.image_files['HOUSE_NUMBERS'], image_params.HOUSE_NUMBER_RADIUS),
+            # logo
+            (self.image_files['LOGO'], image_params.LOGO_RADIUS),
+            # planets
+            *[(sign, image_params.PLANET_SIZE) for sign in self.image_files['PLANETS'].values()],
+            # signs 
+            *[(sign, image_params.SIGN_SIZE) for sign in self.image_files['SIGNS'].values()],
+        ]:
+            im  = self.load(fname)
+            print(f"Resizing {fname} to {100*p}% of background.")
+            self.image_cache[fname] = resize_image(im, self.bg_im_size, p)
+        
 
 class RemoteImageLoader:
     def __init__(self, distribution_url, bucket_name):
@@ -57,6 +78,21 @@ class RemoteImageLoader:
         with open(file_path, 'wb') as f:
             f.write(response.content)
         return Image.open(file_path)
+
+def resize_image(im, bg_size, p):
+    """
+    Resizes the input image `im` to a new size that is `p` percent of the `bg_size` image size.
+    Args:
+    - im: The input image to be resized.
+    - bg_size: A tuple (width, height) representing the size of the background image.
+    - p: A float representing the percentage of the `bg_size` image size to which the `im` should be resized.
+    Returns:
+    The resized image as a PIL Image object.
+    """
+    new_width = p * bg_size
+    new_height = (new_width / im.size[0]) * im.size[1]
+    new_size = tuple(map(int, (new_width, new_height)))
+    return im.resize(new_size, Image.LANCZOS)
 
 def calculate_position(degree):
     return {
