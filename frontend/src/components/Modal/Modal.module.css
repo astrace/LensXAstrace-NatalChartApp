@@ -1,0 +1,108 @@
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(3, 1, 22, 0.73);
+  background-blend-mode: multiply;
+}
+
+.modal-box {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 455px;
+  left: calc(50vw - 455px/2);
+  top: calc(50% - 365px/2 + 0.5px);
+
+  background: radial-gradient(630.2% 51.85% at 108.17% 3.51%, rgba(255, 17, 60, 0.6764) 0%, rgba(255, 22, 64, 0.4272) 17.19%, rgba(255, 27, 68, 0.2581) 32.29%, rgba(255, 33, 73, 0.1869) 53.65%, rgba(255, 39, 78, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, linear-gradient(89.99deg, rgba(103, 19, 19, 0.12) 3.24%, rgba(255, 200, 206, 0.021) 161.62%);
+  backdrop-filter: blur(33.7331px);
+
+  border: 2px solid #f32051;
+  border-radius: 15px;
+  box-shadow: 3px 1px 30px 0px #FF002E;
+}
+
+.cancel-button {
+  width: 15px;
+  height: 14px;
+  margin-right: 10px;
+  background: url("./Vector.svg");
+}
+
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 25px;
+  gap: 10px;
+
+  width: 405px;
+  height: 34px;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 15px;
+  width: 350px;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 92px;
+}
+
+.modal-body button {
+  width: 100%;
+}
+
+.modal-title {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 31px;
+  text-align: center;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+}
+
+
+.fade-appear {
+  opacity: 0;
+  z-index: 1;
+}
+
+.fade-appear.fade-appear-active {
+  opacity: 1;
+  transition: opacity 1000ms linear;
+}
+
+.fade-enter {
+  opacity: 0;
+  z-index: 1;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 5000ms linear 5000ms;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+  opacity: 0;
+  transition: opacity 5000ms linear;
+}
+
+.fade-exit-done {
+  opacity: 0;
+}
+

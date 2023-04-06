@@ -1,0 +1,18 @@
+.header {
+  position: fixed;
+  display: flex;
+  /* see conditional in-line styling for 'justify-content' */
+  align-items: center;
+  width: inherit;
+  height: 70px;
+  margin: 0px;
+  padding: 0px;
+  backdrop-filter: blur(2em);
+  /* Note: backdrop-filter has minimal browser support */
+}
+
+.header-logo {
+  width: 180px;
+  height: 30px;
+}
+

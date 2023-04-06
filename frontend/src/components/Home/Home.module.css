@@ -1,0 +1,82 @@
+.main-text {
+  position: absolute;
+  float: left;
+  width: 480px;
+  top: 325px;
+}
+
+.main-text h1 {
+  width: 480px;
+  font-family: 'Magnat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 56px;
+  line-height: 65px;
+  color: white;
+}
+
+.main-text p {
+  width: 480px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-size: 18px;
+  line-height: 39px;
+  color: white;
+}
+
+@media screen and (max-width: 599px) {
+  .main-text {
+    position: absolute;
+    bottom: 108px;
+  }
+  .main-text h1 {
+    font-size: 38px;
+    line-height: 44px;
+  }
+  .main-text p {
+    width: 388px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 39px;
+  }
+} 
+
+@media screen and (min-width: 600px) and (max-width: 1023px) {
+  .main-text {
+    top: 288px;
+  }
+  .main-text h1 {
+    font-size: 56px;
+    line-height: 65px;
+  }
+} 
+
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .main-text {
+    top: 217px;
+  }
+  .main-text h1 {
+    font-size: 56px;
+    line-height: 65px;
+  }
+} 
+
+@media screen and (min-width: 1440px) and (max-width: 1999px) {
+  .main-text h1 {
+    font-size: 56px;
+    line-height: 65px;
+  }
+} 
+
+@media screen and (min-width: 2000px) {
+  .main-text {
+    width: 667px;
+  }
+  .main-text h1 {
+    font-size: 78px;
+    line-height: 90px;
+  }
+} 
+

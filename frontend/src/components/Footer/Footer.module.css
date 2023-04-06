@@ -1,0 +1,26 @@
+.footer {
+    position: absolute;
+    width: auto;
+    display: block;
+    bottom: 0;
+    height: 42px;
+    padding-bottom: 24px;
+}
+
+.footer p {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 18px;
+  color: white;
+  opacity: 0.6;
+}
+
+@media screen and (max-width: 599px) {
+  .footer {
+      text-align: center;
+  }
+}
+
+
