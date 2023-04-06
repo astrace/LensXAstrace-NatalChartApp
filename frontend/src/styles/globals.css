@@ -1,0 +1,58 @@
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  all: unset;
+  text-decoration: none; /* no underline */
+}
+
+button {
+  all: unset;
+  cursor: pointer;
+}
+
+@font-face {
+  font-family: "Magnat";
+  src: url('../fonts/Magnat/Magnat-HeadSemiBold.ttf');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Light.ttf');
+  font-weight: 300;
+  font-style: light;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Regular.ttf');
+  font-weight: 400;
+  font-style: regular;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Medium.ttf');
+  font-weight: 500;
+  font-style: regular;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-SemiBold.ttf');
+  font-weight: 600;
+  font-style: regular;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url('../fonts/Inter/static/Inter-Bold.ttf');
+  font-weight: 700;
+  font-style: regular;
+}
+
