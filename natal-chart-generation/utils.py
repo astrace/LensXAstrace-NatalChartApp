@@ -9,7 +9,6 @@ from pathlib import Path
 
 import boto3
 from PIL import Image
-from copy import deepcopy
 
 import image_params
 import constants
@@ -99,8 +98,8 @@ def resize_image(im, bg_size, p):
 
 def calculate_position(degree):
     """
-        This function does not seem to be used anymore (?)
-        constants was imported to get utils to run.
+        (?) This function does not seem to be used anymore (?)
+        constants.py was imported to remove warnings.
     """
     return {
         "sign": constants.SIGNS.index(degree // 30),
@@ -163,7 +162,7 @@ def wrap_planets(planets, ordering=""):
 
     def filter_condition(lb, ub, p):
         """
-            Function that holds a filtering predicate. We search for planets with unmutated dpos between the lower and 
+            Function that holds a filtering predicate. We search for planets with dpos between the lower and 
             upper bounds.
 
             Args:
@@ -175,7 +174,9 @@ def wrap_planets(planets, ordering=""):
         """
         return (p.dpos >= lb) and (p.dpos < ub)
 
+    #"reverseFlag"
     rFlag = False
+    #shift for overlapping planets
     shift = 360
     lower_bound = 0
     upper_bound = 60
@@ -191,7 +192,7 @@ def wrap_planets(planets, ordering=""):
     for p in planets:
         wrapped_planet_list.append(PlanetWrapper(p))
 
-    # pickout the overlapping planets.
+    # picks out the overlapping planets using the filter condition.
     fp_elements = list(filter(lambda p: filter_condition(
         lower_bound, upper_bound, p), planets))
 
@@ -241,6 +242,7 @@ def find_clumps(planets, theta):
     def _pass(wplanets):
         """
             _pass() has been altered to use **wrapped planet list** instead of a planet list.
+            Changes are cosmetic (planets -> wplanets renaming)
         """
         clumps = []
         curr_clump = []
@@ -267,8 +269,8 @@ def find_clumps(planets, theta):
         return clumps
 
     """
-        Note: We need to run _pass() algorithm twice, as clump detection **is directional**. Consider the following case:
-        [0,1,1,1,14,...], with theta=5.5 degrees.
+        We need to run _pass() algorithm twice, as clump detection **is directional**. 
+        Consider the following case: [0,1,1,1,14,...], with theta=5.5 degrees.
 
         If we run from start to end, we get a clump of size 5. If we run the other way, we get a singleton
         clump of (14) and (1,1,1,0) as our second clump. 
@@ -310,15 +312,18 @@ def find_clumps(planets, theta):
     But because (359) was a singleton, it was never modified by the spacing algorithm. 
     
     So an overlap will occur.
-    """
+
     # clumps = [c for c in clumps if len(c) > 1]
+
+    """
 
     return clumps
 
 def _merge_clumps(clumps1, clumps2):
     """"(
     Merges two lists of integer clusters into a single list of merged clusters.
-
+    If two clumps overlap, the UNION of the two clumps will be added with the (c1 || c2) operation.
+    
     Args:
         clumps1 (List[List[int]]): A list of integer clusters, represented as lists of integers.
         clumps2 (List[List[int]]): A second list of integer clusters, also represented as lists of integers.
@@ -339,7 +344,7 @@ def _merge_clumps(clumps1, clumps2):
             elif len(c1 & c2) > 0:
                 clumps.add(frozenset(c1 | c2))
     
-    """ Used for debugging - remove once pull request finished.
+    """ #Used for debugging - remove once pull request finished.
     print("Our merged clump list:")
     for clump in clumps:
         print(str([str(p) for p in clump]))
@@ -349,7 +354,6 @@ def _merge_clumps(clumps1, clumps2):
 
 
 def _split_clumps_by_sign(clumps):
-    # this is needed for proper rendering in `spread_planets`
     """
     Splits a list of planet clusters by sign, and returns a new list of clusters.
 
@@ -358,9 +362,6 @@ def _split_clumps_by_sign(clumps):
 
     Returns:
         A list of planet clusters, where each cluster is sorted by degree and split into multiple clusters by sign.
-
-    Note:
-        This function is specifically designed for use in the `spread_planets` function.
     """
     new_clumps = []
     for c in clumps:
@@ -374,7 +375,7 @@ def _split_clumps_by_sign(clumps):
         else:
             new_clumps.append(c)
 
-    """ Used for debugging.
+    """ #Used for debugging.
     print("Regrouping clumps by sign. Output below:")
     for clump in new_clumps:
         print(str([str(p) for p in clump]))
@@ -414,7 +415,7 @@ def spread_planets(planets, theta=None, min_to_center=5):
 
     Note:
         This function modifies the display positions
-        of the planets in place. 
+        of the planets via mutation (in place). 
     """
 
     if not theta:
@@ -478,34 +479,54 @@ def spread_planets(planets, theta=None, min_to_center=5):
     After we have calculated all of our geometry for our clumps, we need to adjust geometry for the
     rare case of an overlap.
     """
-    # print("Clumps after we calculated our geometry:")
-    # print_clumps(clumps)
+    #clumps must be sorted to detect for overlaps correctly.
+    adjust_clumps(sort_clumps(clumps),theta)
 
-    #clumps must be sorted to detect for overlaps.
-    ord_clumps = sort_clumps(clumps)
+def sort_clumps(clumps):
+    """
+        Does what it says on the label. Keys on p.dpos. 
+        Only sorts in an ascending manner.
+    """
+    sort_list = []
+    for clump in clumps:
+        #Calculate the average dpos of the clump. Storage with 2-ples used.
+        sort_list.append((sum(p.dpos for p in clump) / len(clump), clump)) 
+    sort_list.sort(key=lambda q: q[0])
+    clumps_sorted = []
+    #build the rearrangement clumps list.
+    for item in sort_list:
+        clumps_sorted.append(item[1])
+    return clumps_sorted
 
-    print("Our sorted clumps list:")
-    print_clumps(ord_clumps)
 
-    print("------------")
-    print("Now lets do our forward scan to adjust for overlaps")
-    adjust_clumps(ord_clumps,theta)
-    # If we just have one big clump...no need to pursue.
+"""
+Can our code be cleaned up (above), and these be integrated into it?
+Are separate functions necessary?
+
+"""
+
+def find_max(clump):
+    return max(p.dpos for p in clump)
+
+def find_min(clump):
+    return min(p.dpos for p in clump)
+
+
 
 def adjust_clumps(clumps,theta):
     """
         This function actively mutates our clumps list.
 
         The structure of the clumps traversal code is just copied from _pass(). We
-        linearly traverse, and then check the last clump with the first one (for a potential boundary overlap).
+        linearly traverse (from 0 -> 360), and then check the last clump with the first one (for a potential boundary overlap).
 
-        If clump i and i+1 overlap, i+1 will be pushed forward by theta + overlap amount (in degrees).
+        If clump (i) and (i+1) overlap, (i+1) will be pushed forward by theta + overlap amount (in degrees).
 
         Args: 
-        - clumps: A list of clumps
+        - clumps: A list of clumps.
         - theta: our calculated theta, based on the chord length of each symbol we place on the chart (about 5.5 degrees).
     """
-    # just abort if 1 or 0 clumps present.
+    # just abort if 1 or 0 clumps present - no work to do.
     if (len(clumps) <= 1):
         return
 
@@ -536,35 +557,7 @@ def adjust_clumps(clumps,theta):
                 print("shifting by delta + theta = " + str(theta - delta_shift))
                 for p in preclump:
                     p.dpos += (theta - delta_shift) #shift so there is exactly theta difference between two points.
-    return
-
-def sort_clumps(clumps):
-    """
-        Does what it says on the label. Keys on p.dpos. 
-        
-        Only sorts in an ascending manner.
-
-        (!!) Note, we can use "p in clump..." list notation with sum() function to clean up this function.
-    """
-    sort_list = []
-    for clump in clumps:
-        total = 0
-        for p in clump:
-            total += p.dpos
-        total /= len(clump)  # average position
-        #Note: Tuples are being used here.
-        sort_list.append((total, clump)) 
-    sort_list.sort(key=lambda q: q[0])
-    clumps_sorted = []
-    for item in sort_list:
-        clumps_sorted.append(item[1])
-    return clumps_sorted
-
-def find_max(clump):
-    return max(p.dpos for p in clump)
-
-def find_min(clump):
-    return min(p.dpos for p in clump)
+    return 
 
 def print_planet_list(label, p_list):
     print(label)

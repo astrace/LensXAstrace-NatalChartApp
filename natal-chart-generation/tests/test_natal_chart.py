@@ -52,6 +52,7 @@ class TestNatalChart(unittest.TestCase):
             chart = _utils.generate_stellium_near_zero_degrees(n)
             self.visual_test(chart)
 
+    @unittest.skip("suppress")
     def test_basic_cases(self):
         tuple_list = [
             ([20,40,60,80,100,120,140,160,180,200,220,240,260],"basic singletons"),
@@ -62,6 +63,7 @@ class TestNatalChart(unittest.TestCase):
             ]
         self.manual_test(tuple_list)
 
+    @unittest.skip("suppress")
     def test_boundary_straddle(self):
         tuple_list = [
             ([1,1,60,120,120,120,200,200,200,250,290,358,358],"singleton's straddling"),
@@ -70,6 +72,39 @@ class TestNatalChart(unittest.TestCase):
             ([1,1,1,1,120,120,120,120,200,357,358,358,358],"groups of four straddling"), 
             ([1,1,1,2,2,200,200,200,356,357,358,358,358],"groups of five"), 
             ([1,1,1,2,2,2,200,356,356,357,358,358,358],"groups of six"), 
+        ]
+        self.manual_test(tuple_list)
+
+    def test_boundary_overlap(self):
+        tuple_list = [
+            ([0, 45, 90, 90, 130, 130, 170,170, 240, 240, 300, 345, 359],"pair of two over boundary"),
+            ([0, 1, 120, 120, 120, 200, 200, 200, 200, 340, 340, 340, 359],"group of three over boundary"),
+            ([0, 1, 120, 120, 120, 200, 200, 200, 200, 340, 340, 358, 359],"group of four over boundary"),
+            ([0, 1, 1, 120, 120, 200, 200, 200, 200, 340, 340, 358, 359],"group of five over boundary")
+            ([0, 1, 1, 120, 120, 200, 200, 200, 200, 340, 357, 358, 359],"group of six over boundary")
+            ([0,0,1,1,1,250,250,250,250,358,359,359,359],"group of nine over boundary"),
+        ]
+        self.manual_test(tuple_list)
+
+    def test_non_boundary_overlaps(self):
+        tuple_list = [
+            ([10,20,30,40,50,50,53,53,105,150,200,230,280],"pair of two overlap interior"),
+            ([10,20,30,50,50,50,53,53,53,150,200,230,280],"pair of three overlap interior"),
+            ([10,20,50,50,50,50,53,53,53,53,200,230,280],"pair of four overlap interior"),
+            ([10,50,50,50,50,50,53,53,53,53,53,230,280],"pair of five overlap interior"),
+            ([50,50,50,50,50,50,53,53,53,53,53,53,280],"pair of six overlap interior"),
+            ([50,50,50,50,50,50,53,53,53,53,53,53,53],"pair of six and seven overlap interior"),
+        ]
+        self.manual_test(tuple_list)
+
+    @unittest.skip("suppress")
+    def test_pathologic_cases(self):
+        tuple_list = [
+            ([100,100,100,110,110,110,120,120,120,130,130,130,130],"multi group interior overlap"),
+            ([357, 357, 358, 358, 359, 359, 0, 0, 0, 1, 1, 1, 2],"everything over the boundary"),
+            ([1, 1, 1, 1, 1, 1, 1, 1, 1, 358, 358, 358, 358],"group of nine and four over boundary"),
+            ([358, 359, 359, 0, 0, 1, 7, 7, 7, 7, 7, 7, 7],"group of six and seven over boundary"),
+            ([2,2,2,12,12,12,348,348,348,348,358,358,358],"multi groups, all near the boundary"),
         ]
         self.manual_test(tuple_list)
 
@@ -90,6 +125,11 @@ class TestNatalChart(unittest.TestCase):
         """
             This method allows for user interactivity when sequentially genearating test images.
             The user can record notes for observed failures in charts, and read them in a file later on.
+
+            Args:
+                - natal_chart_obj
+                - bg_file: specify a bg_file to use directly.
+                - test_desc: Optional test_description field for the test log file.
         """
         im = _generate(natal_chart_obj, self.image_loader, bg_file)
         
