@@ -101,7 +101,6 @@ def calculate_position(degree):
     """
         This function does not seem to be used anymore (?)
         constants was imported to get utils to run.
-
     """
     return {
         "sign": constants.SIGNS.index(degree // 30),
