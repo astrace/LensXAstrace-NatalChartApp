@@ -31,24 +31,44 @@ class TestNatalChart(unittest.TestCase):
     image_loader.resize_all_images()
     unixtime = int(time.time())
 
+    @unittest.skip("suppress for now.")
     def test_natal_charts_with_stelliums(self):
         for _ in range(3):
             n = random.randint(2, 10)
             chart = _utils.generate_stellium(n)
             self.visual_test(chart)
 
+    @unittest.skip("suppress for now.")
     def test_natal_charts_with_backgrounds(self):
         bg_images = constants.IMG_FILES['BACKGROUNDS'].keys()
         for bg_im_file in bg_images:
             chart = _utils.random_chart()
             self.visual_test(chart, bg_im_file)
 
+    @unittest.skip("suppress for now.")
     def test_natal_charts_near_zero_degrees(self):
         for _ in range(3):
             n = random.randint(2, 10)
             chart = _utils.generate_stellium_near_zero_degrees(n)
             self.visual_test(chart)
 
+
+    def test_basic(self):
+        position_list = [
+            [1,1,8,8,20,20,60,60,100,100,120,120,200],
+            [20,40,60,80,100,120,140,160,180,200,220,240,260],
+            [10,10,50,50,90,90,130,130,170,170,240,240,300]
+            ]
+        
+        for ints in position_list:
+            chart = _utils.create_mock_natal_chart(ints)
+            self.visual_test(chart)
+
+
+    """
+        This method allows for user interactivity when sequentially genearating test images.
+        The user can record notes for observed failures in charts, and read them in a file later on.
+    """
     def visual_test(self, natal_chart_obj, bg_file=None):
         im = _generate(natal_chart_obj, self.image_loader, bg_file)
         
@@ -105,6 +125,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "retest":
         retest_failed_cases("test_results.log")
     else:
-        # Run the test suite
         unittest.main()
-

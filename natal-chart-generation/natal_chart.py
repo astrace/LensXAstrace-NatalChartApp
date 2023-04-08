@@ -17,6 +17,7 @@ import utils
 
 swe.set_ephe_path(EPHE_DIR)
 
+
 class Planet:
     """
     Attributes:

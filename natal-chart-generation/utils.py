@@ -100,6 +100,97 @@ def calculate_position(degree):
         "position": degree % 30
     }
 
+class PlanetWrapper:
+    """
+    The planet wrapper class allows us to avoid direct mutation of Planet objects, when we run our planet 
+    spacing and clumping algorithms.
+
+    This strucutre is not *necessary* to position and space our planets, but it does reduce run-time errors
+    by mitigating mutation risks. 
+    
+    It exists for cleaner testing (...and for programmer sanity).
+
+    Attributes:
+    -spos: start position (just a copy of abs_pos from a planet)
+    -rpos: relative position (a copy of dpos, and a field that we mutate throughout our algorithm) 
+    -p: a reference to a planet object.
+
+    Methods:
+    - shift_rpos(): adjusts our rpos (dpos) position.
+    - __str__(): Useful for inspectioin and debugging of wrapped planets.
+
+    """
+    def __init__(self, p):
+        self.spos = p.abs_pos
+        self.rpos = p.dpos
+        self.planet = p
+
+    def shift_rpos(self, val):
+        self.rpos += val
+
+    def __str__(self):
+        pname = self.planet.name
+        # rp is short for "referenced planet"
+        return f'rp: {pname}, spos: {self.spos}, rpos:{self.rpos}.'
+
+
+def wrap_planets(planets, ordering=""):
+    """
+        Creates a list of wrapped planet objects. This copies apos and dpos into separate fields that
+        we may mutate. We have a reference to a planet - but the planet itself is never mutated.
+
+        Args:
+            planets: A list of planet objects.
+            ordering: flag that indicates if we are traversing in an ascendent or decendent manner on our planets list. 
+
+        Returns:
+            wrapped_planet_list: A list of wrapped planet objects, that have references to the planet inputs.
+
+    """
+
+    def filter_condition(lb, ub, p):
+        """
+            Function that holds a filtering predicate. We search for planets with unmutated dpos between the lower and 
+            upper bounds.
+
+            Args:
+                -lb: (int) lower bound.
+                -up (int) upper bound.
+                -p: Planet Object.
+
+            Returns: Truth value.
+        """
+        return (p.dpos >= lb) and (p.dpos < ub)
+
+    rFlag = False
+    shift = 360
+    lower_bound = 0
+    upper_bound = 60
+    if (ordering == "descending"):
+        rFlag = True
+        shift = -360
+        lower_bound = 300
+        upper_bound = 360
+
+    planets.sort(key=lambda p: p.dpos, reverse=rFlag)
+    wrapped_planet_list = []
+
+    for p in planets:
+        wrapped_planet_list.append(PlanetWrapper(p))
+
+    # pickout the overlapping planets.
+    fp_elements = list(filter(lambda p: filter_condition(
+        lower_bound, upper_bound, p), planets))
+
+    for p in fp_elements:
+        wrapped_planet = PlanetWrapper(p)
+        wrapped_planet.shift_rpos(shift)
+        wrapped_planet_list.append(wrapped_planet)
+
+    return wrapped_planet_list
+
+
+
 def find_clumps(planets, theta):
     """Find clumps of planets located near each other on the perimeter of a circle.
 
