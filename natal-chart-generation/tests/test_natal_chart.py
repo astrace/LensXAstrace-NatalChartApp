@@ -52,7 +52,6 @@ class TestNatalChart(unittest.TestCase):
             chart = _utils.generate_stellium_near_zero_degrees(n)
             self.visual_test(chart)
 
-    @unittest.skip("suppress")
     def test_basic_cases(self):
         tuple_list = [
             ([20,40,60,80,100,120,140,160,180,200,220,240,260],"basic singletons"),
@@ -63,7 +62,6 @@ class TestNatalChart(unittest.TestCase):
             ]
         self.manual_test(tuple_list)
 
-    @unittest.skip("suppress")
     def test_boundary_straddle(self):
         tuple_list = [
             ([1,1,60,120,120,120,200,200,200,250,290,358,358],"singleton's straddling"),
@@ -80,8 +78,8 @@ class TestNatalChart(unittest.TestCase):
             ([0, 45, 90, 90, 130, 130, 170,170, 240, 240, 300, 345, 359],"pair of two over boundary"),
             ([0, 1, 120, 120, 120, 200, 200, 200, 200, 340, 340, 340, 359],"group of three over boundary"),
             ([0, 1, 120, 120, 120, 200, 200, 200, 200, 340, 340, 358, 359],"group of four over boundary"),
-            ([0, 1, 1, 120, 120, 200, 200, 200, 200, 340, 340, 358, 359],"group of five over boundary")
-            ([0, 1, 1, 120, 120, 200, 200, 200, 200, 340, 357, 358, 359],"group of six over boundary")
+            ([0, 1, 1, 120, 120, 200, 200, 200, 200, 340, 340, 358, 359],"group of five over boundary"),
+            ([0, 1, 1, 120, 120, 200, 200, 200, 200, 340, 357, 358, 359],"group of six over boundary"),
             ([0,0,1,1,1,250,250,250,250,358,359,359,359],"group of nine over boundary"),
         ]
         self.manual_test(tuple_list)
@@ -97,7 +95,7 @@ class TestNatalChart(unittest.TestCase):
         ]
         self.manual_test(tuple_list)
 
-    @unittest.skip("suppress")
+    #the hardest cases for our algorithms lie below...(⌐■_■)
     def test_pathologic_cases(self):
         tuple_list = [
             ([100,100,100,110,110,110,120,120,120,130,130,130,130],"multi group interior overlap"),
@@ -105,6 +103,7 @@ class TestNatalChart(unittest.TestCase):
             ([1, 1, 1, 1, 1, 1, 1, 1, 1, 358, 358, 358, 358],"group of nine and four over boundary"),
             ([358, 359, 359, 0, 0, 1, 7, 7, 7, 7, 7, 7, 7],"group of six and seven over boundary"),
             ([2,2,2,12,12,12,348,348,348,348,358,358,358],"multi groups, all near the boundary"),
+            ([0,0,0,0,0,0,0,0,0,0,0,0,0],"everything on boundary (at zero)"),
         ]
         self.manual_test(tuple_list)
 

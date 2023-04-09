@@ -295,13 +295,14 @@ def find_clumps(planets, theta):
         for item in clump:
             wp_list.append(item.planet)
         clumps1.append(wp_list)
-
+    
     clumps2 = []
     for clump in sp_clumps:
         wp_list = []
         for item in clump:
             wp_list.append(item.planet)
         clumps2.append(wp_list)
+
 
     clumps = _merge_clumps(clumps1, clumps2)
     clumps = _split_clumps_by_sign(clumps)
@@ -344,12 +345,14 @@ def _merge_clumps(clumps1, clumps2):
             elif len(c1 & c2) > 0:
                 clumps.add(frozenset(c1 | c2))
     
-    """ #Used for debugging - remove once pull request finished.
+
+    """
     print("Our merged clump list:")
     for clump in clumps:
         print(str([str(p) for p in clump]))
     """
-    
+
+    #listify our clumps, from set() form.
     return [list(c) for c in clumps]
 
 
@@ -375,11 +378,12 @@ def _split_clumps_by_sign(clumps):
         else:
             new_clumps.append(c)
 
-    """ #Used for debugging.
+    """
     print("Regrouping clumps by sign. Output below:")
     for clump in new_clumps:
         print(str([str(p) for p in clump]))
     """
+        
     return new_clumps
         
 
@@ -425,7 +429,18 @@ def spread_planets(planets, theta=None, min_to_center=5):
 
     clumps = find_clumps(planets, theta)
 
-    for clump in clumps:
+    """
+        We do need to remove clumps for our spacing algorithm below to work. 
+        The spacing algorithm is run on a reduced list without singletons.
+        Our planets within clumps are mutated, but our singletons are left alone.
+    """
+
+    #"Non-Singleton Clumps"
+    #Creates a list that references larger clumps only.
+    ns_clumps = [c for c in clumps if len(c) > 1]
+
+    #should mutate all non-singleton clumps. singletons left alone, and corrected by adjust_clumps() later on.
+    for clump in ns_clumps:
     
         assert len(clump) > 1
 
@@ -477,9 +492,9 @@ def spread_planets(planets, theta=None, min_to_center=5):
 
     """
     After we have calculated all of our geometry for our clumps, we need to adjust geometry for the
-    rare case of an overlap.
+    rare case of an overlap, or for singletons that hang around.
     """
-    #clumps must be sorted to detect for overlaps correctly.
+    #clumps **must be sorted** to detect for overlaps correctly.
     adjust_clumps(sort_clumps(clumps),theta)
 
 def sort_clumps(clumps):
@@ -496,22 +511,16 @@ def sort_clumps(clumps):
     #build the rearrangement clumps list.
     for item in sort_list:
         clumps_sorted.append(item[1])
+    
+    print("Our Sorted clumps (before adjustment) are:")
+    print_clumps(clumps_sorted)
     return clumps_sorted
-
-
-"""
-Can our code be cleaned up (above), and these be integrated into it?
-Are separate functions necessary?
-
-"""
 
 def find_max(clump):
     return max(p.dpos for p in clump)
 
 def find_min(clump):
     return min(p.dpos for p in clump)
-
-
 
 def adjust_clumps(clumps,theta):
     """
@@ -526,8 +535,8 @@ def adjust_clumps(clumps,theta):
         - clumps: A list of clumps.
         - theta: our calculated theta, based on the chord length of each symbol we place on the chart (about 5.5 degrees).
     """
-    # just abort if 1 or 0 clumps present - no work to do.
-    if (len(clumps) <= 1):
+    # just abort if 1 clump present - no work to do.
+    if (len(clumps) == 1):
         return
 
     preclump = []
@@ -539,10 +548,10 @@ def adjust_clumps(clumps,theta):
             # will only really trigger if preclump has a max >= 360 for dpos setting.
             delta_shift = (find_max(preclump) - 360) - find_min(postclump)
             print("delta_shift" + str(delta_shift))
-            if (delta_shift >= 0):  # then we need to adjust our clumps.
+            if (delta_shift >= -theta):  # then we need to adjust our clumps.
                 print(" BDY CASE, shifting by delta + theta = " + str(delta_shift + theta))
                 for p in postclump:
-                    p.dpos += (delta_shift + theta)
+                    p.dpos += (theta + delta_shift)
                 #we don't need a -theta case as is below, as the signs will be separated by house (i believe)
         else:  # general case, we are between 0 and 360.
             postclump = clumps[i+1]
