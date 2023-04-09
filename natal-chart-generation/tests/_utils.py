@@ -5,7 +5,7 @@ import pytz
 import swisseph as swe
 
 from constants import EPHE_DIR, PLANET_NAMES, SIGNS
-from natal_chart import NatalChart, Planet
+from natal_chart import NatalChart, Planet, _generate
 
 swe.set_ephe_path('../' + EPHE_DIR)
 
@@ -128,3 +128,21 @@ def random_location():
     longitude = random.uniform(-180, 180)
     latitude = random.uniform(-90, 90)
     return longitude, latitude
+
+
+def manual_stellium_test(int_list):
+    """
+        Given a list of 13 integer positions for each planet, generate a chart.
+
+        Args:
+            - intList: List of Integers that gives the angular position of the planets.
+
+        Notes: No error checking for list. If improper list length occurs,
+        code can silently fail in other places.
+    """
+
+    test_chart = create_mock_natal_chart(int_list) #Need 13
+    #for pname in test_chart.objects.keys():
+    #    print(test_chart.objects[pname])
+    im = _generate(test_chart, load_image)
+    im.show()
