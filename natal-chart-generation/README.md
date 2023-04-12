@@ -42,5 +42,11 @@ Before/After:
 
 ## Testing
 
-Testing is mostly manual. Test file `test.py` simply generates random natal charts and displays them. See: `./assets/test_recording.mov` for an example.
-
+Basic tests:
+```
+python -m unittest tests.test_natal_chart.TestBasicNatalChart
+```
+Visual tests:
+```
+python -m unittest tests.test_natal_chart.TestVisualNatalChart
+```
