@@ -15,14 +15,14 @@ Due to the nature of the problem, we rely on **manual visual inspection** of the
 
 ---
 
-Running the test suite for the natal chart generation:
-
-```python test_natal_chart.py```
-
-Retesting failed cases from the log file:
-
-```python test_natal_chart.py retest```
-
+Basic tests:
+```
+python -m unittest test_natal_chart.BasicTestNatalChart
+```
+Visual tests:
+```
+python -m unittest test_natal_chart.VisualTestNatalChart
+```
 The test results, along with comments and Unix timestamps for failed cases, will be stored in the `test_results.log` file.
 
 ## Natal Chart Rendering Algorithms
@@ -39,14 +39,3 @@ Before/After:
 ### TODO
 
 <img src="../assets/Screenshot 2023-02-21 at 12.01.30.png" alt="Image 1" style="width: 30%; display: inline-block;">
-
-## Testing
-
-Basic tests:
-```
-python -m unittest tests.test_natal_chart.TestBasicNatalChart
-```
-Visual tests:
-```
-python -m unittest tests.test_natal_chart.TestVisualNatalChart
-```
