@@ -1,8 +1,9 @@
-import sys
 import json
+import math
 import os
 import random
 import subprocess
+import sys
 import time
 import unittest
 from datetime import datetime, timedelta
@@ -12,6 +13,7 @@ from os.path import dirname, abspath
 grandparent_dir = dirname(dirname(abspath(__file__)))
 sys.path.insert(0, grandparent_dir)
 
+import numpy as np
 import warnings
 # Suppress the ResourceWarning
 warnings.filterwarnings("ignore", category=ResourceWarning)
@@ -21,11 +23,29 @@ import _utils
 import utils
 
 from constants import IMG_DIR, IMG_FILES
+from image_params import PLANET_SIZE, PLANET_RADIUS
 IMG_DIR = '../' + IMG_DIR
-from natal_chart import _generate
+from natal_chart import NatalChart, _generate
+
+
+class BasicTestNatalChart(unittest.TestCase):
+    m = len(NatalChart.required_objects)
+
+    def test_find_clumps_one_clump(self):
+        theta = math.degrees(2 * math.asin(0.5 * (PLANET_SIZE / 2) / PLANET_RADIUS))
+        chart = _utils.create_mock_natal_chart([0] * self.m)
+        clumps = utils.find_clumps(list(chart.objects.values()), theta)
+        assert len(clumps) == 1 and set(clumps[0]) == set(chart.objects.values())
+
+    def test_find_clumps_none(self):
+        theta = math.degrees(2 * math.asin(0.5 * (PLANET_SIZE / 2) / PLANET_RADIUS))
+        positions = np.arange(0, 360, 360 / self.m) # perfectly evenly spaced out
+        chart = _utils.create_mock_natal_chart(positions)
+        clumps = utils.find_clumps(list(chart.objects.values()), theta)
+        assert len(clumps) == self.m
 
 # Test class
-class TestNatalChart(unittest.TestCase):
+class VisualTestNatalChart(unittest.TestCase):
     image_loader = utils.LocalImageLoader(IMG_DIR, IMG_FILES)
     bg_im_size = image_loader.load_all_images()
     image_loader.resize_all_images()
@@ -83,6 +103,7 @@ class TestNatalChart(unittest.TestCase):
                 log_file.write(json.dumps(test_case) + "\n")
 
 # Functions for retesting failed test cases
+# TODO: Create command for running this
 def retest_failed_cases(log_file_path):
     failed_test_cases = []
 
@@ -100,11 +121,5 @@ def retest_failed_cases(log_file_path):
 
 
 if __name__ == "__main__":
-    import sys
-
-    if len(sys.argv) > 1 and sys.argv[1] == "retest":
-        retest_failed_cases("test_results.log")
-    else:
-        # Run the test suite
-        unittest.main()
+    unittest.main()
 

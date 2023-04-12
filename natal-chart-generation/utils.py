@@ -123,76 +123,37 @@ def find_clumps(planets, theta):
 
     def _clump_check(p1, pn, n):
         """
-        This helper function takes the angular positions of two planets
+        This helper function takes two planets
         and the number of planets between them and determines whether
         the two planets are considered part of the same clump. The
         maximum angular distance that two planets can be apart and still be
         considered part of the same clump is determined by the value of "theta".
         """
-        return abs(pn - p1) < theta * (n - 1)
+        return (p1.sign == p2.sign) and abs(p1.dpos - pn.dpos) < theta * (n - 1)
    
-    def _pass(planets):
-        clumps = []
-        curr_clump = []
+    clumps = []
+    curr_clump = []
         
-        for i,p in enumerate(planets):
-            if i == 0:
-                # if it's the first planet, add it to current (empty) clump
-                curr_clump.append(p)
-                continue
+    for i,p in enumerate(planets):
+        if i == 0:
+            # if it's the first planet, add it to current (empty) clump
+            curr_clump.append(p)
+            continue
 
-            # get current clump info
-            p1 = curr_clump[0].dpos
-            p2 = p.dpos # potentially not part of current clump
-            n = 1 + len(curr_clump)
-            
-            if _clump_check(p1, p2, n):
-                # if it satisfies the clump criteria, add it to the current clump
-                curr_clump.append(p)
-            else:
-                clumps.append(curr_clump)
-                curr_clump = [p]
+        # get current clump info
+        p1 = curr_clump[0]
+        p2 = p # potentially not part of current clump
+        n = 1 + len(curr_clump)
+        
+        if _clump_check(p1, p2, n):
+            # if it satisfies the clump criteria, add it to the current clump
+            curr_clump.append(p)
+        else:
+            clumps.append(curr_clump)
+            curr_clump = [p]
 
-        clumps.append(curr_clump)
-        return clumps
+    clumps.append(curr_clump)
 
-    # hard to explain why this needs to be done twice: forward & backwards pass
-    # ... there are edge cases where one pass fails
-    planets.sort(key=lambda p: p.dpos)
-    # NOTE: We add first planet again to the end in case of clumps near 0/360
-    ##Note2: We must make a deep copy - because the dpos will change for both the p0 at the beginning and ends.
-    """ Old code (with shallow copying)
-    p0 = planets[0]
-    p0.dpos += 360
-    clumps1 = _pass(planets + [p0])
-    """
-    pEnd = deepcopy(planets[0])
-    pEnd.dpos += 360
-    clumps1 = _pass(planets + [pEnd])
-    
-
-    planets.sort(key=lambda p: p.dpos, reverse=True)
-    clumps2 = _pass(planets)
-
-    """
-    //Used for debugging - will remove when pull request finished.
-    print("We ran two passes, and found two sets of clumps. Heres what we got:")
-    print("Clumps1 List:")
-    for clump in clumps1:
-        print(str([str(p) for p in clump]))
-
-    print("Clumps2 List:")
-    for clump in clumps2:
-        print(str([str(p) for p in clump]))
-    """
-
-    # TODO: CHECK FOR CLUMPS NEAR 0/360
-
-    clumps = _merge_clumps(clumps1, clumps2)
-    clumps = _split_clumps_by_sign(clumps) 
-    # remove singletons
-    clumps = [c for c in clumps if len(c) > 1]
-    
     return clumps
 
 def _merge_clumps(clumps1, clumps2):
