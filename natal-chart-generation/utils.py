@@ -8,6 +8,7 @@ from io import BytesIO
 from pathlib import Path
 
 import boto3
+from disjoint_set import DisjointSet
 from PIL import Image
 from copy import deepcopy
 
@@ -120,7 +121,6 @@ def find_clumps(planets, theta):
     returns a list of unique clumps. If two clumps overlap, they are merged into a single
     clump.
     """
-
     def _clump_check(p1, pn, n):
         """
         This helper function takes two planets
@@ -129,95 +129,38 @@ def find_clumps(planets, theta):
         maximum angular distance that two planets can be apart and still be
         considered part of the same clump is determined by the value of "theta".
         """
-        return (p1.sign == p2.sign) and abs(p1.dpos - pn.dpos) < theta * (n - 1)
-   
-    clumps = []
-    curr_clump = []
-        
-    for i,p in enumerate(planets):
-        if i == 0:
-            # if it's the first planet, add it to current (empty) clump
-            curr_clump.append(p)
-            continue
+        return (p1.sign == pn.sign) and abs(p1.dpos - pn.dpos) < theta * (n - 1)
+  
+    # using Disjoint-set data structure for keeping track of clumps
+    # https://en.wikipedia.org/wiki/Disjoint-set_data_structure
 
-        # get current clump info
-        p1 = curr_clump[0]
-        p2 = p # potentially not part of current clump
-        n = 1 + len(curr_clump)
-        
-        if _clump_check(p1, p2, n):
-            # if it satisfies the clump criteria, add it to the current clump
-            curr_clump.append(p)
-        else:
-            clumps.append(curr_clump)
-            curr_clump = [p]
+    clumps = DisjointSet()
 
-    clumps.append(curr_clump)
+    def _pass(planets):
+        curr_first_planet = planets[0]
+        curr_size = 1 
 
-    return clumps
+        for p in planets[1:]:
+            # ensure each planet has it's own set
+            # NOTE: `find` creates a size-1 set if
+            # the element is currently not in the ds
+            clumps.find(p)
 
-def _merge_clumps(clumps1, clumps2):
-    """"(
-    Merges two lists of integer clusters into a single list of merged clusters.
+            if _clump_check(curr_first_planet, p, curr_size + 1):
+                # if it satisfies the clump criteria, add it to the current clump
+                clumps.union(curr_first_planet, p)
+                curr_size += 1
+            else:
+                curr_first_planet = p
+                curr_size = 1
 
-    Args:
-        clumps1 (List[List[int]]): A list of integer clusters, represented as lists of integers.
-        clumps2 (List[List[int]]): A second list of integer clusters, also represented as lists of integers.
+    # forward and backwards pass
+    _pass(sorted(planets, key=lambda p: p.dpos))
+    _pass(sorted(planets, key=lambda p: p.dpos, reverse=True))
 
-    Returns:
-        A list of merged integer clusters, where each cluster is represented as a list of integers.
-
-    """
-    clumps1 = [c for c in clumps1 if len(c) > 1]
-    clumps2 = [c for c in clumps2 if len(c) > 1]
-    clumps = set() # merged
-    for c1 in clumps1:
-        for c2 in clumps2:
-            c1, c2 = set(c1), set(c2)
-            if c1 == c2:
-                clumps.add(frozenset(c1))
-            elif len(c1 & c2) > 0:
-                clumps.add(frozenset(c1 | c2))
-    """ Used for debugging - remove once pull request finished.
-    print("Our merged clump list:")
-    for clump in clumps:
-        print(str([str(p) for p in clump]))
-    """
-    return [list(c) for c in clumps]
-
-
-def _split_clumps_by_sign(clumps):
-    # this is needed for proper rendering in `spread_planets`
-    """
-    Splits a list of planet clusters by sign, and returns a new list of clusters.
-
-    Args:
-        clumps (List[List[Planet]]): A list of planet clusters, represented as lists of `Planet` objects.
-
-    Returns:
-        A list of planet clusters, where each cluster is sorted by degree and split into multiple clusters by sign.
-
-    Note:
-        This function is specifically designed for use in the `spread_planets` function.
-    """
-    new_clumps = []
-    for c in clumps:
-        c.sort(key=lambda p: p.dpos)
-        if c[0].sign != c[-1].sign:
-            i = 0
-            while c[i].sign != c[-1].sign:
-                i += 1
-            new_clumps.append(c[:i])
-            new_clumps.append(c[i:])
-        else:
-            new_clumps.append(c)
-    """ Used for debugging.
-    print("Regrouping clumps by sign. Output below:")
-    for clump in new_clumps:
-        print(str([str(p) for p in clump]))
-    """
-    return new_clumps
-        
+    # sort planets in clumps before returning
+    ret = list(sorted(list(c), key=lambda x: x.dpos) for c in clumps.itersets())
+    return ret
 
 def spread_planets(planets, theta=None, min_to_center=5):
     """
@@ -263,7 +206,8 @@ def spread_planets(planets, theta=None, min_to_center=5):
 
     for clump in clumps:
     
-        assert len(clump) > 1
+        if len(clump) <= 1:
+            continue
 
         clump.sort(key=lambda p: p.dpos)
         n = len(clump)

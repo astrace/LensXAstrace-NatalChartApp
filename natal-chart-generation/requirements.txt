@@ -6,3 +6,4 @@ Pillow==9.4.0
 pyswisseph==2.10.3.1
 pytz==2023.3
 requests==2.28.2
+disjoint-set==0.7.3
