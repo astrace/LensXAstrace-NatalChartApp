@@ -102,7 +102,8 @@ def calculate_position(degree):
     }
 
 def find_clumps(planets, theta):
-    """Find clumps of planets located near each other on the perimeter of a circle.
+    """
+    Find clumps of planets located near each other on the perimeter of a circle.
 
     Args:
         planets (list): A list of Planet objects.
@@ -113,29 +114,21 @@ def find_clumps(planets, theta):
     Returns:
         list: A list of lists, where each inner list contains the planets that are part
               of the same clump.
-
-    This function sorts the planets based on their location on the perimeter of a circle
-    and then iterates through the sorted list to find clumps of planets that are close
-    to each other. It does this by performing two passes through the list of planets: one
-    forward pass and one backward pass. It then merges the clumps found in each pass and
-    returns a list of unique clumps. If two clumps overlap, they are merged into a single
-    clump.
     """
+    # using Disjoint-set data structure for keeping track of clumps
+    # https://en.wikipedia.org/wiki/Disjoint-set_data_structure
+    clumps = DisjointSet()
+
     def _clump_check(p1, pn, n):
         """
-        This helper function takes two planets
-        and the number of planets between them and determines whether
-        the two planets are considered part of the same clump. The
-        maximum angular distance that two planets can be apart and still be
-        considered part of the same clump is determined by the value of "theta".
+        This helper function takes two planets and the number of planets
+        between them and determines whether the two planets are considered
+        part of the same clump. The maximum angular distance that two
+        planets can be apart and still be considered part of the same
+        clump is determined by the value of "theta".
         """
         return (p1.sign == pn.sign) and abs(p1.dpos - pn.dpos) < theta * (n - 1)
   
-    # using Disjoint-set data structure for keeping track of clumps
-    # https://en.wikipedia.org/wiki/Disjoint-set_data_structure
-
-    clumps = DisjointSet()
-
     def _pass(planets):
         curr_first_planet = planets[0]
         curr_size = 1 
