@@ -60,6 +60,5 @@ export default function Form(props) {
         ? <Button text="Mint Natal Chart" />
         : <DisabledButton text="Mint Natal Chart" />
       }
-      <p>Mint price: 0.02 ETH</p>
     </div>
 )};
