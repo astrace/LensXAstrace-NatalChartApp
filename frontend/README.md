@@ -38,6 +38,12 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Figma Design Files
+
+Figma design files can be found [here](https://www.figma.com/file/YIFQ1a77HUtXqQk87830pF/Astrace---Website?node-id=741-23909&t=KdAV4NrbABOnXg7k-0).
+
 ## Deploying on Vercel
 
-[TODO]
+- Add `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` as [secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
+  - See instructions [here](https://vercel.com/guides/how-can-i-use-github-actions-with-vercel#configuring-github-actions-for-vercel) on how to get these values.
+
