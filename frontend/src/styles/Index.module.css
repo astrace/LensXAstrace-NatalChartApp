@@ -1,16 +1,17 @@
 .container {
   padding: 0px;
-  background-color: rgba(255, 0, 0, 0.3); /* debugging */
+  /*background-color: rgba(255, 0, 0, 0.3);*/ /* debugging */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 10px;
   min-height: 100vh;
 }
 
 .content {
   flex-grow: 2;
   min-height: 374px; 
-  background-color: rgba(0, 255, 0, 0.2); /* debugging */
+  /*background-color: rgba(0, 255, 0, 0.2);*/ /* debugging */
 }
 
 @media screen and (max-width: 599px) {
