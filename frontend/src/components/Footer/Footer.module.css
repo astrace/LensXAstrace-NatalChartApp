@@ -1,10 +1,10 @@
 .footer {
-    position: absolute;
     width: auto;
     display: block;
     bottom: 0;
     height: 42px;
     padding-bottom: 24px;
+    margin-top: auto;
 }
 
 .footer p {

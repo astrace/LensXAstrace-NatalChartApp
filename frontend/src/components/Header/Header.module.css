@@ -1,5 +1,4 @@
 .header {
-  position: fixed;
   display: flex;
   /* see conditional in-line styling for 'justify-content' */
   align-items: center;

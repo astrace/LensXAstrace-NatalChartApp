@@ -4,12 +4,12 @@
   align-items: flex-start;
   padding: 0px;
 
-  position: absolute;
   width: 480px;
   height: 532px;
   top: calc(50% - 532px/2 - 0.5px);
   color: white;
   /*background: rgba(255, 0, 0, 0.2); for debugging */
+  margin-top: 147px;
 }
 
 .container h1 {

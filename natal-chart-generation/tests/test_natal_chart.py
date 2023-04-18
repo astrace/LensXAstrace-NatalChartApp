@@ -64,7 +64,7 @@ class VisualTestNatalChart(unittest.TestCase):
     unixtime = int(time.time())
 
     def test_natal_charts_with_stelliums(self):
-        for _ in range(3):
+        for _ in range(20):
             n = random.randint(2, 10)
             chart = _utils.generate_stellium(n)
             self.visual_test(chart)
@@ -76,7 +76,7 @@ class VisualTestNatalChart(unittest.TestCase):
             self.visual_test(chart, bg_im_file)
 
     def test_natal_charts_near_zero_degrees(self):
-        for _ in range(3):
+        for _ in range(10):
             n = random.randint(2, 10)
             chart = _utils.generate_stellium_near_zero_degrees(n)
             self.visual_test(chart)

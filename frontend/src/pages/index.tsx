@@ -80,18 +80,21 @@ export default function Index(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Background />
-      <div className={styles.main}>
+      <div className={styles.container}>
         <Header
           page={page}
           connect={handleConnect}
         />
-        {page == "home" &&
-          <Home
-            changePage={wrapperSetPage}
-            connect={handleConnect}
-          />
-        }
-        {page == "form" && <Form changePage={wrapperSetPage} />}
+        <div className={styles.content}>
+          {page === "home" ? (
+            <Home
+              changePage={wrapperSetPage}
+              connect={handleConnect}
+            />
+          ) : (
+            <Form changePage={wrapperSetPage} />
+          )}
+        </div>
         <Footer/>
       </div>
     </>

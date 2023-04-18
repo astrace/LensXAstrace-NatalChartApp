@@ -1,8 +1,7 @@
 .main-text {
-  position: absolute;
   float: left;
   width: 480px;
-  top: 325px;
+  margin-top: 325px;
 }
 
 .main-text h1 {
