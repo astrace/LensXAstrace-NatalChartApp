@@ -26,10 +26,6 @@ This is the frontend for the Lens X Astrace Natal Chart Generation App. It has a
 - The [Google Places API](https://developers.google.com/maps/documentation/places/web-service/overview) is used to autocomplete input for birth city.
 - Deployment is done via Vercel. See Deployment section.
 
-## Table of Contents
-
-[TODO]
-
 ## Requirements
 - Node.js 14.6.0 or newer
 
