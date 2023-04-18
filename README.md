@@ -51,3 +51,5 @@ See: [Deployment](#deployment)
 ### Smart Contracts
 
 # Deployment
+
+TODO: Expain deployment of frontend, natal generation script, smart contracts.
