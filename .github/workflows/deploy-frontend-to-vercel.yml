@@ -30,4 +30,5 @@ jobs:
       run: |
         cd frontend
         vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
-
+      env:
+        VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
