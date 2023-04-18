@@ -29,5 +29,5 @@ jobs:
     - name: Deploy to Vercel
       run: |
         cd frontend
-        vercel --token ${{ secrets.VERCEL_TOKEN }} --prod
+        vercel --token ${{ secrets.VERCEL_TOKEN }} --prod --yes
 
