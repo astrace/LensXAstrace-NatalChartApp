@@ -5,7 +5,6 @@ from aws_cdk import (
     Stack,
     aws_apigateway as apigw,
     aws_apigatewayv2 as apigw2,
-    aws_apigatewayv2_authorizers as apigw2_auth,
     aws_certificatemanager as acm,
     aws_cloudfront as cloudfront,
     aws_iam as iam,
