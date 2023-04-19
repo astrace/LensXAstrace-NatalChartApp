@@ -157,7 +157,7 @@ class NatalChartCdkStack(Stack):
         )
 
         # restrict API access to our domain
-        api.root.add_method(
+        apigw.root.add_method(
             "OPTIONS",
             apigw.MockIntegration(
                 integration_responses=[
