@@ -19,7 +19,8 @@ jobs:
       
       - name: Install dependencies
         run: pip install -r requirements.txt
-     
+        working-directory: cdk
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -32,4 +33,5 @@ jobs:
         env:
           AWS_REGION: your-aws-region
           AWS_ACCOUNT_ID: your-aws-account-id
+        working-directory: cdk
 
