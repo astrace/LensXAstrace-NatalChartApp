@@ -58,8 +58,8 @@ TODO: Expain deployment of frontend, natal generation script, smart contracts.
 
 ## Note on Integration
 
-### Setting up domain name
-
 Things to know about how the different parts of the project interact (natal chart generation, cdk, frontend, blockchain)
+
+### Setting up domain name
 
 When the domain name is finalized, several parts of the code will need to be updated: [TODO]
