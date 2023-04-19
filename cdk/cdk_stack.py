@@ -11,7 +11,7 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
 )
-from aws_cdk.aws_lambda import Runtime
+from aws_cdk.aws_lambda import Code, Function, Runtime
 from constructs import Construct
 
 import os
@@ -97,7 +97,10 @@ class NatalChartCdkStack(Stack):
             "../natal-chart-generation/ephe",
             "../natal-chart-generation/fonts"
         ]
-        os.system(f"rsync -av --exclude='.*' {' '.join(filenames)} lambda/")
+        for fname in filenames:
+            cmd = f"cp -r {fname} lambda/"
+            print(f"Executing: {cmd} ...")
+            os.system(cmd)
 
         # Lambda Function
         lambda_fn = _lambda.PythonFunction(
@@ -106,11 +109,6 @@ class NatalChartCdkStack(Stack):
             runtime=Runtime.PYTHON_3_7,
             index="lambda.py",
             handler="handler",
-            layers=[
-                _lambda.PythonLayerVersion(
-                    self, "DependenciesLayer", entry="../natal-chart-generation"
-                )
-            ],
             environment={
                 "CLOUDFRONT_DISTRIBUTION_URL": distribution.distribution_domain_name,
                 "IMG_LAYER_BUCKET_NAME": img_layer_bucket.bucket_name,
@@ -150,51 +148,33 @@ class NatalChartCdkStack(Stack):
             )
         )
 
+        # Restrict API access to our frontend domain
+        
+        ## Create the Lambda Authorizer
+        authorizer_lambda = Function(
+            self, 'DomainAuthorizerFunction',
+            runtime=Runtime.PYTHON_3_9,
+            handler='domain_authorizer.lambda_handler',
+            code=Code.from_asset('domain_authorizer'),
+            environment={
+                'ALLOWED_DOMAIN': FRONTEND_DOMAIN_NAME,
+            }
+        )
+
+        ## Create the Authorizer for API Gateway
+        api_authorizer = apigw.LambdaAuthorizer(
+            handler=authorizer_lambda,
+            authorizer_name='DomainAuthorizer',
+            results_cache_ttl=Duration.minutes(5),
+        )
+        
         # API Gateway
-        apigw.LambdaRestApi(
+        api = apigw.LambdaRestApi(
             self, 'Endpoint',
-            handler=lambda_fn
+            handler=lambda_fn,
+            default_authorizer=api_authorizer
         )
 
-        # restrict API access to our domain
-        apigw.root.add_method(
-            "OPTIONS",
-            apigw.MockIntegration(
-                integration_responses=[
-                    apigw.IntegrationResponse(
-                        status_code="200",
-                        response_parameters={
-                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                            "method.response.header.Access-Control-Allow-Origin": FRONTEND_DOMAIN_NAME,
-                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
-                            "method.response.header.Access-Control-Allow-Credentials": "'false'",
-                        },
-                    )
-                ],
-                passthrough_behavior=apigw.PassthroughBehavior.NEVER,
-                request_templates={
-                    "application/json": "{\"statusCode\": 200}"
-                },
-            ),
-            method_responses=[
-                apigw.MethodResponse(
-                    status_code="200",
-                    response_parameters={
-                        "method.response.header.Access-Control-Allow-Headers": True,
-                        "method.response.header.Access-Control-Allow-Methods": True,
-                        "method.response.header.Access-Control-Allow-Credentials": True,
-                        "method.response.header.Access-Control-Allow-Origin": True,
-                    },
-                )
-            ],
-        )
-
-        api.root.add_method("POST", cors_options=apigw.CorsOptions(
-            allow_origins=[FRONTEND_DOMAIN_NAME],
-            allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
-            allow_methods=["POST"],
-            allow_credentials=False
-        ))
 
         # Output the API Gateway URL
         aws_cdk.CfnOutput(
@@ -203,3 +183,4 @@ class NatalChartCdkStack(Stack):
             description="The URL of the API Gateway",
             export_name="ApiGatewayUrl"
         )
+        
