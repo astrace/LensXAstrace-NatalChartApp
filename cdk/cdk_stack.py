@@ -1,5 +1,5 @@
-from constructs import Construct
 from aws_cdk import (
+    CfnOutput,
     Duration,
     Size,
     Stack,
@@ -13,6 +13,7 @@ from aws_cdk import (
     core
 )
 from aws_cdk.aws_lambda import Runtime
+from constructs import Construct
 
 import os
 import tempfile
@@ -202,7 +203,7 @@ class NatalChartCdkStack(Stack):
         ))
 
         # Output the API Gateway URL
-        core.CfnOutput(
+        aws_cdk.CfnOutput(
             self, "ApiGatewayUrl",
             value=api.url,
             description="The URL of the API Gateway",
