@@ -52,6 +52,10 @@ The frontend is built with Next.js 14. See the full frontend-specific README fil
 
 ### Smart Contracts
 
-# Deployment
+## Deployment
 
 TODO: Expain deployment of frontend, natal generation script, smart contracts.
+
+## Note on Integration
+
+Things to know about how the different parts of the project interact (natal chart generation, cdk, frontend, blockchain)
