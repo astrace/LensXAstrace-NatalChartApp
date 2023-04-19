@@ -4,6 +4,8 @@ from aws_cdk import (
     Size,
     Stack,
     aws_apigateway as apigw,
+    aws_apigatewayv2 as apigw2,
+    aws_apigatewayv2_authorizers as apigw2_auth,
     aws_certificatemanager as acm,
     aws_cloudfront as cloudfront,
     aws_iam as iam,
@@ -148,28 +150,10 @@ class NatalChartCdkStack(Stack):
             )
         )
 
-        # Restrict API access to our frontend domain
-        
-        ## Create the Lambda Authorizer
-        authorizer_lambda = Function(
-            self, 'DomainAuthorizerFunction',
-            runtime=Runtime.PYTHON_3_9,
-            handler='domain_authorizer.lambda_handler',
-            code=Code.from_asset('domain_authorizer'),
-            environment={
-                'ALLOWED_DOMAIN': FRONTEND_DOMAIN_NAME,
-            }
-        )
-
-        ## Create the Authorizer for API Gateway
-        api_authorizer = apigw.LambdaAuthorizer(
-            handler=authorizer_lambda,
-            authorizer_name='DomainAuthorizer',
-            results_cache_ttl=Duration.minutes(5),
-        )
+        # TODO: Restrict API access to our frontend domain
         
         # API Gateway
-        api = apigw.LambdaRestApi(
+        api = apigw2.LambdaRestApi(
             self, 'Endpoint',
             handler=lambda_fn,
             default_authorizer=api_authorizer
