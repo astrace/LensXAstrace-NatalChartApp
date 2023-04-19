@@ -6,6 +6,7 @@ on:
       - production
     paths:
       - 'cdk/**'
+      - '.github/workflows/deploy-cdk-stack.yml'
 
 jobs:
   deploy:
