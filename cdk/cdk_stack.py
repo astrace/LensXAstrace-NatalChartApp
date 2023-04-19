@@ -10,7 +10,6 @@ from aws_cdk import (
     aws_lambda_python_alpha as _lambda,
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
-    core
 )
 from aws_cdk.aws_lambda import Runtime
 from constructs import Construct
