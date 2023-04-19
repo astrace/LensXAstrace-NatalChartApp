@@ -6,7 +6,8 @@ on:
   push:
     branches:
       - production
-
+    paths:
+      - 'frontend/**'
 jobs:
   deploy:
     runs-on: ubuntu-latest
