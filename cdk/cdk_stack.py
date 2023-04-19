@@ -17,7 +17,7 @@ from constructs import Construct
 import os
 import tempfile
 
-FRONTEND_DOMAIN_NAME = os.getenv['FRONTEND_DOMAIN_NAME']
+FRONTEND_DOMAIN_NAME = os.getenv('FRONTEND_DOMAIN_NAME')
 
 class NatalChartCdkStack(Stack):
 
