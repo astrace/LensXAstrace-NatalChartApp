@@ -157,11 +157,6 @@ class NatalChartCdkStack(Stack):
         )
 
         # restrict API access to our domain
-        api = apigw.LambdaRestApi(
-            self, 'Endpoint',
-            handler=lambda_fn
-        )
-
         api.root.add_method(
             "OPTIONS",
             apigw.MockIntegration(
