@@ -110,6 +110,11 @@ class NatalChartCdkStack(Stack):
             runtime=Runtime.PYTHON_3_7,
             index="lambda.py",
             handler="handler",
+            layers=[
+                _lambda.PythonLayerVersion(
+                    self, "DependenciesLayer", entry="../natal-chart-generation"
+                )
+            ],
             environment={
                 "CLOUDFRONT_DISTRIBUTION_URL": distribution.distribution_domain_name,
                 "IMG_LAYER_BUCKET_NAME": img_layer_bucket.bucket_name,
