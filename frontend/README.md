@@ -57,6 +57,6 @@ The structure of the React components and how they relate to one another *should
 
 - Set up a [Vercel](https://vercel.com/) account and project, and add `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` as [secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets).
   - See instructions [here](https://vercel.com/guides/how-can-i-use-github-actions-with-vercel#configuring-github-actions-for-vercel) on how to get these values.
-- Deployment should be entirely handled by [this](../.github/workflow/deploy-frontend-to-vercel.yml) Github Actions workflow. That is, anytime there is a push made to the `production` branch, the frontend will be deployed via Vercel CLI. 
+- Deployment should be entirely handled by [this](../.github/workflows/deploy-frontend-to-vercel.yml) Github Actions workflow. That is, anytime there is a push made to the `production` branch, the frontend will be deployed via [Vercel CLI](https://vercel.com/docs/cli). 
 - Setting up a custom domain can be done via the Vercel website. See [here](https://vercel.com/docs/concepts/projects/domains/add-a-domain).
 
