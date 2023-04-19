@@ -6,7 +6,9 @@ on:
   push:
     branches:
       - production
-
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy-frontend-to-vercel.yml'
 jobs:
   deploy:
     runs-on: ubuntu-latest
