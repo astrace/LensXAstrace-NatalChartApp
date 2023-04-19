@@ -8,6 +8,10 @@ Create an AWS account and an Administrative User. See [here](https://cdkworkshop
 
 [Insert Diagram]
 
+## Continuous Deployment via GitHub Actions
+
+AWS CDK app is deployed whenever there are changes made to this directory on the `production` branch. See [this](../.github/workflows/deploy-cdk-stack.yml) GitHub actions workflow.
+
 ## Local Deployment
 
 **Note**: We require Python 3.7 for our development environment because we make use of
@@ -45,7 +49,3 @@ aws configure
 ```
 cdk deploy 
 ```
-
-## Deployment via GitHub Actions
-
-[TODO]
