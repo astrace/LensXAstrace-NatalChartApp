@@ -48,7 +48,7 @@ See: [Deployment](#deployment)
 
 ### Frontend
 
-The frontend is built with Next.js 14. See the full frontend-specific README file [here](./frontend).
+The frontend is built using Next.js 14. **See the full frontend-specific README file [here](./frontend).**
 
 ### Smart Contracts
 
