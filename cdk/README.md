@@ -10,7 +10,7 @@ CloudFront.
 
 1. AWS Lambda: A Python function that processes natal chart generation requests and stores the generated images in an Amazon S3 bucket.
 2. Amazon S3: Two buckets are used for storing image layers and generated natal charts.
-3. Amazon API Gateway: Provides a RESTful API for the Lambda function, allowing clients to submit natal chart requests. The API Gateway is restriced to the domain of the frontend.
+3. Amazon API Gateway: Provides a RESTful API for the Lambda function, allowing clients to submit natal chart requests. The API Gateway is restriced to the domain of the frontend. **The API returns an S3 url to the generated natal chart image.** 
 4. Amazon CloudFront: A CDN that efficiently serves the image layers stored in the Amazon S3 bucket.
 
 ## Prerequisites
