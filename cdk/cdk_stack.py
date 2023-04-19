@@ -3,17 +3,21 @@ from aws_cdk import (
     Duration,
     Size,
     Stack,
-    aws_lambda_python_alpha as _lambda,
     aws_apigateway as apigw,
+    aws_certificatemanager as acm,
+    aws_cloudfront as cloudfront,
     aws_iam as iam,
+    aws_lambda_python_alpha as _lambda,
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
-    aws_cloudfront as cloudfront,
+    core
 )
 from aws_cdk.aws_lambda import Runtime
 
 import os
 import tempfile
+
+FRONTEND_DOMAIN_NAME = os.getenv['FRONTEND_DOMAIN_NAME']
 
 class NatalChartCdkStack(Stack):
 
@@ -152,5 +156,55 @@ class NatalChartCdkStack(Stack):
             handler=lambda_fn
         )
 
-        # TODO: Restrict API access to only our frontend
+        # restrict API access to our domain
+        api = apigw.LambdaRestApi(
+            self, 'Endpoint',
+            handler=lambda_fn
+        )
 
+        api.root.add_method(
+            "OPTIONS",
+            apigw.MockIntegration(
+                integration_responses=[
+                    apigw.IntegrationResponse(
+                        status_code="200",
+                        response_parameters={
+                            "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                            "method.response.header.Access-Control-Allow-Origin": FRONTEND_DOMAIN_NAME,
+                            "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'",
+                            "method.response.header.Access-Control-Allow-Credentials": "'false'",
+                        },
+                    )
+                ],
+                passthrough_behavior=apigw.PassthroughBehavior.NEVER,
+                request_templates={
+                    "application/json": "{\"statusCode\": 200}"
+                },
+            ),
+            method_responses=[
+                apigw.MethodResponse(
+                    status_code="200",
+                    response_parameters={
+                        "method.response.header.Access-Control-Allow-Headers": True,
+                        "method.response.header.Access-Control-Allow-Methods": True,
+                        "method.response.header.Access-Control-Allow-Credentials": True,
+                        "method.response.header.Access-Control-Allow-Origin": True,
+                    },
+                )
+            ],
+        )
+
+        api.root.add_method("POST", cors_options=apigw.CorsOptions(
+            allow_origins=[FRONTEND_DOMAIN_NAME],
+            allow_headers=["Content-Type", "X-Amz-Date", "Authorization", "X-Api-Key", "X-Amz-Security-Token"],
+            allow_methods=["POST"],
+            allow_credentials=False
+        ))
+
+        # Output the API Gateway URL
+        core.CfnOutput(
+            self, "ApiGatewayUrl",
+            value=api.url,
+            description="The URL of the API Gateway",
+            export_name="ApiGatewayUrl"
+        )
