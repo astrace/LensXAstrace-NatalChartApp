@@ -4,8 +4,8 @@ from aws_cdk import (
     Size,
     Stack,
     aws_apigateway as apigw,
-    aws_apigatewayv2 as apigw2,
-    aws_certificatemanager as acm,
+    #aws_apigatewayv2 as apigw2,
+    #aws_certificatemanager as acm,
     aws_cloudfront as cloudfront,
     aws_iam as iam,
     aws_lambda_python_alpha as _lambda,
@@ -152,15 +152,13 @@ class NatalChartCdkStack(Stack):
         # TODO: Restrict API access to our frontend domain
         
         # API Gateway
-        api = apigw2.LambdaRestApi(
+        api = apigw.LambdaRestApi(
             self, 'Endpoint',
             handler=lambda_fn,
-            default_authorizer=api_authorizer
+            #default_authorizer=api_authorizer
         )
-
-
         # Output the API Gateway URL
-        aws_cdk.CfnOutput(
+        CfnOutput(
             self, "ApiGatewayUrl",
             value=api.url,
             description="The URL of the API Gateway",
