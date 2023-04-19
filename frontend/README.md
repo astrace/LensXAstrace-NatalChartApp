@@ -51,7 +51,7 @@ Figma design files can be found [here](https://www.figma.com/file/YIFQ1a77HUtXqQ
 
 The structure of the React components and how they relate to one another *should* be straightforward.
 
-**One important note**: The website is designed as a single page. That is, the landing "page" and the form "page" are not, in fact, separate pages. They are two separate *components* rendered on the same page depending on certain logic. See logic map [here](./assets/wallet%20connection%20flowchart.pdf).
+**One important note**: The website is designed as a single page. That is, the landing "page" and the form "page" are not, in fact, separate pages. They are two separate *components* (namely, `Form.tsx` and `Home.js`) rendered on the same page depending on certain logic. See logic map [here](./assets/wallet%20connection%20flowchart.pdf).
 
 ## Deployment
 
@@ -59,4 +59,3 @@ The structure of the React components and how they relate to one another *should
   - See instructions [here](https://vercel.com/guides/how-can-i-use-github-actions-with-vercel#configuring-github-actions-for-vercel) on how to get these values.
 - Deployment should be entirely handled by [this](../.github/workflows/deploy-frontend-to-vercel.yml) Github Actions workflow. That is, anytime there is a push made to the `production` branch, the frontend will be deployed via [Vercel CLI](https://vercel.com/docs/cli). 
 - Setting up a custom domain can be done via the Vercel website. See [here](https://vercel.com/docs/concepts/projects/domains/add-a-domain).
-
