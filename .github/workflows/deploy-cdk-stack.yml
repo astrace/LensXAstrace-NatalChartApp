@@ -34,5 +34,7 @@ jobs:
 
       - name: Deploy CDK stack
         run: cdk deploy --require-approval never
+        env:
+          FRONTEND_DOMAIN_NAME: https://lens-x-astrace-natal-chart-app-frontend.vercel.app/
         working-directory: cdk
 

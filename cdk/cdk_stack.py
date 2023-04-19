@@ -1,19 +1,24 @@
-from constructs import Construct
 from aws_cdk import (
+    CfnOutput,
     Duration,
     Size,
     Stack,
-    aws_lambda_python_alpha as _lambda,
     aws_apigateway as apigw,
+    #aws_apigatewayv2 as apigw2,
+    #aws_certificatemanager as acm,
+    aws_cloudfront as cloudfront,
     aws_iam as iam,
+    aws_lambda_python_alpha as _lambda,
     aws_s3 as s3,
     aws_s3_deployment as s3deploy,
-    aws_cloudfront as cloudfront,
 )
-from aws_cdk.aws_lambda import Runtime
+from aws_cdk.aws_lambda import Code, Function, Runtime
+from constructs import Construct
 
 import os
 import tempfile
+
+FRONTEND_DOMAIN_NAME = os.getenv('FRONTEND_DOMAIN_NAME')
 
 class NatalChartCdkStack(Stack):
 
@@ -93,7 +98,10 @@ class NatalChartCdkStack(Stack):
             "../natal-chart-generation/ephe",
             "../natal-chart-generation/fonts"
         ]
-        os.system(f"rsync -av --exclude='.*' {' '.join(filenames)} lambda/")
+        for fname in filenames:
+            cmd = f"cp -r {fname} lambda/"
+            print(f"Executing: {cmd} ...")
+            os.system(cmd)
 
         # Lambda Function
         lambda_fn = _lambda.PythonFunction(
@@ -102,11 +110,6 @@ class NatalChartCdkStack(Stack):
             runtime=Runtime.PYTHON_3_7,
             index="lambda.py",
             handler="handler",
-            layers=[
-                _lambda.PythonLayerVersion(
-                    self, "DependenciesLayer", entry="../natal-chart-generation"
-                )
-            ],
             environment={
                 "CLOUDFRONT_DISTRIBUTION_URL": distribution.distribution_domain_name,
                 "IMG_LAYER_BUCKET_NAME": img_layer_bucket.bucket_name,
@@ -146,11 +149,19 @@ class NatalChartCdkStack(Stack):
             )
         )
 
+        # TODO: Restrict API access to our frontend domain
+        
         # API Gateway
-        apigw.LambdaRestApi(
+        api = apigw.LambdaRestApi(
             self, 'Endpoint',
-            handler=lambda_fn
+            handler=lambda_fn,
+            #default_authorizer=api_authorizer
         )
-
-        # TODO: Restrict API access to only our frontend
-
+        # Output the API Gateway URL
+        CfnOutput(
+            self, "ApiGatewayUrl",
+            value=api.url,
+            description="The URL of the API Gateway",
+            export_name="ApiGatewayUrl"
+        )
+        
