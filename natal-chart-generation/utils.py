@@ -28,16 +28,21 @@ class LocalImageLoader(ImageLoader):
         self.bg_im_size = self.load(list(image_files['BACKGROUNDS'].keys())[0]).size[0]
 
     def load_all_images(self):
-        def _load_all_images(d: dict):
+        for fname in self.get_all_filenames():
+            self.load(fname)
+
+    def get_all_filenames(self):
+        fnames = []
+        def _get_all_filenames(d: dict):
             for k,v in d.items():
                 if type(v) == str:
-                    self.load(v)
+                    fnames.append(v)
                 elif type(v) in [int, float]:
-                    self.load(k)
+                    fnames.append(k)
                 else:
-                    _load_all_images(v)
-
-        _load_all_images(self.image_files)
+                    _get_all_filenames(v)
+        _get_all_filenames(self.image_files)
+        return fnames
 
     def load(self, filename: str) -> Image:
         if filename not in self.image_cache:
