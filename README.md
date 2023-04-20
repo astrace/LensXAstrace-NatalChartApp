@@ -1,5 +1,7 @@
 # Lens X Astrace Natal Chart App
 
+[README is not yet complete]
+
 An app that generates natal charts based on a person's birth information. The natal charts are "minted" as [Lens Publications](https://docs.lens.xyz/docs/publication) and the birth information is stored as metadata in the minters Lens [ProfileNFT](https://docs.lens.xyz/docs/profile). The repo is organized into four main components:
 - natal chart generation (`./natal-chart-generation`)
 - smart contracts (`./blockchain`)
