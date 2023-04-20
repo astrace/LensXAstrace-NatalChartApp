@@ -39,7 +39,7 @@ def handler(event, context):
     
     return {
         'statusCode': 200,
-        'headers': {'Content-Type': 'image/png'},
+        'headers': {'Content-Type': 'text/plain'},
         'body': json.dumps({'url': image_url})
     }
 
