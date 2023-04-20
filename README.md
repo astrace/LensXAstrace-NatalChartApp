@@ -5,17 +5,17 @@ An app that generates natal charts based on a person's birth information. The na
 <table>
   <tr>
     <td>
-      <img src="natal-chart-generation/assets/natal_chart1.png" alt="example image" height="300"/>
+      <img src="natal-chart-generation/assets/natal_chart1.png" alt="example image" width="250"/>
       <br>
       <em>example image 1</em>
     </td>
     <td>
-      <img src="natal-chart-generation/assets/natal_chart2.png" alt="example image" height="300"/>
+      <img src="natal-chart-generation/assets/natal_chart2.png" alt="example image" width="250"/>
       <br>
       <em>example image 2</em>
     </td>
     <td>
-      <img src="natal-chart-generation/assets/natal_chart3.png" alt="example image" height="300"/>
+      <img src="natal-chart-generation/assets/natal_chart3.png" alt="example image" width="250"/>
       <br>
       <em>example image 3</em>
     </td>
