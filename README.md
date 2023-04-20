@@ -137,3 +137,11 @@ When the domain name is finalized:
 1. Add the custom domain name on the [Vercel website](https://vercel.com/docs/concepts/projects/domains/add-a-domain).
 2. Set the environment variable in
 [this workflow file](https://github.com/astrace/LensXAstrace-NatalChartApp/blob/3fa15e493ce4dd7719842711f8f9fd41678ff617/.github/workflows/deploy-cdk-stack.yml).
+
+## Contact Information
+If you have any questions, suggestions, or issues related to this project, feel free to reach out to me:
+
+Name: Sasa M
+Email: milichkam@gmail.com
+LinkedIn: https://www.linkedin.com/in/sasa-milic/
+Twitter: @realSasaMilic
