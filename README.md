@@ -118,6 +118,9 @@ git push
 ```
 
 ### Local Deployment
+This shouldn't be necessary, but in case you don't want to rely on the GitHub Actions files to deploy to prod
+and instead want to do it "manually".
+
 To locally deploy image generation code on AWS services,
 see: [AWS Local Deployment](https://github.com/astrace/LensXAstrace-NatalChartApp/tree/main/cdk#local-deployment)
 
