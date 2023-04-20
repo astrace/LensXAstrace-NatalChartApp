@@ -24,6 +24,20 @@ An app that generates natal charts based on a person's birth information. The na
 
 ### Installation
 
+## Architecture Overview
+
+This project uses Amazon Web Services (AWS) as the cloud provider to build and deploy our custom architecture.
+Since our application generates images "on the fly" instead of pre-generating them (like most NFT projects),
+it demands tailored architecture and efficient performance.
+
+<img src="./cdk/assets/aws_architecture.png" alt="Architure Overview" width="800">
+
+To define and manage our custom cloud architecture, we use the [AWS Cloud Development Kit (AWS CDK)](https://aws.amazon.com/cdk/).
+AWS CDK is a framework used to define cloud infrastructure as code (IaC).
+
+All AWS CDK related files are located in the `cdk` directory of this repository. This directory contains the necessary code, configuration files, and scripts to define and deploy our cloud infrastructure. **For complete documentation, see the [README file](./cdk/README.md) in that directory.**
+
+
 ## Usage
 
 ### Image Algorithm
