@@ -150,7 +150,7 @@ def generate(local_time: str, location: str, local: bool = False) -> Image:
     if local:
         # for local generation/testing
         image_loader = utils.LocalImageLoader(IMG_DIR, IMG_FILES)
-        bg_im_size = image_loader.load_all_images()
+        image_loader.load_all_images()
         image_loader.resize_all_images()
     else:
         # read from environment vars passed during deployment

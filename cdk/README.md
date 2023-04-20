@@ -6,6 +6,8 @@ CloudFront.
 
 ![High-level Architecture Diagram](./assets/aws_architecture.png)
 
+Note: Here is a [good beginner's tutorial](https://cdkworkshop.com/) on how to use AWS CDK.
+
 ## Architecture Overview
 
 1. AWS Lambda: A Python function that processes natal chart generation requests and stores the generated images in an Amazon S3 bucket.
@@ -17,11 +19,13 @@ CloudFront.
 
 Create an AWS account and an Administrative User. See [here](https://cdkworkshop.com/15-prerequisites/200-account.html).
 
-## Continuous Deployment via GitHub Actions
+## Deployment
+
+### Continuous Deployment via GitHub Actions
 
 AWS CDK app is deployed whenever there are changes made to this directory on the `production` branch. See [this](../.github/workflows/deploy-cdk-stack.yml) GitHub actions workflow.
 
-## Local Deployment
+### Local Deployment
 
 **Note**: We require Python 3.7 for our development environment because we make use of
 the experimental AWS CDK [Python Library](https://docs.aws.amazon.com/cdk/api/v2/python/aws_cdk.aws_lambda_python_alpha/README.html)
@@ -55,8 +59,9 @@ npm install -g aws-cdk
 aws configure
 ```
 7. Ensure that the `FRONTEND_DOMAIN_NAME` environment variable is correctly set.
-8. Deploy CDK stack
+8. Bootstrap & deploy CDK stack
 ```
+cdk bootstrap
 cdk deploy 
 ```
 
