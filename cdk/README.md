@@ -6,6 +6,8 @@ CloudFront.
 
 ![High-level Architecture Diagram](./assets/aws_architecture.png)
 
+Note: Here is a [good beginner's tutorial](https://cdkworkshop.com/) on how to use AWS CDK.
+
 ## Architecture Overview
 
 1. AWS Lambda: A Python function that processes natal chart generation requests and stores the generated images in an Amazon S3 bucket.
