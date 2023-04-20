@@ -57,8 +57,9 @@ npm install -g aws-cdk
 aws configure
 ```
 7. Ensure that the `FRONTEND_DOMAIN_NAME` environment variable is correctly set.
-8. Deploy CDK stack
+8. Bootstrap & deploy CDK stack
 ```
+cdk bootstrap
 cdk deploy 
 ```
 
