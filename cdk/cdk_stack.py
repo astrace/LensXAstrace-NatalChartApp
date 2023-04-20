@@ -57,14 +57,9 @@ class NatalChartCdkStack(Stack):
             for fname,im in image_loader.image_cache.items():
                 # make necessary directories if they don't exist
                 dir = os.path.split(fname)[0]
-                print('split', os.path.split(fname))
-                print('exists', os.path.exists(dir))
                 if dir:
-                    print("HERE")
                     os.makedirs(os.path.join(temp_dir, dir), exist_ok=True)
-                import glob
-                print("print temp_dir contents")
-                print(glob.glob(temp_dir + "/*"))
+                print(im.size)
                 im.save(os.path.join(temp_dir, fname))
             
             # Deploy image layer bucket
@@ -149,7 +144,6 @@ class NatalChartCdkStack(Stack):
                 "CLOUDFRONT_DISTRIBUTION_URL": distribution.distribution_domain_name,
                 "IMG_LAYER_BUCKET_NAME": img_layer_bucket.bucket_name,
                 "NATAL_CHART_BUCKET_NAME": natal_chart_bucket.bucket_name,
-
             },
             memory_size=3008,
             ephemeral_storage_size=Size.mebibytes(10240),
