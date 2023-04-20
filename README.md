@@ -71,7 +71,7 @@ The frontend is built using Next.js 14. **See the full frontend-specific README 
 ## Deployment
 
 ### Continuous Deployment
-Both the frontend and the image generatation code are deployed anytime there is a change made to
+Both the frontend and the image generatation code are deployed any time there is a change made to
 their respective directories in the `production` branch. See:
 - [./.github/workflows/deploy-cdk-stack.yml](./.github/workflows/deploy-cdk-stack.yml)
 - [./.github/workflows/deploy-frontend-to-vercel.yml](./.github/workflows/deploy-frontend-to-vercel.yml)
