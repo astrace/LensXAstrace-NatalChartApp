@@ -70,7 +70,27 @@ The frontend is built using Next.js 14. **See the full frontend-specific README 
 
 ## Deployment
 
-TODO: Expain deployment of frontend, natal generation script, smart contracts.
+### Continuous Deployment
+Both the frontend and the image generatation code are deployed anytime there is a change made to
+their respective directories in the `production` branch. See:
+- [./.github/workflows/deploy-cdk-stack.yml](./.github/workflows/deploy-cdk-stack.yml)
+- [./.github/workflows/deploy-frontend-to-vercel.yml](./.github/workflows/deploy-frontend-to-vercel.yml)
+
+General workflow when changes in `main` are ready to be deployed is:
+```
+git checkout main
+git pull
+git checkout production
+git merge main
+git push
+```
+
+### Local Deployment
+To locally deploy image generation code on AWS services,
+see: [AWS Local Deployment](https://github.com/astrace/LensXAstrace-NatalChartApp/tree/main/cdk#local-deployment)
+
+To locally deploy frontend code via Vercel,
+see: [Vercel Deployment](https://github.com/astrace/LensXAstrace-NatalChartApp/tree/main/frontend#deployment)
 
 ## Note on Integration
 
