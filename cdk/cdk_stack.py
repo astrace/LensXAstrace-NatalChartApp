@@ -16,7 +16,16 @@ from aws_cdk.aws_lambda import Code, Function, Runtime
 from constructs import Construct
 
 import os
+import sys
 import tempfile
+
+cwd = os.path.dirname(os.path.abspath(__file__))
+pwd = os.path.dirname(cwd)
+natal_chart_path = os.path.join(pwd, 'natal-chart-generation')
+sys.path.append(natal_chart_path)
+from constants import IMG_DIR, IMG_FILES
+import tempfile
+import utils
 
 FRONTEND_DOMAIN_NAME = os.getenv('FRONTEND_DOMAIN_NAME')
 
@@ -39,14 +48,35 @@ class NatalChartCdkStack(Stack):
             public_read_access=True
         )
 
-        # Deploy buckets
-        s3deploy.BucketDeployment(
-            self,
-            "ImageLayerDeployment",
-            sources=[s3deploy.Source.asset("../natal-chart-generation/images")],
-            destination_bucket=img_layer_bucket,
-            memory_limit=1024
-        )
+        # resize all images before deploying
+        image_loader = utils.LocalImageLoader(os.path.join(natal_chart_path, IMG_DIR), IMG_FILES)
+        bg_im_size = image_loader.load_all_images()
+        image_loader.resize_all_images()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            
+            for fname,im in image_loader.image_cache.items():
+                # make necessary directories if they don't exist
+                dir = os.path.split(fname)[0]
+                print('split', os.path.split(fname))
+                print('exists', os.path.exists(dir))
+                if dir:
+                    print("HERE")
+                    os.makedirs(os.path.join(temp_dir, dir), exist_ok=True)
+                import glob
+                print("print temp_dir contents")
+                print(glob.glob(temp_dir + "/*"))
+                im.save(os.path.join(temp_dir, fname))
+            
+            # Deploy image layer bucket
+            s3deploy.BucketDeployment(
+                self,
+                "ImageLayerDeployment",
+                sources=[s3deploy.Source.asset(temp_dir)],
+                destination_bucket=img_layer_bucket,
+                memory_limit=1024
+            )
+
+        # deploy bucket for generated natal charts
         s3deploy.BucketDeployment(
             self,
             "NatalChartBucketDeployment",

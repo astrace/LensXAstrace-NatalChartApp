@@ -19,7 +19,9 @@ jobs:
           python-version: '3.7'
       
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install -r ../natal-chart-generation/requirements.txt
         working-directory: cdk
 
       - name: Install AWS CDK

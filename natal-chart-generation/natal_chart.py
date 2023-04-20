@@ -158,6 +158,7 @@ def generate(local_time: str, location: str, local: bool = False) -> Image:
             os.environ['CLOUDFRONT_DISTRIBUTION_URL'],
             os.environ['IMG_LAYER_BUCKET_NAME'],
         )
+        # NOTE: It is assumed that images are already resized at deployment !!!
 
     # calculate Julian day
     # requires hour input as decimal with fraction
