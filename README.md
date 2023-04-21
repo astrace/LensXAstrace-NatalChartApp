@@ -142,6 +142,9 @@ When the domain name is finalized:
 If you have any questions, suggestions, or issues related to this project, feel free to reach out to me:
 
 Name: Sasa M
+
 Email: milichkam@gmail.com
+
 LinkedIn: https://www.linkedin.com/in/sasa-milic/
+
 Twitter: @realSasaMilic
