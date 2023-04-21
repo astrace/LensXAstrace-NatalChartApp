@@ -58,8 +58,6 @@ You can locally generate a natal chart using the CLI. To learn how to use the na
 ```
 ./natal_chart_cli.py -h
 ```
-This will generate a natal chart for a person born on January 1st, 2022 at 12:00:00 local time in New York City (latitude 40.7128, longitude -74.0060).
-
 ## Testing
 
 We use the unittest and pytest frameworks to create and run test cases for the natal chart generation program. The tests are designed to cover various scenarios, such as:
